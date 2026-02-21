@@ -352,6 +352,7 @@ footer .f-contact a {
   max-width: 92vw;
   max-height: 92vh;
   object-fit: contain;
+  transition: opacity 0.2s ease;
 }
 
 .lb-close {
@@ -941,13 +942,25 @@ footer .f-contact a {
   const blocks = Array.from(document.querySelectorAll('.photo'));
   let currentIdx = 0;
 
+  // Open lightbox
   blocks.forEach((block, i) => {
     block.addEventListener('click', () => {
       currentIdx = i;
-      lbImg.src = block.dataset.src;
+      showImage(block.dataset.src);
       lb.classList.add('active');
     });
   });
+
+  // Crossfade image swap
+  function showImage(src) {
+    lbImg.style.opacity = '0';
+    const tmp = new Image();
+    tmp.onload = () => {
+      lbImg.src = src;
+      lbImg.style.opacity = '1';
+    };
+    tmp.src = src;
+  }
 
   function closeLightbox() {
     lb.classList.remove('active');
@@ -956,11 +969,13 @@ footer .f-contact a {
 
   function lbNav(dir) {
     currentIdx = (currentIdx + dir + blocks.length) % blocks.length;
-    lbImg.src = blocks[currentIdx].dataset.src;
+    showImage(blocks[currentIdx].dataset.src);
   }
 
+  // Click backdrop to close
   lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
 
+  // Keyboard nav
   document.addEventListener('keydown', e => {
     if (!lb.classList.contains('active')) return;
     if (e.key === 'ArrowRight') lbNav(1);
@@ -968,12 +983,45 @@ footer .f-contact a {
     if (e.key === 'Escape') closeLightbox();
   });
 
+  // Touch — improved swipe with pinch detection and velocity check
   let touchStartX = 0;
-  lb.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  let touchStartY = 0;
+  let touchStartTime = 0;
+  let isMultiTouch = false;
+
+  lb.addEventListener('touchstart', e => {
+    isMultiTouch = e.touches.length > 1;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
+  }, { passive: true });
+
+  lb.addEventListener('touchmove', e => {
+    if (e.touches.length > 1) isMultiTouch = true;
+  }, { passive: true });
+
   lb.addEventListener('touchend', e => {
-    const diff = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) lbNav(diff > 0 ? 1 : -1);
-  });
+    // Ignore pinch gestures entirely
+    if (isMultiTouch) {
+      isMultiTouch = false;
+      return;
+    }
+
+    const dx = touchStartX - e.changedTouches[0].clientX;
+    const dy = touchStartY - e.changedTouches[0].clientY;
+    const dt = Date.now() - touchStartTime;
+
+    // Must be more horizontal than vertical
+    if (Math.abs(dx) < Math.abs(dy)) return;
+
+    // Threshold: 90px OR fast short swipe (60px in under 250ms)
+    const isFastSwipe = Math.abs(dx) > 60 && dt < 250;
+    const isLongSwipe = Math.abs(dx) > 90;
+
+    if (isFastSwipe || isLongSwipe) {
+      lbNav(dx > 0 ? 1 : -1);
+    }
+  }, { passive: true });
 </script>
 
 </body>
