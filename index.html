@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skinny Bones Jones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink:       #1a1814;
+  --paper:     #f2ede6;
+  --travel-bg: #c8d4c0;   /* sage — England/Europe */
+  --fashion-bg:#e8d5c4;   /* warm blush — editorial/fashion */
+  --events-bg: #1c1c1c;   /* near-black — concerts/nightlife */
+  --events-fg: #e8e0d0;
+  --commercial-bg: #2a0d08; /* deep red — Fora/commercial */
+  --commercial-fg: #f0ddd0;
+  --muted:     #8a8278;
+  --rule:      rgba(26,24,20,0.12);
+}
+
+/* FILM GRAIN */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.09;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 150px 150px;
+  mix-blend-mode: overlay;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'EB Garamond', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  padding: 16px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.nav-name {
+  font-family: 'EB Garamond', serif;
+  font-size: 16px;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--ink); }
+
+/* ── HERO ── */
+.hero {
+  padding: 120px 28px 72px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: end;
+  border-bottom: 1px solid var(--rule);
+}
+
+.hero-left h1 {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(52px, 9vw, 110px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.hero-left h1 span {
+  display: block;
+  font-style: normal;
+  font-size: clamp(14px, 2vw, 22px);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 20px;
+  font-family: 'DM Mono', monospace;
+}
+
+.hero-right {
+  padding-bottom: 8px;
+}
+
+.hero-right p {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(16px, 1.8vw, 20px);
+  line-height: 1.6;
+  color: var(--ink);
+  opacity: 0.7;
+  max-width: 400px;
+  margin-left: auto;
+}
+
+.hero-credentials {
+  margin-top: 24px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-left: auto;
+  max-width: 400px;
+  line-height: 2;
+}
+
+/* ── SECTION SHELL ── */
+section {
+  padding: 72px 28px;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 48px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid currentColor;
+  opacity: 0.18;
+}
+
+.section-title {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.section-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── TRAVEL — sage green ── */
+#travel { background: var(--travel-bg); }
+
+/* ── FASHION — blush ── */
+#fashion { background: var(--fashion-bg); }
+
+/* ── EVENTS — dark ── */
+#events {
+  background: var(--events-bg);
+  color: var(--events-fg);
+}
+
+#events .photo-caption { color: rgba(232,224,208,0.4); }
+
+/* ── COMMERCIAL — deep red ── */
+#commercial {
+  background: var(--commercial-bg);
+  color: var(--commercial-fg);
+}
+
+#commercial .section-header { border-color: var(--commercial-fg); }
+#commercial .photo-caption { color: rgba(240,221,208,0.4); }
+
+/* ── STREET / NYC ── */
+#street { background: var(--paper); }
+
+/* ── PHOTO GRIDS ── */
+.row {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.cols-1 { grid-template-columns: 1fr; }
+.cols-2 { grid-template-columns: 1fr 1fr; }
+.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.cols-2-1 { grid-template-columns: 2fr 1fr; }
+.cols-1-2 { grid-template-columns: 1fr 2fr; }
+.cols-3-2 { grid-template-columns: 3fr 2fr; }
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.photo {
+  overflow: hidden;
+  cursor: pointer;
+  background: rgba(0,0,0,0.06);
+  position: relative;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.photo:hover img { transform: scale(1.02); }
+
+.photo.p img  { aspect-ratio: 3/4; }
+.photo.l img  { aspect-ratio: 4/3; }
+.photo.s img  { aspect-ratio: 1/1; }
+.photo.w img  { aspect-ratio: 16/9; }
+.photo.t img  { aspect-ratio: 4/5; }
+
+.photo-caption {
+  margin-top: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Spacer */
+.gap { height: 40px; }
+
+/* ── ABOUT ── */
+#about {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 80px 28px;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  max-width: 900px;
+}
+
+.about-name {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(32px, 5vw, 60px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.05;
+  margin-bottom: 32px;
+}
+
+.about-body {
+  font-family: 'EB Garamond', serif;
+  font-size: 18px;
+  line-height: 1.75;
+  color: rgba(242,237,230,0.75);
+}
+
+.about-right {
+  padding-top: 8px;
+}
+
+.about-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(242,237,230,0.3);
+  margin-bottom: 16px;
+}
+
+.about-detail {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  line-height: 2.2;
+  color: rgba(242,237,230,0.55);
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink);
+  border-top: 1px solid rgba(242,237,230,0.08);
+  padding: 32px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer .f-name {
+  font-family: 'EB Garamond', serif;
+  font-size: 15px;
+  font-style: italic;
+  color: rgba(242,237,230,0.6);
+}
+
+footer .f-contact {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(242,237,230,0.3);
+}
+
+footer .f-contact a {
+  color: rgba(242,237,230,0.6);
+  text-decoration: none;
+}
+
+/* ── LIGHTBOX ── */
+#lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(14,12,10,0.97);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+#lightbox.active { display: flex; }
+
+#lightbox img {
+  max-width: 92vw;
+  max-height: 92vh;
+  object-fit: contain;
+}
+
+.lb-close {
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(242,237,230,0.35);
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  z-index: 10;
+}
+
+.lb-close:hover { color: #f2ede6; }
+
+.lb-nav {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 40%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.lb-prev { left: 0; padding-left: 24px; }
+.lb-next { right: 0; justify-content: flex-end; padding-right: 24px; }
+
+.lb-arrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(242,237,230,0.2);
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.lb-nav:hover .lb-arrow { color: rgba(242,237,230,0.7); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  nav { padding: 14px 20px; }
+  .nav-links { gap: 16px; }
+  .hero { grid-template-columns: 1fr; padding: 100px 20px 56px; gap: 24px; }
+  .hero-right p { margin-left: 0; }
+  .hero-credentials { margin-left: 0; }
+  section { padding: 56px 20px; }
+  .cols-2-1, .cols-1-2, .cols-3, .cols-4, .cols-3-2 { grid-template-columns: 1fr 1fr; }
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  footer { flex-direction: column; gap: 16px; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-name">Skinny Bones Jones</a>
+  <ul class="nav-links">
+    <li><a href="#travel">Travel</a></li>
+    <li><a href="#fashion">Fashion</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#commercial">Commercial</a></li>
+    <li><a href="#street">Street</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <h1>Skinny<br>Bones<br>Jones
+      <span>Photographer — New York City</span>
+    </h1>
+  </div>
+  <div class="hero-right">
+    <p>Fashion, travel, events, and the spaces between. Based in New York. Working everywhere.</p>
+    <div class="hero-credentials">
+      Fora Travel &nbsp;·&nbsp; Rocco Forte Hotels<br>
+      Untitled Magazine<br>
+      Editorial &nbsp;·&nbsp; Commercial &nbsp;·&nbsp; Hospitality
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TRAVEL
+     folder: homepage/
+════════════════════════════════════ -->
+<section id="travel">
+  <div class="section-header">
+    <span class="section-title">Travel</span>
+    <span class="section-sub">Europe &nbsp;·&nbsp; Americas</span>
+  </div>
+
+  <!-- England -->
+  <div class="row cols-2-1">
+    <div class="photo l" data-src="homepage/R0001303.jpg">
+      <img src="homepage/R0001303.jpg" alt="" loading="lazy">
+    </div>
+    <div class="stack">
+      <div class="photo l" data-src="homepage/R0001306.jpg">
+        <img src="homepage/R0001306.jpg" alt="" loading="lazy">
+      </div>
+      <div class="photo l" data-src="homepage/R0001304.jpg">
+        <img src="homepage/R0001304.jpg" alt="" loading="lazy">
+      </div>
+    </div>
+  </div>
+  <p class="photo-caption">The Grand Hotel — York, England</p>
+
+  <div class="gap"></div>
+
+  <div class="row cols-3">
+    <div class="photo l" data-src="homepage/R0001811.jpg">
+      <img src="homepage/R0001811.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/R0001794.jpg">
+      <img src="homepage/R0001794.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/R0001430.jpg">
+      <img src="homepage/R0001430.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">London — September 2022 &nbsp;·&nbsp; St Mary's Abbey, York</p>
+
+  <div class="gap"></div>
+
+  <!-- France -->
+  <div class="row cols-1">
+    <div class="photo w" data-src="homepage/europe2ndpass7.jpg">
+      <img src="homepage/europe2ndpass7.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">Monsieur Bleu, Palais de Tokyo — Paris</p>
+
+  <div style="height:4px"></div>
+
+  <div class="row cols-3">
+    <div class="photo l" data-src="homepage/europe2ndpass13.jpg">
+      <img src="homepage/europe2ndpass13.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/R0002466.jpg">
+      <img src="homepage/R0002466.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/R0002316.jpg">
+      <img src="homepage/R0002316.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">Île Saint-Honorat &nbsp;·&nbsp; Villa Ephrussi de Rothschild — Cap Ferrat</p>
+
+  <div class="gap"></div>
+
+  <!-- Italy -->
+  <div class="row cols-2-1">
+    <div class="photo l" data-src="homepage/europe2ndpass20.jpg">
+      <img src="homepage/europe2ndpass20.jpg" alt="" loading="lazy">
+    </div>
+    <div class="stack">
+      <div class="photo l" data-src="homepage/R0002919.jpg">
+        <img src="homepage/R0002919.jpg" alt="" loading="lazy">
+      </div>
+      <div class="photo l" data-src="homepage/R0002688.jpg">
+        <img src="homepage/R0002688.jpg" alt="" loading="lazy">
+      </div>
+    </div>
+  </div>
+  <p class="photo-caption">Duomo di Firenze rooftop &nbsp;·&nbsp; Milan &nbsp;·&nbsp; Portofino</p>
+
+  <div style="height:4px"></div>
+
+  <div class="row cols-3">
+    <div class="photo l" data-src="homepage/europe2ndpass18.jpg">
+      <img src="homepage/europe2ndpass18.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/europe2ndpass17.jpg">
+      <img src="homepage/europe2ndpass17.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/R0003067.jpg">
+      <img src="homepage/R0003067.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">Villa Balbi — Sestri Levante &nbsp;·&nbsp; Fiesole, Tuscany</p>
+
+  <div class="gap"></div>
+
+  <!-- California -->
+  <div class="row cols-2">
+    <div class="photo l" data-src="homepage/parker6.jpg">
+      <img src="homepage/parker6.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/parker3.jpg">
+      <img src="homepage/parker3.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">The Parker Palm Springs</p>
+
+  <div style="height:4px"></div>
+
+  <div class="row cols-3">
+    <div class="photo l" data-src="homepage/L1270091.jpg">
+      <img src="homepage/L1270091.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/parker5.jpg">
+      <img src="homepage/parker5.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/R005158.jpg">
+      <img src="homepage/R005158.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">Sunnylands, Rancho Mirage &nbsp;·&nbsp; The Parker Palm Springs</p>
+
+  <div class="gap"></div>
+
+  <!-- Mexico -->
+  <div class="row cols-1">
+    <div class="photo w" data-src="homepage/forastaff19.jpg">
+      <img src="homepage/forastaff19.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">Viceroy — Mexico</p>
+
+  <div style="height:4px"></div>
+
+  <div class="row cols-2">
+    <div class="photo l" data-src="homepage/forastaff18.jpg">
+      <img src="homepage/forastaff18.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/forastaff17.jpg">
+      <img src="homepage/forastaff17.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">Viceroy — pool at night &nbsp;·&nbsp; pool, Mexico</p>
+</section>
+
+<!-- ══════════════════════════════════
+     FASHION
+     folders: elisdream/ harden/
+              theuntitledmagazine/ bondofficial/
+════════════════════════════════════ -->
+<section id="fashion">
+  <div class="section-header">
+    <span class="section-title">Fashion</span>
+    <span class="section-sub">Editorial &nbsp;·&nbsp; Commercial</span>
+  </div>
+
+  <!-- Elisdream -->
+  <div class="row cols-3">
+    <div class="photo p" data-src="elisdream/elisdream-5.jpg">
+      <img src="elisdream/elisdream-5.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo p" data-src="elisdream/elisdream-16.jpg">
+      <img src="elisdream/elisdream-16.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo p" data-src="elisdream/elisdream-27.jpg">
+      <img src="elisdream/elisdream-27.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+
+  <div style="height:4px"></div>
+
+  <div class="row cols-2-1">
+    <div class="photo l" data-src="elisdream/elisdream-9.jpg">
+      <img src="elisdream/elisdream-9.jpg" alt="" loading="lazy">
+    </div>
+    <div class="stack">
+      <div class="photo l" data-src="elisdream/elisdream-18.jpg">
+        <img src="elisdream/elisdream-18.jpg" alt="" loading="lazy">
+      </div>
+      <div class="photo l" data-src="elisdream/elisdream-29.jpg">
+        <img src="elisdream/elisdream-29.jpg" alt="" loading="lazy">
+      </div>
+    </div>
+  </div>
+  <p class="photo-caption">Eli's Dream</p>
+
+  <div class="gap"></div>
+
+  <!-- Harden -->
+  <div class="row cols-4">
+    <div class="photo p" data-src="harden/harden.jpg">
+      <img src="harden/harden.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo p" data-src="harden/harden-3.jpg">
+      <img src="harden/harden-3.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo p" data-src="harden/harden-7.jpg">
+      <img src="harden/harden-7.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo p" data-src="harden/harden-8.jpg">
+      <img src="harden/harden-8.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">Harden</p>
+
+  <div class="gap"></div>
+
+  <!-- Untitled Magazine -->
+  <div class="row cols-2-1">
+    <div class="photo t" data-src="theuntitledmagazine/theuntitledmag-2.jpg">
+      <img src="theuntitledmagazine/theuntitledmag-2.jpg" alt="" loading="lazy">
+    </div>
+    <div class="stack">
+      <div class="photo t" data-src="theuntitledmagazine/theuntitledmag-3.jpg">
+        <img src="theuntitledmagazine/theuntitledmag-3.jpg" alt="" loading="lazy">
+      </div>
+      <div class="photo t" data-src="theuntitledmagazine/theuntitledmag-6.jpg">
+        <img src="theuntitledmagazine/theuntitledmag-6.jpg" alt="" loading="lazy">
+      </div>
+    </div>
+  </div>
+  <p class="photo-caption">Untitled Magazine</p>
+
+  <div style="height:4px"></div>
+
+  <div class="row cols-3">
+    <div class="photo t" data-src="theuntitledmagazine/theuntitledmag.jpg">
+      <img src="theuntitledmagazine/theuntitledmag.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo t" data-src="theuntitledmagazine/theuntitledmag-4.jpg">
+      <img src="theuntitledmagazine/theuntitledmag-4.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo t" data-src="theuntitledmagazine/theuntitledmag-5.jpg">
+      <img src="theuntitledmagazine/theuntitledmag-5.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+
+  <div class="gap"></div>
+
+  <!-- Bondofficial -->
+  <div class="row cols-3">
+    <div class="photo p" data-src="bondofficial/Bondofficial-3.jpg">
+      <img src="bondofficial/Bondofficial-3.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo p" data-src="bondofficial/Bondofficial-7.jpg">
+      <img src="bondofficial/Bondofficial-7.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo p" data-src="bondofficial/Bondofficial-10.jpg">
+      <img src="bondofficial/Bondofficial-10.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">Bondofficial</p>
+</section>
+
+<!-- ══════════════════════════════════
+     EVENTS
+     folder: belstaffconcerts/ homepage/
+════════════════════════════════════ -->
+<section id="events">
+  <div class="section-header" style="opacity:0.2; border-color:var(--events-fg);">
+    <span class="section-title" style="color:var(--events-fg);">Events</span>
+    <span class="section-sub" style="color:var(--events-fg);">Concerts &nbsp;·&nbsp; Parties &nbsp;·&nbsp; Festivals</span>
+  </div>
+
+  <div class="row cols-2-1">
+    <div class="photo w" data-src="belstaffconcerts/belstaff-2.jpg">
+      <img src="belstaffconcerts/belstaff-2.jpg" alt="" loading="lazy">
+    </div>
+    <div class="stack">
+      <div class="photo w" data-src="belstaffconcerts/belstaff-5.jpg">
+        <img src="belstaffconcerts/belstaff-5.jpg" alt="" loading="lazy">
+      </div>
+      <div class="photo w" data-src="belstaffconcerts/belstaff-17.jpg">
+        <img src="belstaffconcerts/belstaff-17.jpg" alt="" loading="lazy">
+      </div>
+    </div>
+  </div>
+  <p class="photo-caption">Belstaff — Austin City Limits &amp; beyond</p>
+
+  <div class="gap"></div>
+
+  <div class="row cols-4">
+    <div class="photo s" data-src="belstaffconcerts/belstaff-10.jpg">
+      <img src="belstaffconcerts/belstaff-10.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo s" data-src="belstaffconcerts/belstaff-11.jpg">
+      <img src="belstaffconcerts/belstaff-11.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo s" data-src="belstaffconcerts/belstaff-9.jpg">
+      <img src="belstaffconcerts/belstaff-9.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo s" data-src="belstaffconcerts/belstaff-13.jpg">
+      <img src="belstaffconcerts/belstaff-13.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+
+  <div class="gap"></div>
+
+  <div class="row cols-3">
+    <div class="photo l" data-src="homepage/homepage-181.jpg">
+      <img src="homepage/homepage-181.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/homepage-185.jpg">
+      <img src="homepage/homepage-185.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/homepage-195.jpg">
+      <img src="homepage/homepage-195.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+
+  <div style="height:4px"></div>
+
+  <div class="row cols-2">
+    <div class="photo l" data-src="homepage/homepage-190.jpg">
+      <img src="homepage/homepage-190.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="homepage/homepage-197.jpg">
+      <img src="homepage/homepage-197.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">Events</p>
+</section>
+
+<!-- ══════════════════════════════════
+     COMMERCIAL
+     folder: foratravel/ bondofficial/
+════════════════════════════════════ -->
+<section id="commercial">
+  <div class="section-header" style="opacity:0.2;">
+    <span class="section-title" style="color:var(--commercial-fg);">Commercial</span>
+    <span class="section-sub" style="color:var(--commercial-fg);">Selected clients</span>
+  </div>
+
+  <div class="row cols-3">
+    <div class="photo l" data-src="foratravel/foratravel-3.jpg">
+      <img src="foratravel/foratravel-3.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="foratravel/foratravel-9.jpg">
+      <img src="foratravel/foratravel-9.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="foratravel/foratravel-2.jpg">
+      <img src="foratravel/foratravel-2.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption" style="color:rgba(240,221,208,0.4);">Fora Travel — in association with Rocco Forte Hotels</p>
+
+  <div class="gap"></div>
+
+  <div class="row cols-4">
+    <div class="photo l" data-src="foratravel/foratravel-12.jpg">
+      <img src="foratravel/foratravel-12.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="foratravel/foratravel-13.jpg">
+      <img src="foratravel/foratravel-13.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="foratravel/foratravel-14.jpg">
+      <img src="foratravel/foratravel-14.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="foratravel/foratravel-26.jpg">
+      <img src="foratravel/foratravel-26.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+
+  <div class="gap"></div>
+
+  <div class="row cols-3">
+    <div class="photo p" data-src="bondofficial/Bondofficial-2.jpg">
+      <img src="bondofficial/Bondofficial-2.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo p" data-src="bondofficial/Bondofficial-6.jpg">
+      <img src="bondofficial/Bondofficial-6.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo p" data-src="bondofficial/Bondofficial-21.jpg">
+      <img src="bondofficial/Bondofficial-21.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption" style="color:rgba(240,221,208,0.4);">Bondofficial</p>
+</section>
+
+<!-- ══════════════════════════════════
+     STREET / NYC
+     folder: lealfre/ homepage/
+════════════════════════════════════ -->
+<section id="street">
+  <div class="section-header">
+    <span class="section-title">New York</span>
+    <span class="section-sub">Street &amp; City</span>
+  </div>
+
+  <div class="row cols-2-1">
+    <div class="photo t" data-src="lealfre/lealfre-2.jpg">
+      <img src="lealfre/lealfre-2.jpg" alt="" loading="lazy">
+    </div>
+    <div class="stack">
+      <div class="photo t" data-src="lealfre/lealfre-10.jpg">
+        <img src="lealfre/lealfre-10.jpg" alt="" loading="lazy">
+      </div>
+      <div class="photo t" data-src="lealfre/lealfre-4.jpg">
+        <img src="lealfre/lealfre-4.jpg" alt="" loading="lazy">
+      </div>
+    </div>
+  </div>
+
+  <div style="height:4px"></div>
+
+  <div class="row cols-4">
+    <div class="photo t" data-src="lealfre/lealfre-11.jpg">
+      <img src="lealfre/lealfre-11.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo t" data-src="lealfre/lealfre-8.jpg">
+      <img src="lealfre/lealfre-8.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo t" data-src="lealfre/lealfre-31.jpg">
+      <img src="lealfre/lealfre-31.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo t" data-src="lealfre/lealfre-42.jpg">
+      <img src="lealfre/lealfre-42.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">New York City</p>
+
+  <div class="gap"></div>
+
+  <div class="row cols-3">
+    <div class="photo l" data-src="lealfre/lealfre-9.jpg">
+      <img src="lealfre/lealfre-9.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="lealfre/lealfre-35.jpg">
+      <img src="lealfre/lealfre-35.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="lealfre/lealfre-44.jpg">
+      <img src="lealfre/lealfre-44.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">Bar culture &nbsp;·&nbsp; The Carlyle &nbsp;·&nbsp; Grand Central</p>
+
+  <div style="height:4px"></div>
+
+  <div class="row cols-2">
+    <div class="photo l" data-src="lealfre/lealfre-47.jpg">
+      <img src="lealfre/lealfre-47.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo l" data-src="lealfre/lealfre-42.jpg">
+      <img src="lealfre/lealfre-42.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+  <p class="photo-caption">Met Steps &nbsp;·&nbsp; McSorley's</p>
+</section>
+
+<!-- ══════════════════════════════════
+     ABOUT
+════════════════════════════════════ -->
+<div style="background:var(--ink); color:var(--paper); padding:80px 28px;" id="about">
+  <div class="about-grid">
+    <div>
+      <div class="about-name">Skinny<br>Bones<br>Jones</div>
+      <div class="about-body">Fashion, travel, events, and the world in between. Based in New York City. The work is observational — specific corners, specific light, specific moments that don't repeat.</div>
+    </div>
+    <div class="about-right">
+      <div class="about-label">Selected clients &amp; credits</div>
+      <div class="about-detail">
+        Fora Travel<br>
+        Rocco Forte Hotels<br>
+        Untitled Magazine<br>
+        Bondofficial<br>
+        Belstaff<br>
+        &nbsp;<br>
+        New York City<br>
+        Available worldwide
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="f-name">Skinny Bones Jones</span>
+  <span class="f-contact">
+    <a href="mailto:alex@wajonesphotography.com">alex@wajonesphotography.com</a>
+  </span>
+</footer>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <div class="lb-close" onclick="closeLightbox()">Close ✕</div>
+  <div class="lb-nav lb-prev" onclick="lbNav(-1)">
+    <span class="lb-arrow">← Prev</span>
+  </div>
+  <img id="lb-img" src="" alt="">
+  <div class="lb-nav lb-next" onclick="lbNav(1)">
+    <span class="lb-arrow">Next →</span>
+  </div>
+</div>
+
+<script>
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  const blocks = Array.from(document.querySelectorAll('.photo'));
+  let currentIdx = 0;
+
+  blocks.forEach((block, i) => {
+    block.addEventListener('click', () => {
+      currentIdx = i;
+      lbImg.src = block.dataset.src;
+      lb.classList.add('active');
+    });
+  });
+
+  function closeLightbox() {
+    lb.classList.remove('active');
+    lbImg.src = '';
+  }
+
+  function lbNav(dir) {
+    currentIdx = (currentIdx + dir + blocks.length) % blocks.length;
+    lbImg.src = blocks[currentIdx].dataset.src;
+  }
+
+  lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('active')) return;
+    if (e.key === 'ArrowRight') lbNav(1);
+    if (e.key === 'ArrowLeft') lbNav(-1);
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  let touchStartX = 0;
+  lb.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  lb.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) lbNav(diff > 0 ? 1 : -1);
+  });
+</script>
+
+</body>
+</html>
