@@ -1,1028 +1,683 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skinny Bones Jones</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-
+<title>Eli's Dream — W.A. Jones</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Didact+Gothic&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --paper: #f0ebe0;
+    --paper-dark: #e8e1d0;
+    --ink: #1c1a15;
+    --ink-faint: rgba(28,26,21,0.35);
+    --ink-ghost: rgba(28,26,21,0.07);
+    --warm-mid: #9a8f7a;
+    --grid-color: rgba(28,26,21,0.055);
 
-:root {
-  --ink:       #1a1814;
-  --paper:     #f2ede6;
-  --travel-bg: #c8d4c0;   /* sage — England/Europe */
-  --fashion-bg:#e8d5c4;   /* warm blush — editorial/fashion */
-  --events-bg: #1c1c1c;   /* near-black — concerts/nightlife */
-  --events-fg: #e8e0d0;
-  --commercial-bg: #2a0d08; /* deep red — Fora/commercial */
-  --commercial-fg: #f0ddd0;
-  --muted:     #8a8278;
-  --rule:      rgba(26,24,20,0.12);
-}
+    /* margin/border system */
+    --mg: 28px;       /* outer page margin */
+    --mg-sm: 18px;    /* tighter margin variant */
+    --gap: 16px;      /* gap between paired photos */
+  }
 
-/* FILM GRAIN */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.09;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 150px 150px;
-  mix-blend-mode: overlay;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+  }
 
-body {
-  font-family: 'EB Garamond', Georgia, serif;
-  background: var(--paper);
-  color: var(--ink);
-  -webkit-font-smoothing: antialiased;
-}
+  /* ceiling grid texture — the location, always present */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 58px 58px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-/* ── NAV ── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 200;
-  background: var(--paper);
-  border-bottom: 1px solid var(--rule);
-  padding: 16px 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
+  section, .pgnum {
+    position: relative;
+    z-index: 1;
+  }
 
-.nav-name {
-  font-family: 'EB Garamond', serif;
-  font-size: 16px;
-  font-style: italic;
-  letter-spacing: 0.02em;
-  color: var(--ink);
-  text-decoration: none;
-}
+  /* ── PHOTO BASE ── */
+  .photo {
+    overflow: hidden;
+    position: relative;
+    transition: filter 0.4s ease;
+  }
 
-.nav-links {
-  display: flex;
-  gap: 28px;
-  list-style: none;
-}
+  /* colour moods */
+  .ph-mirror { background: linear-gradient(135deg,#1a1812,#0f0e0a,#1c1a14); }
+  .ph-warm   { background: linear-gradient(135deg,#2a1f0e,#1e1508,#2e2210); }
+  .ph-teal   { background: linear-gradient(145deg,#0e1a1a,#0a1212,#101e1c); }
+  .ph-pink   { background: linear-gradient(135deg,#2a0a18,#1e0812,#30101e); }
+  .ph-bw     { background: linear-gradient(135deg,#141412,#0a0a08,#181614); }
+  .ph-amber  { background: linear-gradient(135deg,#241808,#1a1006,#2c1e0a); }
+  .ph-blue   { background: linear-gradient(135deg,#080e1a,#060a14,#0a1020); }
+  .ph-disco  { background: linear-gradient(135deg,#141010,#0c0808,#181212); }
 
-.nav-links a {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color 0.2s;
-}
+  /* ── PHOTO WRAPPERS WITH MARGIN ──
+     Each photo sits inside a wrapper that provides the paper gap.
+     Photos can touch ONE edge (left, right, top) but not two.
+     Pairs are shifted vertically so they read as related but not identical. */
 
-.nav-links a:hover { color: var(--ink); }
+  /* floats freely — margin on all four sides */
+  .framed {
+    margin: var(--mg);
+  }
 
-/* ── HERO ── */
-.hero {
-  padding: 120px 28px 72px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  align-items: end;
-  border-bottom: 1px solid var(--rule);
-}
+  /* touches left edge */
+  .frame-left {
+    margin: var(--mg) var(--mg) var(--mg) 0;
+  }
 
-.hero-left h1 {
-  font-family: 'EB Garamond', serif;
-  font-size: clamp(52px, 9vw, 110px);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 0.92;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-}
+  /* touches right edge */
+  .frame-right {
+    margin: var(--mg) 0 var(--mg) var(--mg);
+  }
 
-.hero-left h1 span {
-  display: block;
-  font-style: normal;
-  font-size: clamp(14px, 2vw, 22px);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 20px;
-  font-family: 'DM Mono', monospace;
-}
+  /* touches top edge */
+  .frame-top {
+    margin: 0 var(--mg) var(--mg) var(--mg);
+  }
 
-.hero-right {
-  padding-bottom: 8px;
-}
+  /* touches top + left — corner piece */
+  .frame-corner-tl {
+    margin: 0 var(--mg) var(--mg) 0;
+  }
 
-.hero-right p {
-  font-family: 'EB Garamond', serif;
-  font-size: clamp(16px, 1.8vw, 20px);
-  line-height: 1.6;
-  color: var(--ink);
-  opacity: 0.7;
-  max-width: 400px;
-  margin-left: auto;
-}
+  /* touches top + right */
+  .frame-corner-tr {
+    margin: 0 0 var(--mg) var(--mg);
+  }
 
-.hero-credentials {
-  margin-top: 24px;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-left: auto;
-  max-width: 400px;
-  line-height: 2;
-}
+  /* ── SHIFT SYSTEM for pairs ──
+     One photo sits higher, one lower. Never identical top values. */
+  .shift-up   { align-self: flex-start; margin-top: 0; }
+  .shift-down { align-self: flex-end;   margin-top: var(--mg); }
+  .shift-mid  { align-self: center; }
 
-/* ── SECTION SHELL ── */
-section {
-  padding: 72px 28px;
-}
+  /* ── PAGE STRUCTURE ── */
+  .page {
+    padding: 0;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 
-.section-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 48px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid currentColor;
-  opacity: 0.18;
-}
+  /* pair container — flex so shifts work */
+  .pair {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap);
+    padding: 0 var(--mg);
+  }
 
-.section-title {
-  font-family: 'EB Garamond', serif;
-  font-size: clamp(36px, 6vw, 72px);
-  font-weight: 400;
-  line-height: 1;
-}
+  .pair > * { flex: 1; }
 
-.section-sub {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
+  /* asymmetric pair weights */
+  .pair .wide { flex: 1.55; }
+  .pair .narrow { flex: 1; }
 
-/* ── TRAVEL — sage green ── */
-#travel { background: var(--travel-bg); }
+  /* three across */
+  .trio {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap);
+    padding: 0 var(--mg);
+  }
+  .trio > * { flex: 1; }
 
-/* ── FASHION — blush ── */
-#fashion { background: var(--fashion-bg); }
+  /* text columns */
+  .text-col {
+    padding: 52px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 
-/* ── EVENTS — dark ── */
-#events {
-  background: var(--events-bg);
-  color: var(--events-fg);
-}
+  /* ── TYPOGRAPHY ── */
+  .fell     { font-family: 'IM Fell English', serif; }
+  .garamond { font-family: 'Cormorant Garamond', serif; font-weight: 300; }
+  .italic   { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; }
+  .sans     { font-family: 'Didact Gothic', sans-serif; }
 
-#events .photo-caption { color: rgba(232,224,208,0.4); }
+  .caption {
+    font-family: 'Didact Gothic', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
 
-/* ── COMMERCIAL — deep red ── */
-#commercial {
-  background: var(--commercial-bg);
-  color: var(--commercial-fg);
-}
+  .caption-light {
+    font-family: 'Didact Gothic', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(240,235,224,0.3);
+  }
 
-#commercial .section-header { border-color: var(--commercial-fg); }
-#commercial .photo-caption { color: rgba(240,221,208,0.4); }
+  /* page number strip */
+  .pgnum {
+    padding: 11px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--ink-ghost);
+    font-family: 'Didact Gothic', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    background: var(--paper);
+  }
 
-/* ── STREET / NYC ── */
-#street { background: var(--paper); }
-
-/* ── PHOTO GRIDS ── */
-.row {
-  display: grid;
-  gap: 4px;
-  margin-bottom: 4px;
-}
-
-.cols-1 { grid-template-columns: 1fr; }
-.cols-2 { grid-template-columns: 1fr 1fr; }
-.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
-.cols-2-1 { grid-template-columns: 2fr 1fr; }
-.cols-1-2 { grid-template-columns: 1fr 2fr; }
-.cols-3-2 { grid-template-columns: 3fr 2fr; }
-
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.photo {
-  overflow: hidden;
-  cursor: pointer;
-  background: rgba(0,0,0,0.06);
-  position: relative;
-}
-
-.photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.6s ease;
-}
-
-.photo:hover img { transform: scale(1.02); }
-
-.photo.p img  { aspect-ratio: 3/4; }
-.photo.l img  { aspect-ratio: 4/3; }
-.photo.s img  { aspect-ratio: 1/1; }
-.photo.w img  { aspect-ratio: 16/9; }
-.photo.t img  { aspect-ratio: 4/5; }
-
-.photo-caption {
-  margin-top: 8px;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-/* Spacer */
-.gap { height: 40px; }
-
-/* ── ABOUT ── */
-#about {
-  background: var(--ink);
-  color: var(--paper);
-  padding: 80px 28px;
-}
-
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  max-width: 900px;
-}
-
-.about-name {
-  font-family: 'EB Garamond', serif;
-  font-size: clamp(32px, 5vw, 60px);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 1.05;
-  margin-bottom: 32px;
-}
-
-.about-body {
-  font-family: 'EB Garamond', serif;
-  font-size: 18px;
-  line-height: 1.75;
-  color: rgba(242,237,230,0.75);
-}
-
-.about-right {
-  padding-top: 8px;
-}
-
-.about-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(242,237,230,0.3);
-  margin-bottom: 16px;
-}
-
-.about-detail {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  line-height: 2.2;
-  color: rgba(242,237,230,0.55);
-}
-
-/* ── FOOTER ── */
-footer {
-  background: var(--ink);
-  border-top: 1px solid rgba(242,237,230,0.08);
-  padding: 32px 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-footer .f-name {
-  font-family: 'EB Garamond', serif;
-  font-size: 15px;
-  font-style: italic;
-  color: rgba(242,237,230,0.6);
-}
-
-footer .f-contact {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(242,237,230,0.3);
-}
-
-footer .f-contact a {
-  color: rgba(242,237,230,0.6);
-  text-decoration: none;
-}
-
-/* ── LIGHTBOX ── */
-#lightbox {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(14,12,10,0.97);
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
-}
-
-#lightbox.active { display: flex; }
-
-#lightbox img {
-  max-width: 92vw;
-  max-height: 92vh;
-  object-fit: contain;
-  transition: opacity 0.2s ease;
-}
-
-.lb-close {
-  position: absolute;
-  top: 0; right: 0;
-  width: 80px; height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: rgba(242,237,230,0.35);
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: color 0.2s;
-  z-index: 10;
-}
-
-.lb-close:hover { color: #f2ede6; }
-
-.lb-nav {
-  position: absolute;
-  top: 0; bottom: 0;
-  width: 40%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.lb-prev { left: 0; padding-left: 24px; }
-.lb-next { right: 0; justify-content: flex-end; padding-right: 24px; }
-
-.lb-arrow {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: rgba(242,237,230,0.2);
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-
-.lb-nav:hover .lb-arrow { color: rgba(242,237,230,0.7); }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 768px) {
-  nav { padding: 14px 20px; }
-  .nav-links { gap: 16px; }
-  .hero { grid-template-columns: 1fr; padding: 100px 20px 56px; gap: 24px; }
-  .hero-right p { margin-left: 0; }
-  .hero-credentials { margin-left: 0; }
-  section { padding: 56px 20px; }
-  .cols-2-1, .cols-1-2, .cols-3, .cols-4, .cols-3-2 { grid-template-columns: 1fr 1fr; }
-  .about-grid { grid-template-columns: 1fr; gap: 40px; }
-  footer { flex-direction: column; gap: 16px; align-items: flex-start; }
-}
+  /* ── MOBILE ── */
+  @media (max-width: 700px) {
+    :root { --mg: 14px; --gap: 10px; }
+    .pair, .trio { flex-direction: column; padding: 0 var(--mg); }
+    .pair .wide, .pair .narrow { flex: 1; width: 100%; }
+    .shift-down { margin-top: 0; }
+    .text-col { padding: 36px 28px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a href="#" class="nav-name">Skinny Bones Jones</a>
-  <ul class="nav-links">
-    <li><a href="#travel">Travel</a></li>
-    <li><a href="#fashion">Fashion</a></li>
-    <li><a href="#events">Events</a></li>
-    <li><a href="#commercial">Commercial</a></li>
-    <li><a href="#street">Street</a></li>
-    <li><a href="#about">About</a></li>
-  </ul>
-</nav>
+<!-- ══════════════════════════
+     COUVERTURE
+══════════════════════════ -->
+<section style="min-height:100vh;display:flex;align-items:stretch;">
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-left">
-    <h1>Skinny<br>Bones<br>Jones
-      <span>Photographer — New York City</span>
+  <!-- left: title panel -->
+  <div style="flex:1;background:var(--paper);display:flex;flex-direction:column;
+    justify-content:flex-end;padding:52px 52px 60px;
+    border-right:1px solid var(--ink-ghost);position:relative;z-index:1;">
+
+    <div class="caption" style="margin-bottom:44px;letter-spacing:0.35em;">W.A. Jones</div>
+
+    <h1 class="fell" style="font-size:clamp(44px,6vw,76px);line-height:1.05;
+      font-weight:400;letter-spacing:0.01em;">
+      Eli's<br>Dream
     </h1>
-  </div>
-  <div class="hero-right">
-    <p>Fashion, travel, events, and the spaces between. Based in New York. Working everywhere.</p>
-    <div class="hero-credentials">
-      Fora Travel &nbsp;·&nbsp; Rocco Forte Hotels<br>
-      Untitled Magazine<br>
-      Editorial &nbsp;·&nbsp; Commercial &nbsp;·&nbsp; Hospitality
+
+    <div style="width:30px;height:1px;background:var(--ink);opacity:0.25;margin:22px 0;"></div>
+
+    <p class="italic" style="font-size:15px;line-height:1.9;
+      color:var(--ink-faint);max-width:260px;">
+      Photographies de W.A. Jones
+    </p>
+
+    <div class="caption" style="margin-top:56px;line-height:2.6;">
+      Mode · Eli<br>
+      New York City
     </div>
   </div>
+
+  <!-- right: first image, touches top and right edges -->
+  <div style="flex:1;padding:0 0 var(--mg) var(--mg);display:flex;align-items:stretch;">
+    <div class="photo ph-mirror" style="flex:1;min-height:100vh;">
+      <div style="position:absolute;bottom:22px;right:22px;">
+        <div class="caption-light">i.</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<div class="pgnum">
+  <span>Eli's Dream</span><span>—</span><span>01</span>
 </div>
 
-<!-- ══════════════════════════════════
-     TRAVEL
-     folder: homepage/
-════════════════════════════════════ -->
-<section id="travel">
-  <div class="section-header">
-    <span class="section-title">Travel</span>
-    <span class="section-sub">Europe &nbsp;·&nbsp; Americas</span>
-  </div>
+<!-- ══════════════════════════
+     LE MIROIR — triptych
+     three mirror shots, shifted, middle one dropped
+══════════════════════════ -->
+<section style="padding:var(--mg) 0 0;">
 
-  <!-- England — Grand York -->
-  <div class="row cols-2-1">
-    <div class="photo l" data-src="homepage/homepage-48.jpg">
-      <img src="homepage/homepage-48.jpg" alt="" loading="lazy">
-    </div>
-    <div class="stack">
-      <div class="photo l" data-src="homepage/homepage-49.jpg">
-        <img src="homepage/homepage-49.jpg" alt="" loading="lazy">
-      </div>
-      <div class="photo l" data-src="homepage/homepage-55.jpg">
-        <img src="homepage/homepage-55.jpg" alt="" loading="lazy">
+  <div class="trio" style="align-items:flex-start;">
+
+    <!-- left: touches left edge, starts high -->
+    <div style="flex:1;margin-left:0;margin-right:0;">
+      <div class="photo ph-mirror frame-corner-tl" style="height:62vh;margin-right:0;margin-left:0;">
+        <div style="position:absolute;bottom:16px;left:16px;">
+          <div class="caption-light">i.</div>
+        </div>
       </div>
     </div>
-  </div>
-  <p class="photo-caption">The Grand Hotel — York, England</p>
 
-  <div class="gap"></div>
-
-  <div class="row cols-3">
-    <div class="photo l" data-src="homepage/homepage-47.jpg">
-      <img src="homepage/homepage-47.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-56.jpg">
-      <img src="homepage/homepage-56.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-65.jpg">
-      <img src="homepage/homepage-65.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">York &nbsp;·&nbsp; St Mary's Abbey &nbsp;·&nbsp; London</p>
-
-  <div class="gap"></div>
-
-  <!-- France -->
-  <div class="row cols-3">
-    <div class="photo l" data-src="homepage/homepage-73.jpg">
-      <img src="homepage/homepage-73.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-77.jpg">
-      <img src="homepage/homepage-77.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-82.jpg">
-      <img src="homepage/homepage-82.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">France</p>
-
-  <div style="height:4px"></div>
-
-  <div class="row cols-2">
-    <div class="photo l" data-src="homepage/homepage-83.jpg">
-      <img src="homepage/homepage-83.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-87.jpg">
-      <img src="homepage/homepage-87.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">Île Saint-Honorat &nbsp;·&nbsp; Monastery</p>
-
-  <div class="gap"></div>
-
-  <!-- Italy -->
-  <div class="row cols-2-1">
-    <div class="photo l" data-src="homepage/homepage-86.jpg">
-      <img src="homepage/homepage-86.jpg" alt="" loading="lazy">
-    </div>
-    <div class="stack">
-      <div class="photo l" data-src="homepage/homepage-84.jpg">
-        <img src="homepage/homepage-84.jpg" alt="" loading="lazy">
-      </div>
-      <div class="photo l" data-src="homepage/homepage-99.jpg">
-        <img src="homepage/homepage-99.jpg" alt="" loading="lazy">
+    <!-- centre: floated, dropped down -->
+    <div style="flex:1;margin-top:calc(var(--mg) * 2);">
+      <div class="photo ph-bw framed" style="height:66vh;margin-top:0;">
+        <div style="position:absolute;bottom:16px;left:16px;">
+          <div class="caption-light">ii.</div>
+        </div>
       </div>
     </div>
+
+    <!-- right: floated, back up -->
+    <div style="flex:1;">
+      <div class="photo ph-bw" style="height:58vh;margin:var(--mg) 0 var(--mg) 0;">
+        <div style="position:absolute;bottom:16px;left:16px;">
+          <div class="caption-light">iii.</div>
+        </div>
+      </div>
+    </div>
+
   </div>
-  <p class="photo-caption">Italy &nbsp;·&nbsp; Portofino</p>
 
-  <div style="height:4px"></div>
-
-  <div class="row cols-3">
-    <div class="photo l" data-src="homepage/homepage-95.jpg">
-      <img src="homepage/homepage-95.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-97.jpg">
-      <img src="homepage/homepage-97.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-104.jpg">
-      <img src="homepage/homepage-104.jpg" alt="" loading="lazy">
-    </div>
+  <!-- caption beneath -->
+  <div style="padding:20px 48px 28px;">
+    <p class="italic" style="font-size:13px;color:var(--ink-faint);letter-spacing:0.04em;">
+      Le miroir, avant.
+    </p>
   </div>
-  <p class="photo-caption">Italian coast &nbsp;·&nbsp; Milan</p>
 
-  <div class="gap"></div>
-
-  <!-- California -->
-  <div class="row cols-2">
-    <div class="photo l" data-src="homepage/homepage-112.jpg">
-      <img src="homepage/homepage-112.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-122.jpg">
-      <img src="homepage/homepage-122.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">California</p>
-
-  <div style="height:4px"></div>
-
-  <div class="row cols-3">
-    <div class="photo l" data-src="homepage/homepage-123.jpg">
-      <img src="homepage/homepage-123.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-124.jpg">
-      <img src="homepage/homepage-124.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-136.jpg">
-      <img src="homepage/homepage-136.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">Sunnylands &nbsp;·&nbsp; Palm Springs</p>
-
-  <div class="gap"></div>
-
-  <!-- Mexico -->
-  <div class="row cols-2">
-    <div class="photo l" data-src="homepage/homepage-203.jpg">
-      <img src="homepage/homepage-203.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-137.jpg">
-      <img src="homepage/homepage-137.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">Mexico &nbsp;·&nbsp; The Viceroy</p>
 </section>
 
-<!-- ══════════════════════════════════
-     FASHION
-     folders: elisdream/ harden/
-              theuntitledmagazine/ bondofficial/
-════════════════════════════════════ -->
-<section id="fashion">
-  <div class="section-header">
-    <span class="section-title">Fashion</span>
-    <span class="section-sub">Editorial &nbsp;·&nbsp; Commercial</span>
-  </div>
-
-  <!-- Elisdream -->
-  <div class="row cols-3">
-    <div class="photo p" data-src="elisdream/elisdream-5.jpg">
-      <img src="elisdream/elisdream-5.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo p" data-src="elisdream/elisdream-16.jpg">
-      <img src="elisdream/elisdream-16.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo p" data-src="elisdream/elisdream-27.jpg">
-      <img src="elisdream/elisdream-27.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-
-  <div style="height:4px"></div>
-
-  <div class="row cols-2-1">
-    <div class="photo l" data-src="elisdream/elisdream-9.jpg">
-      <img src="elisdream/elisdream-9.jpg" alt="" loading="lazy">
-    </div>
-    <div class="stack">
-      <div class="photo l" data-src="elisdream/elisdream-18.jpg">
-        <img src="elisdream/elisdream-18.jpg" alt="" loading="lazy">
-      </div>
-      <div class="photo l" data-src="elisdream/elisdream-29.jpg">
-        <img src="elisdream/elisdream-29.jpg" alt="" loading="lazy">
-      </div>
-    </div>
-  </div>
-  <p class="photo-caption">Eli's Dream</p>
-
-  <div class="gap"></div>
-
-  <!-- Harden -->
-  <div class="row cols-4">
-    <div class="photo p" data-src="harden/harden.jpg">
-      <img src="harden/harden.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo p" data-src="harden/harden-3.jpg">
-      <img src="harden/harden-3.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo p" data-src="harden/harden-7.jpg">
-      <img src="harden/harden-7.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo p" data-src="harden/harden-8.jpg">
-      <img src="harden/harden-8.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">Harden</p>
-
-  <div class="gap"></div>
-
-  <!-- Untitled Magazine -->
-  <div class="row cols-2-1">
-    <div class="photo t" data-src="theuntitledmagazine/theuntitledmag-2.jpg">
-      <img src="theuntitledmagazine/theuntitledmag-2.jpg" alt="" loading="lazy">
-    </div>
-    <div class="stack">
-      <div class="photo t" data-src="theuntitledmagazine/theuntitledmag-3.jpg">
-        <img src="theuntitledmagazine/theuntitledmag-3.jpg" alt="" loading="lazy">
-      </div>
-      <div class="photo t" data-src="theuntitledmagazine/theuntitledmag-6.jpg">
-        <img src="theuntitledmagazine/theuntitledmag-6.jpg" alt="" loading="lazy">
-      </div>
-    </div>
-  </div>
-  <p class="photo-caption">Untitled Magazine</p>
-
-  <div style="height:4px"></div>
-
-  <div class="row cols-3">
-    <div class="photo t" data-src="theuntitledmagazine/theuntitledmag.jpg">
-      <img src="theuntitledmagazine/theuntitledmag.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo t" data-src="theuntitledmagazine/theuntitledmag-4.jpg">
-      <img src="theuntitledmagazine/theuntitledmag-4.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo t" data-src="theuntitledmagazine/theuntitledmag-5.jpg">
-      <img src="theuntitledmagazine/theuntitledmag-5.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-
-  <div class="gap"></div>
-
-  <!-- Bondofficial -->
-  <div class="row cols-3">
-    <div class="photo p" data-src="bondofficial/Bondofficial-3.jpg">
-      <img src="bondofficial/Bondofficial-3.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo p" data-src="bondofficial/Bondofficial-7.jpg">
-      <img src="bondofficial/Bondofficial-7.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo p" data-src="bondofficial/Bondofficial-10.jpg">
-      <img src="bondofficial/Bondofficial-10.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">Bondofficial</p>
-</section>
-
-<!-- ══════════════════════════════════
-     EVENTS
-     folder: belstaffconcerts/ homepage/
-════════════════════════════════════ -->
-<section id="events">
-  <div class="section-header" style="opacity:0.2; border-color:var(--events-fg);">
-    <span class="section-title" style="color:var(--events-fg);">Events</span>
-    <span class="section-sub" style="color:var(--events-fg);">Concerts &nbsp;·&nbsp; Parties &nbsp;·&nbsp; Festivals</span>
-  </div>
-
-  <div class="row cols-2-1">
-    <div class="photo w" data-src="belstaffconcerts/belstaff-2.jpg">
-      <img src="belstaffconcerts/belstaff-2.jpg" alt="" loading="lazy">
-    </div>
-    <div class="stack">
-      <div class="photo w" data-src="belstaffconcerts/belstaff-5.jpg">
-        <img src="belstaffconcerts/belstaff-5.jpg" alt="" loading="lazy">
-      </div>
-      <div class="photo w" data-src="belstaffconcerts/belstaff-17.jpg">
-        <img src="belstaffconcerts/belstaff-17.jpg" alt="" loading="lazy">
-      </div>
-    </div>
-  </div>
-  <p class="photo-caption">Belstaff — Austin City Limits &amp; beyond</p>
-
-  <div class="gap"></div>
-
-  <div class="row cols-4">
-    <div class="photo s" data-src="belstaffconcerts/belstaff-10.jpg">
-      <img src="belstaffconcerts/belstaff-10.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo s" data-src="belstaffconcerts/belstaff-11.jpg">
-      <img src="belstaffconcerts/belstaff-11.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo s" data-src="belstaffconcerts/belstaff-9.jpg">
-      <img src="belstaffconcerts/belstaff-9.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo s" data-src="belstaffconcerts/belstaff-13.jpg">
-      <img src="belstaffconcerts/belstaff-13.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-
-  <div class="gap"></div>
-
-  <div class="row cols-3">
-    <div class="photo l" data-src="homepage/homepage-181.jpg">
-      <img src="homepage/homepage-181.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-185.jpg">
-      <img src="homepage/homepage-185.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-190.jpg">
-      <img src="homepage/homepage-190.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-
-  <div style="height:4px"></div>
-
-  <div class="row cols-2">
-    <div class="photo l" data-src="homepage/homepage-195.jpg">
-      <img src="homepage/homepage-195.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="homepage/homepage-197.jpg">
-      <img src="homepage/homepage-197.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">Events</p>
-</section>
-
-<!-- ══════════════════════════════════
-     COMMERCIAL
-     folder: foratravel/ bondofficial/
-════════════════════════════════════ -->
-<section id="commercial">
-  <div class="section-header" style="opacity:0.2;">
-    <span class="section-title" style="color:var(--commercial-fg);">Commercial</span>
-    <span class="section-sub" style="color:var(--commercial-fg);">Selected clients</span>
-  </div>
-
-  <div class="row cols-3">
-    <div class="photo l" data-src="foratravel/foratravel-3.jpg">
-      <img src="foratravel/foratravel-3.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="foratravel/foratravel-9.jpg">
-      <img src="foratravel/foratravel-9.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="foratravel/foratravel-2.jpg">
-      <img src="foratravel/foratravel-2.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption" style="color:rgba(240,221,208,0.4);">Fora Travel — in association with Rocco Forte Hotels</p>
-
-  <div class="gap"></div>
-
-  <div class="row cols-4">
-    <div class="photo l" data-src="foratravel/foratravel-12.jpg">
-      <img src="foratravel/foratravel-12.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="foratravel/foratravel-13.jpg">
-      <img src="foratravel/foratravel-13.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="foratravel/foratravel-14.jpg">
-      <img src="foratravel/foratravel-14.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="foratravel/foratravel-26.jpg">
-      <img src="foratravel/foratravel-26.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-
-  <div class="gap"></div>
-
-  <div class="row cols-3">
-    <div class="photo p" data-src="bondofficial/Bondofficial-2.jpg">
-      <img src="bondofficial/Bondofficial-2.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo p" data-src="bondofficial/Bondofficial-6.jpg">
-      <img src="bondofficial/Bondofficial-6.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo p" data-src="bondofficial/Bondofficial-21.jpg">
-      <img src="bondofficial/Bondofficial-21.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption" style="color:rgba(240,221,208,0.4);">Bondofficial</p>
-</section>
-
-<!-- ══════════════════════════════════
-     STREET / NYC
-     folder: lealfre/ homepage/
-════════════════════════════════════ -->
-<section id="street">
-  <div class="section-header">
-    <span class="section-title">New York</span>
-    <span class="section-sub">Street &amp; City</span>
-  </div>
-
-  <div class="row cols-2-1">
-    <div class="photo t" data-src="lealfre/lealfre-2.jpg">
-      <img src="lealfre/lealfre-2.jpg" alt="" loading="lazy">
-    </div>
-    <div class="stack">
-      <div class="photo t" data-src="lealfre/lealfre-10.jpg">
-        <img src="lealfre/lealfre-10.jpg" alt="" loading="lazy">
-      </div>
-      <div class="photo t" data-src="lealfre/lealfre-4.jpg">
-        <img src="lealfre/lealfre-4.jpg" alt="" loading="lazy">
-      </div>
-    </div>
-  </div>
-
-  <div style="height:4px"></div>
-
-  <div class="row cols-4">
-    <div class="photo t" data-src="lealfre/lealfre-11.jpg">
-      <img src="lealfre/lealfre-11.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo t" data-src="lealfre/lealfre-8.jpg">
-      <img src="lealfre/lealfre-8.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo t" data-src="lealfre/lealfre-31.jpg">
-      <img src="lealfre/lealfre-31.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo t" data-src="lealfre/lealfre-42.jpg">
-      <img src="lealfre/lealfre-42.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">New York City</p>
-
-  <div class="gap"></div>
-
-  <div class="row cols-3">
-    <div class="photo l" data-src="lealfre/lealfre-9.jpg">
-      <img src="lealfre/lealfre-9.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="lealfre/lealfre-35.jpg">
-      <img src="lealfre/lealfre-35.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="lealfre/lealfre-44.jpg">
-      <img src="lealfre/lealfre-44.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">Bar culture &nbsp;·&nbsp; The Carlyle &nbsp;·&nbsp; Grand Central</p>
-
-  <div style="height:4px"></div>
-
-  <div class="row cols-2">
-    <div class="photo l" data-src="lealfre/lealfre-47.jpg">
-      <img src="lealfre/lealfre-47.jpg" alt="" loading="lazy">
-    </div>
-    <div class="photo l" data-src="lealfre/lealfre-42.jpg">
-      <img src="lealfre/lealfre-42.jpg" alt="" loading="lazy">
-    </div>
-  </div>
-  <p class="photo-caption">Met Steps &nbsp;·&nbsp; McSorley's</p>
-</section>
-
-<!-- ══════════════════════════════════
-     ABOUT
-════════════════════════════════════ -->
-<div style="background:var(--ink); color:var(--paper); padding:80px 28px;" id="about">
-  <div class="about-grid">
-    <div>
-      <div class="about-name">Skinny<br>Bones<br>Jones</div>
-      <div class="about-body">Fashion, travel, events, and the world in between. Based in New York City. The work is observational — specific corners, specific light, specific moments that don't repeat.</div>
-    </div>
-    <div class="about-right">
-      <div class="about-label">Selected clients &amp; credits</div>
-      <div class="about-detail">
-        Fora Travel<br>
-        Rocco Forte Hotels<br>
-        Untitled Magazine<br>
-        Bondofficial<br>
-        Belstaff<br>
-        &nbsp;<br>
-        New York City<br>
-        Available worldwide
-      </div>
-    </div>
-  </div>
+<div class="pgnum">
+  <span>Le Miroir</span><span>—</span><span>02 — 03</span>
 </div>
 
-<!-- FOOTER -->
-<footer>
-  <span class="f-name">Skinny Bones Jones</span>
-  <span class="f-contact">
-    <a href="mailto:alex@wajonesphotography.com">alex@wajonesphotography.com</a>
-  </span>
-</footer>
+<!-- ══════════════════════════
+     L'ARRIVÉE — text + tall exterior
+══════════════════════════ -->
+<section style="display:flex;min-height:78vh;align-items:stretch;">
 
-<!-- LIGHTBOX -->
-<div id="lightbox">
-  <div class="lb-close" onclick="closeLightbox()">Close ✕</div>
-  <div class="lb-nav lb-prev" onclick="lbNav(-1)">
-    <span class="lb-arrow">← Prev</span>
+  <div class="text-col" style="flex:1;border-right:1px solid var(--ink-ghost);">
+    <div class="caption" style="margin-bottom:36px;">New York City</div>
+
+    <p class="garamond" style="font-size:clamp(20px,2.8vw,34px);
+      line-height:1.45;color:var(--ink);margin-bottom:30px;">
+      Elle est arrivée vêtue<br>
+      de l'idée que quelqu'un<br>
+      d'autre se faisait d'elle.
+    </p>
+
+    <div style="width:22px;height:1px;background:var(--warm-mid);margin-bottom:26px;"></div>
+
+    <p class="italic" style="font-size:14px;line-height:1.95;
+      color:var(--ink-faint);max-width:250px;">
+      La voiture était déjà là.<br>
+      La lumière faisait déjà<br>
+      ce qu'elle voulait faire.
+    </p>
   </div>
-  <img id="lb-img" src="" alt="">
-  <div class="lb-nav lb-next" onclick="lbNav(1)">
-    <span class="lb-arrow">Next →</span>
+
+  <!-- photo touches right edge, floated away from top -->
+  <div style="flex:1.5;padding:var(--mg) 0 var(--mg) var(--mg);">
+    <div class="photo ph-teal" style="height:100%;min-height:65vh;">
+      <div style="position:absolute;bottom:20px;right:20px;">
+        <div class="caption-light">iv.</div>
+      </div>
+    </div>
   </div>
+
+</section>
+
+<div class="pgnum">
+  <span>L'Arrivée</span><span>—</span><span>04 — 05</span>
 </div>
 
-<script>
-  const lb = document.getElementById('lightbox');
-  const lbImg = document.getElementById('lb-img');
-  const blocks = Array.from(document.querySelectorAll('.photo'));
-  let currentIdx = 0;
+<!-- ══════════════════════════
+     LA MACHINE — pink pair, shifted
+     left one taller and lower, right one shorter and higher
+══════════════════════════ -->
+<section style="padding:var(--mg) 0;">
+  <div class="pair" style="align-items:flex-start;">
 
-  // Open lightbox
-  blocks.forEach((block, i) => {
-    block.addEventListener('click', () => {
-      currentIdx = i;
-      showImage(block.dataset.src);
-      lb.classList.add('active');
-    });
-  });
+    <!-- left: longer, starts at top of padding -->
+    <div class="wide" style="margin-top:0;">
+      <div class="photo ph-pink frame-left" style="height:75vh;">
+        <div style="position:absolute;bottom:22px;left:22px;">
+          <div class="caption-light">v.</div>
+        </div>
+      </div>
+    </div>
 
-  // Crossfade image swap
-  function showImage(src) {
-    lbImg.style.opacity = '0';
-    const tmp = new Image();
-    tmp.onload = () => {
-      lbImg.src = src;
-      lbImg.style.opacity = '1';
-    };
-    tmp.src = src;
-  }
+    <!-- right: shorter, dropped down -->
+    <div class="narrow" style="margin-top:calc(var(--mg) * 2.5);">
+      <div class="photo ph-pink frame-right" style="height:60vh;">
+        <div style="position:absolute;bottom:22px;left:22px;">
+          <div class="caption-light">vi.</div>
+        </div>
+      </div>
+    </div>
 
-  function closeLightbox() {
-    lb.classList.remove('active');
-    lbImg.src = '';
-  }
+  </div>
+</section>
 
-  function lbNav(dir) {
-    currentIdx = (currentIdx + dir + blocks.length) % blocks.length;
-    showImage(blocks[currentIdx].dataset.src);
-  }
+<div class="pgnum">
+  <span>La Machine</span><span>—</span><span>06 — 07</span>
+</div>
 
-  // Click backdrop to close
-  lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+<!-- ══════════════════════════
+     LE GLISSEMENT — pink portrait + text
+══════════════════════════ -->
+<section style="display:flex;min-height:68vh;align-items:stretch;">
 
-  // Keyboard nav
-  document.addEventListener('keydown', e => {
-    if (!lb.classList.contains('active')) return;
-    if (e.key === 'ArrowRight') lbNav(1);
-    if (e.key === 'ArrowLeft') lbNav(-1);
-    if (e.key === 'Escape') closeLightbox();
-  });
+  <!-- photo: touches left edge -->
+  <div style="flex:1.5;padding:var(--mg) var(--mg) var(--mg) 0;">
+    <div class="photo ph-pink" style="height:100%;min-height:58vh;">
+      <div style="position:absolute;bottom:22px;left:22px;">
+        <div class="caption-light">vii.</div>
+      </div>
+    </div>
+  </div>
 
-  // Touch — improved swipe with pinch detection and velocity check
-  let touchStartX = 0;
-  let touchStartY = 0;
-  let touchStartTime = 0;
-  let isMultiTouch = false;
+  <div class="text-col" style="flex:1;justify-content:flex-end;
+    padding-bottom:56px;border-left:1px solid var(--ink-ghost);">
 
-  lb.addEventListener('touchstart', e => {
-    isMultiTouch = e.touches.length > 1;
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-    touchStartTime = Date.now();
-  }, { passive: true });
+    <p class="fell" style="font-size:clamp(26px,3.8vw,46px);
+      line-height:1.2;color:var(--ink);margin-bottom:22px;">
+      Quelque chose<br>
+      <em>avait changé.</em>
+    </p>
 
-  lb.addEventListener('touchmove', e => {
-    if (e.touches.length > 1) isMultiTouch = true;
-  }, { passive: true });
+    <div style="width:18px;height:1px;background:var(--ink);opacity:0.18;margin-bottom:18px;"></div>
 
-  lb.addEventListener('touchend', e => {
-    // Ignore pinch gestures entirely
-    if (isMultiTouch) {
-      isMultiTouch = false;
-      return;
-    }
+    <p class="italic" style="font-size:13px;line-height:2;color:var(--ink-faint);">
+      La pièce était la même.<br>
+      Elle, non.
+    </p>
 
-    const dx = touchStartX - e.changedTouches[0].clientX;
-    const dy = touchStartY - e.changedTouches[0].clientY;
-    const dt = Date.now() - touchStartTime;
+    <div style="margin-top:52px;opacity:0.12;">
+      <svg width="72" height="72" viewBox="0 0 72 72">
+        <line x1="0" y1="18" x2="72" y2="18" stroke="#1c1a15" stroke-width="0.6"/>
+        <line x1="0" y1="36" x2="72" y2="36" stroke="#1c1a15" stroke-width="0.6"/>
+        <line x1="0" y1="54" x2="72" y2="54" stroke="#1c1a15" stroke-width="0.6"/>
+        <line x1="18" y1="0" x2="18" y2="72" stroke="#1c1a15" stroke-width="0.6"/>
+        <line x1="36" y1="0" x2="36" y2="72" stroke="#1c1a15" stroke-width="0.6"/>
+        <line x1="54" y1="0" x2="54" y2="72" stroke="#1c1a15" stroke-width="0.6"/>
+      </svg>
+    </div>
+  </div>
 
-    // Must be more horizontal than vertical
-    if (Math.abs(dx) < Math.abs(dy)) return;
+</section>
 
-    // Threshold: 90px OR fast short swipe (60px in under 250ms)
-    const isFastSwipe = Math.abs(dx) > 60 && dt < 250;
-    const isLongSwipe = Math.abs(dx) > 90;
+<div class="pgnum">
+  <span>Le Glissement</span><span>—</span><span>08 — 09</span>
+</div>
 
-    if (isFastSwipe || isLongSwipe) {
-      lbNav(dx > 0 ? 1 : -1);
-    }
-  }, { passive: true });
-</script>
+<!-- ══════════════════════════
+     L'AUTRE — full bleed b&w, she is now someone else
+     touches left and right, margin top and bottom only
+══════════════════════════ -->
+<section style="padding:var(--mg) 0;">
+  <div class="photo ph-bw" style="width:100%;height:88vh;">
+    <div style="position:absolute;top:44px;left:48px;">
+      <p class="fell" style="font-size:clamp(32px,5.5vw,60px);
+        color:rgba(240,235,224,0.1);line-height:1;font-style:italic;">
+        l'autre
+      </p>
+    </div>
+    <div style="position:absolute;bottom:26px;right:30px;">
+      <div class="caption-light">viii.</div>
+    </div>
+  </div>
+</section>
+
+<div class="pgnum">
+  <span>L'Autre</span><span>—</span><span>10 — 11</span>
+</div>
+
+<!-- ══════════════════════════
+     SOUS LE PLAFOND — amber trio, all shifted differently
+══════════════════════════ -->
+<section style="padding:var(--mg) 0 0;">
+  <div class="trio" style="align-items:flex-start;">
+
+    <!-- left: touches left, normal height -->
+    <div style="flex:1;">
+      <div class="photo ph-amber frame-corner-tl" style="height:56vh;">
+        <div style="position:absolute;bottom:14px;left:14px;">
+          <div class="caption-light">ix.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- centre: floated, raised slightly — different height -->
+    <div style="flex:1;margin-top:calc(var(--mg) * 1.5);">
+      <div class="photo ph-amber framed" style="height:64vh;margin-top:0;">
+        <div style="position:absolute;bottom:14px;left:14px;">
+          <div class="caption-light">x.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- right: touches right, dropped the most -->
+    <div style="flex:1;margin-top:calc(var(--mg) * 3);">
+      <div class="photo ph-amber frame-corner-tr" style="height:52vh;">
+        <div style="position:absolute;bottom:14px;left:14px;">
+          <div class="caption-light">xi.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="pgnum">
+  <span>Sous le Plafond</span><span>—</span><span>12 — 13</span>
+</div>
+
+<!-- ══════════════════════════
+     LA BOULE — disco ball pair
+     left: back turned, right: the face. shifted oppositely.
+══════════════════════════ -->
+<section style="padding:var(--mg) 0;">
+  <div class="pair" style="align-items:flex-start;">
+
+    <!-- left: shorter, floated -->
+    <div class="narrow" style="margin-top:calc(var(--mg) * 1.5);">
+      <div class="photo ph-disco framed" style="height:60vh;">
+        <div style="position:absolute;bottom:20px;left:20px;">
+          <div class="caption-light">xii.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- right: taller, starts higher, touches right -->
+    <div class="wide" style="margin-top:0;">
+      <div class="photo ph-disco frame-right" style="height:72vh;">
+
+        <div style="position:absolute;top:32px;left:28px;right:28px;">
+          <p class="italic" style="font-size:clamp(12px,1.6vw,17px);
+            color:rgba(240,235,224,0.18);line-height:1.8;">
+            Elle la tenait comme on tient<br>
+            quelque chose qu'on sait déjà<br>
+            devoir poser.
+          </p>
+        </div>
+
+        <div style="position:absolute;bottom:20px;left:20px;">
+          <div class="caption-light">xiii.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="pgnum">
+  <span>La Boule</span><span>—</span><span>14 — 15</span>
+</div>
+
+<!-- ══════════════════════════
+     LA VOITURE — wide car pair
+     colour + b&w of same composition, deliberately paired
+══════════════════════════ -->
+<section style="padding:var(--mg) 0;">
+  <div class="pair" style="align-items:flex-start;">
+
+    <div style="flex:1;margin-top:0;">
+      <div class="photo ph-teal frame-left" style="height:58vh;">
+        <div style="position:absolute;bottom:18px;right:18px;">
+          <div class="caption-light">xiv.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1;margin-top:calc(var(--mg) * 2);">
+      <div class="photo ph-bw frame-right" style="height:64vh;">
+        <div style="position:absolute;bottom:18px;right:18px;">
+          <div class="caption-light">xv.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- conversation text — sits below the pair, indented right -->
+  <div style="padding:0 calc(var(--mg) * 2 + 40%) 32px var(--mg);margin-top:4px;">
+    <p class="italic" style="font-size:clamp(13px,1.7vw,17px);
+      line-height:1.9;color:var(--ink-faint);">
+      Quelque part dans la pièce,<br>
+      une conversation avait lieu<br>
+      dans une langue<br>
+      qu'elle ne partageait pas avec lui.
+    </p>
+  </div>
+
+</section>
+
+<div class="pgnum">
+  <span>La Voiture</span><span>—</span><span>16 — 17</span>
+</div>
+
+<!-- ══════════════════════════
+     APRÈS — single image, full width, top/bottom margin
+     the comedown, head bowed
+══════════════════════════ -->
+<section style="padding:var(--mg) 0;">
+  <div class="photo ph-warm" style="width:100%;height:82vh;">
+    <div style="position:absolute;bottom:38px;left:52px;right:52px;text-align:center;">
+      <p class="italic" style="font-size:clamp(13px,1.8vw,19px);
+        color:rgba(240,235,224,0.18);line-height:1.9;letter-spacing:0.04em;">
+        Après tout,<br>
+        juste assise.
+      </p>
+    </div>
+    <div style="position:absolute;top:28px;right:28px;">
+      <div class="caption-light">xvii.</div>
+    </div>
+  </div>
+</section>
+
+<div class="pgnum">
+  <span>Après</span><span>—</span><span>18 — 19</span>
+</div>
+
+<!-- ══════════════════════════
+     LE VISAGE — two close portraits
+     one b&w disco ball face, one afro portrait
+     different heights, different margins
+══════════════════════════ -->
+<section style="padding:var(--mg) 0;">
+  <div class="pair" style="align-items:flex-start;">
+
+    <!-- left: taller, touches left -->
+    <div style="flex:1;margin-top:0;">
+      <div class="photo ph-bw frame-left" style="height:68vh;">
+        <div style="position:absolute;bottom:18px;left:18px;">
+          <div class="caption-light">xviii.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- right: shorter, floated down, touches right -->
+    <div style="flex:1;margin-top:calc(var(--mg) * 2.5);">
+      <div class="photo ph-bw frame-right" style="height:55vh;">
+        <div style="position:absolute;bottom:18px;left:18px;">
+          <div class="caption-light">xix.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="pgnum">
+  <span>Le Visage</span><span>—</span><span>20 — 21</span>
+</div>
+
+<!-- ══════════════════════════
+     LE PLAFOND — silhouette, almost abstract
+     touches left and right edges, margin top and bottom
+══════════════════════════ -->
+<section style="padding:var(--mg) 0;">
+  <div class="photo ph-bw" style="width:100%;height:86vh;
+    background:linear-gradient(180deg,#ddd8cc 0%,#c8c2b4 25%,#0a0a08 100%);">
+    <div style="position:absolute;bottom:32px;right:36px;">
+      <div class="caption">xx.</div>
+    </div>
+  </div>
+</section>
+
+<div class="pgnum">
+  <span>Le Plafond</span><span>—</span><span>22 — 23</span>
+</div>
+
+<!-- ══════════════════════════
+     FIN — through the car window
+     image on left touches left edge, text floats right
+══════════════════════════ -->
+<section style="display:flex;min-height:88vh;align-items:stretch;">
+
+  <!-- final image: touches left and top -->
+  <div style="flex:1;padding:0 var(--mg) var(--mg) 0;">
+    <div class="photo ph-blue" style="height:100%;min-height:80vh;">
+      <div style="position:absolute;bottom:36px;left:32px;">
+        <div class="caption-light">xxi. — fin.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- closing text -->
+  <div style="flex:0.7;display:flex;flex-direction:column;justify-content:flex-end;
+    padding:52px 52px 60px;border-left:1px solid var(--ink-ghost);">
+
+    <div class="caption" style="margin-bottom:38px;letter-spacing:0.3em;">
+      Eli's Dream
+    </div>
+
+    <p class="fell" style="font-size:clamp(13px,1.7vw,17px);
+      line-height:2.1;color:var(--ink-faint);font-style:italic;">
+      Mode : Eli<br>
+      Photographie : W.A. Jones<br>
+      New York City
+    </p>
+
+    <div style="width:22px;height:1px;background:var(--ink);opacity:0.18;margin:26px 0;"></div>
+
+    <div style="opacity:0.09;">
+      <svg width="54" height="54" viewBox="0 0 54 54">
+        <line x1="0" y1="13.5" x2="54" y2="13.5" stroke="#1c1a15" stroke-width="0.6"/>
+        <line x1="0" y1="27"   x2="54" y2="27"   stroke="#1c1a15" stroke-width="0.6"/>
+        <line x1="0" y1="40.5" x2="54" y2="40.5" stroke="#1c1a15" stroke-width="0.6"/>
+        <line x1="13.5" y1="0" x2="13.5" y2="54" stroke="#1c1a15" stroke-width="0.6"/>
+        <line x1="27"   y1="0" x2="27"   y2="54" stroke="#1c1a15" stroke-width="0.6"/>
+        <line x1="40.5" y1="0" x2="40.5" y2="54" stroke="#1c1a15" stroke-width="0.6"/>
+      </svg>
+    </div>
+  </div>
+
+</section>
+
+<div class="pgnum">
+  <span>W.A. Jones</span><span>—</span><span>24</span>
+</div>
 
 </body>
 </html>
