@@ -119,7 +119,7 @@
     letter-spacing: 0.22em;
     color: var(--ink-faint);
     text-transform: uppercase;
-    background: var(--paper);
+    background: transparent;
     position: relative;
     z-index: 1;
   }
@@ -553,38 +553,37 @@
 
 <script>
   // ── THREE LAYER PARALLAX ──
-  // Layer 1: paper background — fixed, stationary (CSS)
-  // Layer 2: grid — moves at 25% scroll speed (drifts down slowly)
-  // Layer 3: text — moves at 75% scroll speed (slightly behind photos)
-  // Layer 4: photos — normal 100% scroll speed
+  // Layer 1: paper — fixed, stationary
+  // Layer 2: grid  — drifts at 25% scroll speed
+  // Layer 3: photos — normal 100%
+  // Layer 4: text  — tiny local drift, viewport-relative so it never accumulates
 
   const grid  = document.getElementById('grid-bg');
   const texts = document.querySelectorAll('.para-text');
-
-  // store each text element's natural offset from top of document
-  const textOffsets = Array.from(texts).map(el => {
-    const rect = el.getBoundingClientRect();
-    return rect.top + window.scrollY;
-  });
 
   let ticking = false;
 
   function onScroll() {
     const sy = window.scrollY;
+    const vh = window.innerHeight;
 
-    // grid: fixed element, translate up by 75% to make it appear to move down at 25% speed
+    // grid: fixed element, moves at 25% of scroll speed downward
     grid.style.transform = `translateY(${-(sy * 0.75)}px)`;
 
-    // text: each element slides at 75% of scroll speed
-    // shift = how much slower than normal (25% lag)
-    // we push each element up by 25% of how far we've scrolled past its natural position
-    texts.forEach((el, i) => {
-      const naturalTop = textOffsets[i];
-      const scrolledPast = sy - (naturalTop - window.innerHeight);
-      if (scrolledPast > -window.innerHeight) {
-        const shift = sy * 0.25;
-        el.style.transform = `translateY(${-shift}px)`;
-      }
+    // text: each element drifts a tiny amount based on where it sits
+    // in the viewport RIGHT NOW — not accumulated from page top.
+    // When element centre is at viewport centre → 0 shift
+    // When element is above viewport centre → slight negative (lagging behind)
+    // Max drift is ±8px — barely perceptible, just enough to feel layered
+    texts.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const elCentre = rect.top + rect.height / 2;
+      const vpCentre = vh / 2;
+      // normalise: -1 (top of screen) to +1 (bottom of screen)
+      const norm = (elCentre - vpCentre) / vh;
+      // drift: max 8px, text lags — positive norm = element below centre = push up slightly
+      const drift = norm * 8;
+      el.style.transform = `translateY(${drift}px)`;
     });
 
     ticking = false;
@@ -596,6 +595,9 @@
       ticking = true;
     }
   }, { passive: true });
+
+  // run once on load
+  onScroll();
 </script>
 </body>
 </html>
