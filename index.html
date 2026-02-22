@@ -26,17 +26,7 @@
     overflow-x: hidden;
   }
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--grid-color) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-    background-size: 58px 58px;
-    pointer-events: none;
-    z-index: 0;
-  }
+  /* grid now driven by JS parallax — see #grid-bg div */
 
   section, .pgnum { position: relative; z-index: 1; }
 
@@ -134,6 +124,13 @@
     z-index: 1;
   }
 
+  /* ── PARALLAX TEXT ── */
+  .para-text {
+    display: block;
+    will-change: transform;
+    transition: transform 0.05s linear;
+  }
+
   /* ── MOBILE ── */
   @media (max-width: 700px) {
     :root { --mg: 14px; --gap: 10px; }
@@ -145,6 +142,19 @@
 </head>
 <body>
 
+<!-- parallax grid background -->
+<div id="grid-bg" style="
+  position:fixed;
+  inset:-120px;
+  background-image:
+    linear-gradient(rgba(28,26,21,0.065) 1.1px, transparent 1.1px),
+    linear-gradient(90deg, rgba(28,26,21,0.065) 1.1px, transparent 1.1px);
+  background-size:58px 58px;
+  pointer-events:none;
+  z-index:0;
+  will-change:transform;
+"></div>
+
 <!-- ══════════════════
      COUVERTURE
 ══════════════════ -->
@@ -153,6 +163,7 @@
   <div style="flex:1;background:var(--paper);display:flex;flex-direction:column;
     justify-content:flex-end;padding:52px 52px 60px;
     border-right:1px solid var(--ink-ghost);position:relative;z-index:1;">
+    <span class="para-text">
     <div class="caption" style="margin-bottom:44px;letter-spacing:0.35em;">W.A. Jones</div>
     <h1 class="fell" style="font-size:clamp(44px,6vw,76px);line-height:1.05;font-weight:400;">
       Eli's<br>Dream
@@ -164,6 +175,7 @@
     <div class="caption" style="margin-top:56px;line-height:2.6;">
       Mode · Eli<br>New York City
     </div>
+    </span>
   </div>
 
   <!-- elisdream.jpg — dressing room mirror, she's getting ready -->
@@ -175,7 +187,7 @@
   </div>
 
 </section>
-<div class="pgnum"><span>Eli's Dream</span><span>—</span><span>01</span></div>
+<div class="pgnum para-text"><span>Eli's Dream</span><span>—</span><span>01</span></div>
 
 <!-- ══════════════════
      LE MIROIR — triptych
@@ -209,12 +221,12 @@
 
   </div>
   <div style="padding:20px 48px 28px;">
-    <p class="italic" style="font-size:13px;color:var(--ink-faint);letter-spacing:0.04em;">
+    <p class="italic para-text" style="font-size:13px;color:var(--ink-faint);letter-spacing:0.04em;">
       Le miroir, avant.
     </p>
   </div>
 </section>
-<div class="pgnum"><span>Le Miroir</span><span>—</span><span>02 — 03</span></div>
+<div class="pgnum para-text"><span>Le Miroir</span><span>—</span><span>02 — 03</span></div>
 
 <!-- ══════════════════
      L'ARRIVÉE — text + tall exterior
@@ -222,6 +234,7 @@
 <section style="display:flex;min-height:78vh;align-items:stretch;">
 
   <div class="text-col" style="flex:1;border-right:1px solid var(--ink-ghost);">
+    <span class="para-text">
     <div class="caption" style="margin-bottom:36px;">New York City</div>
     <p class="garam" style="font-size:clamp(20px,2.8vw,34px);line-height:1.45;
       color:var(--ink);margin-bottom:30px;">
@@ -235,6 +248,7 @@
       La lumière faisait déjà<br>
       ce qu'elle voulait faire.
     </p>
+    </span>
   </div>
 
   <!-- elisdream-9.jpg — against the Cadillac, teal, touches right edge -->
@@ -246,7 +260,7 @@
   </div>
 
 </section>
-<div class="pgnum"><span>L'Arrivée</span><span>—</span><span>04 — 05</span></div>
+<div class="pgnum para-text"><span>L'Arrivée</span><span>—</span><span>04 — 05</span></div>
 
 <!-- ══════════════════
      LA MACHINE — pink pair, shifted
@@ -272,7 +286,7 @@
 
   </div>
 </section>
-<div class="pgnum"><span>La Machine</span><span>—</span><span>06 — 07</span></div>
+<div class="pgnum para-text"><span>La Machine</span><span>—</span><span>06 — 07</span></div>
 
 <!-- ══════════════════
      LE GLISSEMENT — pink portrait + text
@@ -289,6 +303,7 @@
 
   <div class="text-col" style="flex:1;justify-content:flex-end;
     padding-bottom:56px;border-left:1px solid var(--ink-ghost);">
+    <span class="para-text">
     <p class="fell" style="font-size:clamp(26px,3.8vw,46px);line-height:1.2;
       color:var(--ink);margin-bottom:22px;">
       Quelque chose<br><em>avait changé.</em>
@@ -297,6 +312,7 @@
     <p class="italic" style="font-size:13px;line-height:2;color:var(--ink-faint);">
       La pièce était la même.<br>Elle, non.
     </p>
+    </span>
     <div style="margin-top:52px;opacity:0.12;">
       <svg width="72" height="72" viewBox="0 0 72 72">
         <line x1="0" y1="18" x2="72" y2="18" stroke="#1c1a15" stroke-width="0.6"/>
@@ -310,7 +326,7 @@
   </div>
 
 </section>
-<div class="pgnum"><span>Le Glissement</span><span>—</span><span>08 — 09</span></div>
+<div class="pgnum para-text"><span>Le Glissement</span><span>—</span><span>08 — 09</span></div>
 
 <!-- ══════════════════
      L'AUTRE — full bleed b&w, platinum character arrives
@@ -321,7 +337,7 @@
     <!-- elisdream-14.jpg — b&w afro, two of her, backs to camera -->
     <img src="elisdream/elisdream-14.jpg" alt="">
     <div style="position:absolute;top:44px;left:48px;">
-      <p class="fell" style="font-size:clamp(32px,5.5vw,60px);
+      <p class="fell para-text" style="font-size:clamp(32px,5.5vw,60px);
         color:rgba(240,235,224,0.1);line-height:1;font-style:italic;">
         l'autre
       </p>
@@ -329,7 +345,7 @@
     <div style="position:absolute;bottom:26px;right:30px;"><div class="cap-lt">viii.</div></div>
   </div>
 </section>
-<div class="pgnum"><span>L'Autre</span><span>—</span><span>10 — 11</span></div>
+<div class="pgnum para-text"><span>L'Autre</span><span>—</span><span>10 — 11</span></div>
 
 <!-- ══════════════════
      SOUS LE PLAFOND — amber trio, cascading
@@ -363,7 +379,7 @@
 
   </div>
 </section>
-<div class="pgnum"><span>Sous le Plafond</span><span>—</span><span>12 — 13</span></div>
+<div class="pgnum para-text"><span>Sous le Plafond</span><span>—</span><span>12 — 13</span></div>
 
 <!-- ══════════════════
      LA BOULE — disco ball pair
@@ -384,7 +400,7 @@
       <div class="photo ph-disco frame-right" style="height:72vh;">
         <img src="elisdream/elisdream-18.jpg" alt="">
         <div style="position:absolute;top:32px;left:28px;right:28px;">
-          <p class="italic" style="font-size:clamp(12px,1.6vw,17px);
+          <p class="italic para-text" style="font-size:clamp(12px,1.6vw,17px);
             color:rgba(240,235,224,0.18);line-height:1.8;">
             Elle la tenait comme on tient<br>
             quelque chose qu'on sait déjà<br>
@@ -397,7 +413,7 @@
 
   </div>
 </section>
-<div class="pgnum"><span>La Boule</span><span>—</span><span>14 — 15</span></div>
+<div class="pgnum para-text"><span>La Boule</span><span>—</span><span>14 — 15</span></div>
 
 <!-- ══════════════════
      LA VOITURE — wide car pair, colour + b&w
@@ -425,7 +441,7 @@
 
   <!-- the Russian videographer line -->
   <div style="padding:0 calc(var(--mg) * 2 + 40%) 32px var(--mg);margin-top:4px;">
-    <p class="italic" style="font-size:clamp(13px,1.7vw,17px);
+    <p class="italic para-text" style="font-size:clamp(13px,1.7vw,17px);
       line-height:1.9;color:var(--ink-faint);">
       Quelque part dans la pièce,<br>
       une conversation avait lieu<br>
@@ -434,7 +450,7 @@
     </p>
   </div>
 </section>
-<div class="pgnum"><span>La Voiture</span><span>—</span><span>16 — 17</span></div>
+<div class="pgnum para-text"><span>La Voiture</span><span>—</span><span>16 — 17</span></div>
 
 <!-- ══════════════════
      APRÈS — single image, the comedown
@@ -445,7 +461,7 @@
     <!-- elisdream-6.jpg — sitting on car roof, head forward, the stillness -->
     <img src="elisdream/elisdream-6.jpg" alt="">
     <div style="position:absolute;bottom:38px;left:52px;right:52px;text-align:center;">
-      <p class="italic" style="font-size:clamp(13px,1.8vw,19px);
+      <p class="italic para-text" style="font-size:clamp(13px,1.8vw,19px);
         color:rgba(240,235,224,0.18);line-height:1.9;letter-spacing:0.04em;">
         Après tout,<br>juste assise.
       </p>
@@ -453,7 +469,7 @@
     <div style="position:absolute;top:28px;right:28px;"><div class="cap-lt">xvi.</div></div>
   </div>
 </section>
-<div class="pgnum"><span>Après</span><span>—</span><span>18 — 19</span></div>
+<div class="pgnum para-text"><span>Après</span><span>—</span><span>18 — 19</span></div>
 
 <!-- ══════════════════
      LE VISAGE — two close portraits, misaligned
@@ -479,7 +495,7 @@
 
   </div>
 </section>
-<div class="pgnum"><span>Le Visage</span><span>—</span><span>20 — 21</span></div>
+<div class="pgnum para-text"><span>Le Visage</span><span>—</span><span>20 — 21</span></div>
 
 <!-- ══════════════════
      LE PLAFOND — silhouette, almost abstract
@@ -492,7 +508,7 @@
     <div style="position:absolute;bottom:32px;right:36px;"><div class="caption">xix.</div></div>
   </div>
 </section>
-<div class="pgnum"><span>Le Plafond</span><span>—</span><span>22 — 23</span></div>
+<div class="pgnum para-text"><span>Le Plafond</span><span>—</span><span>22 — 23</span></div>
 
 <!-- ══════════════════
      FIN — through the car window
@@ -510,6 +526,7 @@
 
   <div style="flex:0.7;display:flex;flex-direction:column;justify-content:flex-end;
     padding:52px 52px 60px;border-left:1px solid var(--ink-ghost);">
+    <span class="para-text">
     <div class="caption" style="margin-bottom:38px;letter-spacing:0.3em;">Eli's Dream</div>
     <p class="fell" style="font-size:clamp(13px,1.7vw,17px);
       line-height:2.1;color:var(--ink-faint);font-style:italic;">
@@ -518,6 +535,7 @@
       New York City
     </p>
     <div style="width:22px;height:1px;background:var(--ink);opacity:0.18;margin:26px 0;"></div>
+    </span>
     <div style="opacity:0.09;">
       <svg width="54" height="54" viewBox="0 0 54 54">
         <line x1="0" y1="13.5" x2="54" y2="13.5" stroke="#1c1a15" stroke-width="0.6"/>
@@ -531,7 +549,53 @@
   </div>
 
 </section>
-<div class="pgnum"><span>W.A. Jones</span><span>—</span><span>24</span></div>
+<div class="pgnum para-text"><span>W.A. Jones</span><span>—</span><span>24</span></div>
 
+<script>
+  // ── THREE LAYER PARALLAX ──
+  // Layer 1: paper background — fixed, stationary (CSS)
+  // Layer 2: grid — moves at 25% scroll speed (drifts down slowly)
+  // Layer 3: text — moves at 75% scroll speed (slightly behind photos)
+  // Layer 4: photos — normal 100% scroll speed
+
+  const grid  = document.getElementById('grid-bg');
+  const texts = document.querySelectorAll('.para-text');
+
+  // store each text element's natural offset from top of document
+  const textOffsets = Array.from(texts).map(el => {
+    const rect = el.getBoundingClientRect();
+    return rect.top + window.scrollY;
+  });
+
+  let ticking = false;
+
+  function onScroll() {
+    const sy = window.scrollY;
+
+    // grid: fixed element, translate up by 75% to make it appear to move down at 25% speed
+    grid.style.transform = `translateY(${-(sy * 0.75)}px)`;
+
+    // text: each element slides at 75% of scroll speed
+    // shift = how much slower than normal (25% lag)
+    // we push each element up by 25% of how far we've scrolled past its natural position
+    texts.forEach((el, i) => {
+      const naturalTop = textOffsets[i];
+      const scrolledPast = sy - (naturalTop - window.innerHeight);
+      if (scrolledPast > -window.innerHeight) {
+        const shift = sy * 0.25;
+        el.style.transform = `translateY(${-shift}px)`;
+      }
+    });
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(onScroll);
+      ticking = true;
+    }
+  }, { passive: true });
+</script>
 </body>
 </html>
