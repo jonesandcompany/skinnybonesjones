@@ -8,17 +8,13 @@
 <style>
   :root {
     --paper: #f0ebe0;
-    --paper-dark: #e8e1d0;
     --ink: #1c1a15;
     --ink-faint: rgba(28,26,21,0.35);
     --ink-ghost: rgba(28,26,21,0.07);
     --warm-mid: #9a8f7a;
     --grid-color: rgba(28,26,21,0.055);
-
-    /* margin/border system */
-    --mg: 28px;       /* outer page margin */
-    --mg-sm: 18px;    /* tighter margin variant */
-    --gap: 16px;      /* gap between paired photos */
+    --mg: 28px;
+    --gap: 16px;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -30,7 +26,6 @@
     overflow-x: hidden;
   }
 
-  /* ceiling grid texture — the location, always present */
   body::before {
     content: '';
     position: fixed;
@@ -43,93 +38,51 @@
     z-index: 0;
   }
 
-  section, .pgnum {
-    position: relative;
-    z-index: 1;
-  }
+  section, .pgnum { position: relative; z-index: 1; }
 
-  /* ── PHOTO BASE ── */
+  /* ── PHOTO WRAPPER ── */
   .photo {
     overflow: hidden;
     position: relative;
     transition: filter 0.4s ease;
   }
 
-  /* colour moods */
-  .ph-mirror { background: linear-gradient(135deg,#1a1812,#0f0e0a,#1c1a14); }
-  .ph-warm   { background: linear-gradient(135deg,#2a1f0e,#1e1508,#2e2210); }
-  .ph-teal   { background: linear-gradient(145deg,#0e1a1a,#0a1212,#101e1c); }
-  .ph-pink   { background: linear-gradient(135deg,#2a0a18,#1e0812,#30101e); }
-  .ph-bw     { background: linear-gradient(135deg,#141412,#0a0a08,#181614); }
-  .ph-amber  { background: linear-gradient(135deg,#241808,#1a1006,#2c1e0a); }
-  .ph-blue   { background: linear-gradient(135deg,#080e1a,#060a14,#0a1020); }
-  .ph-disco  { background: linear-gradient(135deg,#141010,#0c0808,#181212); }
-
-  /* ── PHOTO WRAPPERS WITH MARGIN ──
-     Each photo sits inside a wrapper that provides the paper gap.
-     Photos can touch ONE edge (left, right, top) but not two.
-     Pairs are shifted vertically so they read as related but not identical. */
-
-  /* floats freely — margin on all four sides */
-  .framed {
-    margin: var(--mg);
+  /* real images fill their container */
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
-  /* touches left edge */
-  .frame-left {
-    margin: var(--mg) var(--mg) var(--mg) 0;
-  }
+  /* fallback bg colours in case image is slow to load */
+  .ph-mirror { background: #111009; }
+  .ph-warm   { background: #1e1508; }
+  .ph-teal   { background: #0a1212; }
+  .ph-pink   { background: #1e0812; }
+  .ph-bw     { background: #0a0a08; }
+  .ph-amber  { background: #1a1006; }
+  .ph-blue   { background: #060a14; }
+  .ph-disco  { background: #0c0808; }
 
-  /* touches right edge */
-  .frame-right {
-    margin: var(--mg) 0 var(--mg) var(--mg);
-  }
+  /* ── FRAME / MARGIN SYSTEM ── */
+  .framed         { margin: var(--mg); }
+  .frame-left     { margin: var(--mg) var(--mg) var(--mg) 0; }
+  .frame-right    { margin: var(--mg) 0 var(--mg) var(--mg); }
+  .frame-corner-tl { margin: 0 var(--mg) var(--mg) 0; }
+  .frame-corner-tr { margin: 0 0 var(--mg) var(--mg); }
 
-  /* touches top edge */
-  .frame-top {
-    margin: 0 var(--mg) var(--mg) var(--mg);
-  }
-
-  /* touches top + left — corner piece */
-  .frame-corner-tl {
-    margin: 0 var(--mg) var(--mg) 0;
-  }
-
-  /* touches top + right */
-  .frame-corner-tr {
-    margin: 0 0 var(--mg) var(--mg);
-  }
-
-  /* ── SHIFT SYSTEM for pairs ──
-     One photo sits higher, one lower. Never identical top values. */
-  .shift-up   { align-self: flex-start; margin-top: 0; }
-  .shift-down { align-self: flex-end;   margin-top: var(--mg); }
-  .shift-mid  { align-self: center; }
-
-  /* ── PAGE STRUCTURE ── */
-  .page {
-    padding: 0;
-    min-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* pair container — flex so shifts work */
+  /* ── LAYOUT HELPERS ── */
   .pair {
     display: flex;
     align-items: flex-start;
     gap: var(--gap);
     padding: 0 var(--mg);
   }
-
   .pair > * { flex: 1; }
-
-  /* asymmetric pair weights */
-  .pair .wide { flex: 1.55; }
+  .pair .wide   { flex: 1.55; }
   .pair .narrow { flex: 1; }
 
-  /* three across */
   .trio {
     display: flex;
     align-items: flex-start;
@@ -138,7 +91,6 @@
   }
   .trio > * { flex: 1; }
 
-  /* text columns */
   .text-col {
     padding: 52px 56px;
     display: flex;
@@ -146,11 +98,10 @@
     justify-content: center;
   }
 
-  /* ── TYPOGRAPHY ── */
-  .fell     { font-family: 'IM Fell English', serif; }
-  .garamond { font-family: 'Cormorant Garamond', serif; font-weight: 300; }
-  .italic   { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; }
-  .sans     { font-family: 'Didact Gothic', sans-serif; }
+  /* ── TYPE ── */
+  .fell   { font-family: 'IM Fell English', serif; }
+  .italic { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; }
+  .garam  { font-family: 'Cormorant Garamond', serif; font-weight: 300; }
 
   .caption {
     font-family: 'Didact Gothic', sans-serif;
@@ -159,8 +110,7 @@
     text-transform: uppercase;
     color: var(--ink-faint);
   }
-
-  .caption-light {
+  .cap-lt {
     font-family: 'Didact Gothic', sans-serif;
     font-size: 9px;
     letter-spacing: 0.2em;
@@ -168,7 +118,6 @@
     color: rgba(240,235,224,0.3);
   }
 
-  /* page number strip */
   .pgnum {
     padding: 11px 48px;
     display: flex;
@@ -181,217 +130,173 @@
     color: var(--ink-faint);
     text-transform: uppercase;
     background: var(--paper);
+    position: relative;
+    z-index: 1;
   }
 
   /* ── MOBILE ── */
   @media (max-width: 700px) {
     :root { --mg: 14px; --gap: 10px; }
-    .pair, .trio { flex-direction: column; padding: 0 var(--mg); }
+    .pair, .trio { flex-direction: column; }
     .pair .wide, .pair .narrow { flex: 1; width: 100%; }
-    .shift-down { margin-top: 0; }
     .text-col { padding: 36px 28px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════
+<!-- ══════════════════
      COUVERTURE
-══════════════════════════ -->
+══════════════════ -->
 <section style="min-height:100vh;display:flex;align-items:stretch;">
 
-  <!-- left: title panel -->
   <div style="flex:1;background:var(--paper);display:flex;flex-direction:column;
     justify-content:flex-end;padding:52px 52px 60px;
     border-right:1px solid var(--ink-ghost);position:relative;z-index:1;">
-
     <div class="caption" style="margin-bottom:44px;letter-spacing:0.35em;">W.A. Jones</div>
-
-    <h1 class="fell" style="font-size:clamp(44px,6vw,76px);line-height:1.05;
-      font-weight:400;letter-spacing:0.01em;">
+    <h1 class="fell" style="font-size:clamp(44px,6vw,76px);line-height:1.05;font-weight:400;">
       Eli's<br>Dream
     </h1>
-
     <div style="width:30px;height:1px;background:var(--ink);opacity:0.25;margin:22px 0;"></div>
-
-    <p class="italic" style="font-size:15px;line-height:1.9;
-      color:var(--ink-faint);max-width:260px;">
+    <p class="italic" style="font-size:15px;line-height:1.9;color:var(--ink-faint);max-width:260px;">
       Photographies de W.A. Jones
     </p>
-
     <div class="caption" style="margin-top:56px;line-height:2.6;">
-      Mode · Eli<br>
-      New York City
+      Mode · Eli<br>New York City
     </div>
   </div>
 
-  <!-- right: first image, touches top and right edges -->
+  <!-- elisdream.jpg — dressing room mirror, she's getting ready -->
   <div style="flex:1;padding:0 0 var(--mg) var(--mg);display:flex;align-items:stretch;">
     <div class="photo ph-mirror" style="flex:1;min-height:100vh;">
-      <div style="position:absolute;bottom:22px;right:22px;">
-        <div class="caption-light">i.</div>
-      </div>
+      <img src="elisdream.jpg" alt="">
+      <div style="position:absolute;bottom:22px;right:22px;"><div class="cap-lt">i.</div></div>
     </div>
   </div>
 
 </section>
+<div class="pgnum"><span>Eli's Dream</span><span>—</span><span>01</span></div>
 
-<div class="pgnum">
-  <span>Eli's Dream</span><span>—</span><span>01</span>
-</div>
-
-<!-- ══════════════════════════
+<!-- ══════════════════
      LE MIROIR — triptych
-     three mirror shots, shifted, middle one dropped
-══════════════════════════ -->
+══════════════════ -->
 <section style="padding:var(--mg) 0 0;">
-
   <div class="trio" style="align-items:flex-start;">
 
-    <!-- left: touches left edge, starts high -->
-    <div style="flex:1;margin-left:0;margin-right:0;">
-      <div class="photo ph-mirror frame-corner-tl" style="height:62vh;margin-right:0;margin-left:0;">
-        <div style="position:absolute;bottom:16px;left:16px;">
-          <div class="caption-light">i.</div>
-        </div>
+    <!-- elisdream.jpg repeated — wider shot of same setup -->
+    <div style="flex:1;">
+      <div class="photo ph-mirror frame-corner-tl" style="height:62vh;">
+        <img src="elisdream.jpg" alt="">
+        <div style="position:absolute;bottom:16px;left:16px;"><div class="cap-lt">i.</div></div>
       </div>
     </div>
 
-    <!-- centre: floated, dropped down -->
+    <!-- elisdream-2.jpg — second mirror shot, dropped -->
     <div style="flex:1;margin-top:calc(var(--mg) * 2);">
       <div class="photo ph-bw framed" style="height:66vh;margin-top:0;">
-        <div style="position:absolute;bottom:16px;left:16px;">
-          <div class="caption-light">ii.</div>
-        </div>
+        <img src="elisdream-2.jpg" alt="">
+        <div style="position:absolute;bottom:16px;left:16px;"><div class="cap-lt">ii.</div></div>
       </div>
     </div>
 
-    <!-- right: floated, back up -->
+    <!-- elisdream-3.jpg — third mirror shot, back up -->
     <div style="flex:1;">
       <div class="photo ph-bw" style="height:58vh;margin:var(--mg) 0 var(--mg) 0;">
-        <div style="position:absolute;bottom:16px;left:16px;">
-          <div class="caption-light">iii.</div>
-        </div>
+        <img src="elisdream-3.jpg" alt="">
+        <div style="position:absolute;bottom:16px;left:16px;"><div class="cap-lt">iii.</div></div>
       </div>
     </div>
 
   </div>
-
-  <!-- caption beneath -->
   <div style="padding:20px 48px 28px;">
     <p class="italic" style="font-size:13px;color:var(--ink-faint);letter-spacing:0.04em;">
       Le miroir, avant.
     </p>
   </div>
-
 </section>
+<div class="pgnum"><span>Le Miroir</span><span>—</span><span>02 — 03</span></div>
 
-<div class="pgnum">
-  <span>Le Miroir</span><span>—</span><span>02 — 03</span>
-</div>
-
-<!-- ══════════════════════════
+<!-- ══════════════════
      L'ARRIVÉE — text + tall exterior
-══════════════════════════ -->
+══════════════════ -->
 <section style="display:flex;min-height:78vh;align-items:stretch;">
 
   <div class="text-col" style="flex:1;border-right:1px solid var(--ink-ghost);">
     <div class="caption" style="margin-bottom:36px;">New York City</div>
-
-    <p class="garamond" style="font-size:clamp(20px,2.8vw,34px);
-      line-height:1.45;color:var(--ink);margin-bottom:30px;">
+    <p class="garam" style="font-size:clamp(20px,2.8vw,34px);line-height:1.45;
+      color:var(--ink);margin-bottom:30px;">
       Elle est arrivée vêtue<br>
       de l'idée que quelqu'un<br>
       d'autre se faisait d'elle.
     </p>
-
     <div style="width:22px;height:1px;background:var(--warm-mid);margin-bottom:26px;"></div>
-
-    <p class="italic" style="font-size:14px;line-height:1.95;
-      color:var(--ink-faint);max-width:250px;">
+    <p class="italic" style="font-size:14px;line-height:1.95;color:var(--ink-faint);max-width:250px;">
       La voiture était déjà là.<br>
       La lumière faisait déjà<br>
       ce qu'elle voulait faire.
     </p>
   </div>
 
-  <!-- photo touches right edge, floated away from top -->
+  <!-- elisdream-9.jpg — against the Cadillac, teal, touches right edge -->
   <div style="flex:1.5;padding:var(--mg) 0 var(--mg) var(--mg);">
     <div class="photo ph-teal" style="height:100%;min-height:65vh;">
-      <div style="position:absolute;bottom:20px;right:20px;">
-        <div class="caption-light">iv.</div>
-      </div>
+      <img src="elisdream-9.jpg" alt="">
+      <div style="position:absolute;bottom:20px;right:20px;"><div class="cap-lt">iv.</div></div>
     </div>
   </div>
 
 </section>
+<div class="pgnum"><span>L'Arrivée</span><span>—</span><span>04 — 05</span></div>
 
-<div class="pgnum">
-  <span>L'Arrivée</span><span>—</span><span>04 — 05</span>
-</div>
-
-<!-- ══════════════════════════
+<!-- ══════════════════
      LA MACHINE — pink pair, shifted
-     left one taller and lower, right one shorter and higher
-══════════════════════════ -->
+══════════════════ -->
 <section style="padding:var(--mg) 0;">
   <div class="pair" style="align-items:flex-start;">
 
-    <!-- left: longer, starts at top of padding -->
+    <!-- elisdream-5.jpg — full length standing, pure magenta, taller, touches left -->
     <div class="wide" style="margin-top:0;">
       <div class="photo ph-pink frame-left" style="height:75vh;">
-        <div style="position:absolute;bottom:22px;left:22px;">
-          <div class="caption-light">v.</div>
-        </div>
+        <img src="elisdream-5.jpg" alt="">
+        <div style="position:absolute;bottom:22px;left:22px;"><div class="cap-lt">v.</div></div>
       </div>
     </div>
 
-    <!-- right: shorter, dropped down -->
+    <!-- elisdream-11.jpg — tanning bed portrait, shorter, dropped, touches right -->
     <div class="narrow" style="margin-top:calc(var(--mg) * 2.5);">
       <div class="photo ph-pink frame-right" style="height:60vh;">
-        <div style="position:absolute;bottom:22px;left:22px;">
-          <div class="caption-light">vi.</div>
-        </div>
+        <img src="elisdream-11.jpg" alt="">
+        <div style="position:absolute;bottom:22px;left:22px;"><div class="cap-lt">vi.</div></div>
       </div>
     </div>
 
   </div>
 </section>
+<div class="pgnum"><span>La Machine</span><span>—</span><span>06 — 07</span></div>
 
-<div class="pgnum">
-  <span>La Machine</span><span>—</span><span>06 — 07</span>
-</div>
-
-<!-- ══════════════════════════
+<!-- ══════════════════
      LE GLISSEMENT — pink portrait + text
-══════════════════════════ -->
+══════════════════ -->
 <section style="display:flex;min-height:68vh;align-items:stretch;">
 
-  <!-- photo: touches left edge -->
+  <!-- elisdream-13.jpg — pink, in the car, looking back, touches left -->
   <div style="flex:1.5;padding:var(--mg) var(--mg) var(--mg) 0;">
     <div class="photo ph-pink" style="height:100%;min-height:58vh;">
-      <div style="position:absolute;bottom:22px;left:22px;">
-        <div class="caption-light">vii.</div>
-      </div>
+      <img src="elisdream-13.jpg" alt="">
+      <div style="position:absolute;bottom:22px;left:22px;"><div class="cap-lt">vii.</div></div>
     </div>
   </div>
 
   <div class="text-col" style="flex:1;justify-content:flex-end;
     padding-bottom:56px;border-left:1px solid var(--ink-ghost);">
-
-    <p class="fell" style="font-size:clamp(26px,3.8vw,46px);
-      line-height:1.2;color:var(--ink);margin-bottom:22px;">
-      Quelque chose<br>
-      <em>avait changé.</em>
+    <p class="fell" style="font-size:clamp(26px,3.8vw,46px);line-height:1.2;
+      color:var(--ink);margin-bottom:22px;">
+      Quelque chose<br><em>avait changé.</em>
     </p>
-
     <div style="width:18px;height:1px;background:var(--ink);opacity:0.18;margin-bottom:18px;"></div>
-
     <p class="italic" style="font-size:13px;line-height:2;color:var(--ink-faint);">
-      La pièce était la même.<br>
-      Elle, non.
+      La pièce était la même.<br>Elle, non.
     </p>
-
     <div style="margin-top:52px;opacity:0.12;">
       <svg width="72" height="72" viewBox="0 0 72 72">
         <line x1="0" y1="18" x2="72" y2="18" stroke="#1c1a15" stroke-width="0.6"/>
@@ -405,93 +310,79 @@
   </div>
 
 </section>
+<div class="pgnum"><span>Le Glissement</span><span>—</span><span>08 — 09</span></div>
 
-<div class="pgnum">
-  <span>Le Glissement</span><span>—</span><span>08 — 09</span>
-</div>
-
-<!-- ══════════════════════════
-     L'AUTRE — full bleed b&w, she is now someone else
-     touches left and right, margin top and bottom only
-══════════════════════════ -->
+<!-- ══════════════════
+     L'AUTRE — full bleed b&w, platinum character arrives
+     top/bottom margin only, touches left and right
+══════════════════ -->
 <section style="padding:var(--mg) 0;">
   <div class="photo ph-bw" style="width:100%;height:88vh;">
+    <!-- elisdream-14.jpg — b&w afro, two of her, backs to camera -->
+    <img src="elisdream-14.jpg" alt="">
     <div style="position:absolute;top:44px;left:48px;">
       <p class="fell" style="font-size:clamp(32px,5.5vw,60px);
         color:rgba(240,235,224,0.1);line-height:1;font-style:italic;">
         l'autre
       </p>
     </div>
-    <div style="position:absolute;bottom:26px;right:30px;">
-      <div class="caption-light">viii.</div>
-    </div>
+    <div style="position:absolute;bottom:26px;right:30px;"><div class="cap-lt">viii.</div></div>
   </div>
 </section>
+<div class="pgnum"><span>L'Autre</span><span>—</span><span>10 — 11</span></div>
 
-<div class="pgnum">
-  <span>L'Autre</span><span>—</span><span>10 — 11</span>
-</div>
-
-<!-- ══════════════════════════
-     SOUS LE PLAFOND — amber trio, all shifted differently
-══════════════════════════ -->
+<!-- ══════════════════
+     SOUS LE PLAFOND — amber trio, cascading
+══════════════════ -->
 <section style="padding:var(--mg) 0 0;">
   <div class="trio" style="align-items:flex-start;">
 
-    <!-- left: touches left, normal height -->
+    <!-- elisdream-15.jpg — two figures amber, touches left -->
     <div style="flex:1;">
       <div class="photo ph-amber frame-corner-tl" style="height:56vh;">
-        <div style="position:absolute;bottom:14px;left:14px;">
-          <div class="caption-light">ix.</div>
-        </div>
+        <img src="elisdream-15.jpg" alt="">
+        <div style="position:absolute;bottom:14px;left:14px;"><div class="cap-lt">ix.</div></div>
       </div>
     </div>
 
-    <!-- centre: floated, raised slightly — different height -->
+    <!-- elisdream-16.jpg — amber portrait red lips, floated, tallest -->
     <div style="flex:1;margin-top:calc(var(--mg) * 1.5);">
       <div class="photo ph-amber framed" style="height:64vh;margin-top:0;">
-        <div style="position:absolute;bottom:14px;left:14px;">
-          <div class="caption-light">x.</div>
-        </div>
+        <img src="elisdream-16.jpg" alt="">
+        <div style="position:absolute;bottom:14px;left:14px;"><div class="cap-lt">x.</div></div>
       </div>
     </div>
 
-    <!-- right: touches right, dropped the most -->
+    <!-- elisdream-17.jpg — amber, dropped most, touches right -->
     <div style="flex:1;margin-top:calc(var(--mg) * 3);">
       <div class="photo ph-amber frame-corner-tr" style="height:52vh;">
-        <div style="position:absolute;bottom:14px;left:14px;">
-          <div class="caption-light">xi.</div>
-        </div>
+        <img src="elisdream-17.jpg" alt="">
+        <div style="position:absolute;bottom:14px;left:14px;"><div class="cap-lt">xi.</div></div>
       </div>
     </div>
 
   </div>
 </section>
+<div class="pgnum"><span>Sous le Plafond</span><span>—</span><span>12 — 13</span></div>
 
-<div class="pgnum">
-  <span>Sous le Plafond</span><span>—</span><span>12 — 13</span>
-</div>
-
-<!-- ══════════════════════════
+<!-- ══════════════════
      LA BOULE — disco ball pair
-     left: back turned, right: the face. shifted oppositely.
-══════════════════════════ -->
+══════════════════ -->
 <section style="padding:var(--mg) 0;">
   <div class="pair" style="align-items:flex-start;">
 
-    <!-- left: shorter, floated -->
+    <!-- elisdream-19.jpg — back to camera, holding ball up, floated -->
     <div class="narrow" style="margin-top:calc(var(--mg) * 1.5);">
       <div class="photo ph-disco framed" style="height:60vh;">
-        <div style="position:absolute;bottom:20px;left:20px;">
-          <div class="caption-light">xii.</div>
-        </div>
+        <img src="elisdream-19.jpg" alt="">
+        <div style="position:absolute;bottom:20px;left:20px;"><div class="cap-lt">xii.</div></div>
       </div>
     </div>
 
-    <!-- right: taller, starts higher, touches right -->
+    <!-- elisdream-18.jpg — disco ball close, taller, touches right -->
     <div class="wide" style="margin-top:0;">
       <div class="photo ph-disco frame-right" style="height:72vh;">
-
+        <img src="elisdream-18.jpg" alt="">
         <div style="position:absolute;top:32px;left:28px;right:28px;">
           <p class="italic" style="font-size:clamp(12px,1.6vw,17px);
             color:rgba(240,235,224,0.18);line-height:1.8;">
@@ -500,46 +391,39 @@
             devoir poser.
           </p>
         </div>
-
-        <div style="position:absolute;bottom:20px;left:20px;">
-          <div class="caption-light">xiii.</div>
-        </div>
+        <div style="position:absolute;bottom:20px;left:20px;"><div class="cap-lt">xiii.</div></div>
       </div>
     </div>
 
   </div>
 </section>
+<div class="pgnum"><span>La Boule</span><span>—</span><span>14 — 15</span></div>
 
-<div class="pgnum">
-  <span>La Boule</span><span>—</span><span>14 — 15</span>
-</div>
-
-<!-- ══════════════════════════
-     LA VOITURE — wide car pair
-     colour + b&w of same composition, deliberately paired
-══════════════════════════ -->
+<!-- ══════════════════
+     LA VOITURE — wide car pair, colour + b&w
+══════════════════ -->
 <section style="padding:var(--mg) 0;">
   <div class="pair" style="align-items:flex-start;">
 
+    <!-- elisdream-21.jpg — wide teal, she's small by the car, touches left -->
     <div style="flex:1;margin-top:0;">
       <div class="photo ph-teal frame-left" style="height:58vh;">
-        <div style="position:absolute;bottom:18px;right:18px;">
-          <div class="caption-light">xiv.</div>
-        </div>
+        <img src="elisdream-21.jpg" alt="">
+        <div style="position:absolute;bottom:18px;right:18px;"><div class="cap-lt">xiv.</div></div>
       </div>
     </div>
 
+    <!-- elisdream-22.jpg — same composition, b&w, dropped, touches right -->
     <div style="flex:1;margin-top:calc(var(--mg) * 2);">
       <div class="photo ph-bw frame-right" style="height:64vh;">
-        <div style="position:absolute;bottom:18px;right:18px;">
-          <div class="caption-light">xv.</div>
-        </div>
+        <img src="elisdream-22.jpg" alt="">
+        <div style="position:absolute;bottom:18px;right:18px;"><div class="cap-lt">xv.</div></div>
       </div>
     </div>
 
   </div>
 
-  <!-- conversation text — sits below the pair, indented right -->
+  <!-- the Russian videographer line -->
   <div style="padding:0 calc(var(--mg) * 2 + 40%) 32px var(--mg);margin-top:4px;">
     <p class="italic" style="font-size:clamp(13px,1.7vw,17px);
       line-height:1.9;color:var(--ink-faint);">
@@ -549,118 +433,91 @@
       qu'elle ne partageait pas avec lui.
     </p>
   </div>
-
 </section>
+<div class="pgnum"><span>La Voiture</span><span>—</span><span>16 — 17</span></div>
 
-<div class="pgnum">
-  <span>La Voiture</span><span>—</span><span>16 — 17</span>
-</div>
-
-<!-- ══════════════════════════
-     APRÈS — single image, full width, top/bottom margin
-     the comedown, head bowed
-══════════════════════════ -->
+<!-- ══════════════════
+     APRÈS — single image, the comedown
+     top/bottom margin, touches left and right
+══════════════════ -->
 <section style="padding:var(--mg) 0;">
   <div class="photo ph-warm" style="width:100%;height:82vh;">
+    <!-- elisdream-6.jpg — sitting on car roof, head forward, the stillness -->
+    <img src="elisdream-6.jpg" alt="">
     <div style="position:absolute;bottom:38px;left:52px;right:52px;text-align:center;">
       <p class="italic" style="font-size:clamp(13px,1.8vw,19px);
         color:rgba(240,235,224,0.18);line-height:1.9;letter-spacing:0.04em;">
-        Après tout,<br>
-        juste assise.
+        Après tout,<br>juste assise.
       </p>
     </div>
-    <div style="position:absolute;top:28px;right:28px;">
-      <div class="caption-light">xvii.</div>
-    </div>
+    <div style="position:absolute;top:28px;right:28px;"><div class="cap-lt">xvi.</div></div>
   </div>
 </section>
+<div class="pgnum"><span>Après</span><span>—</span><span>18 — 19</span></div>
 
-<div class="pgnum">
-  <span>Après</span><span>—</span><span>18 — 19</span>
-</div>
-
-<!-- ══════════════════════════
-     LE VISAGE — two close portraits
-     one b&w disco ball face, one afro portrait
-     different heights, different margins
-══════════════════════════ -->
+<!-- ══════════════════
+     LE VISAGE — two close portraits, misaligned
+══════════════════ -->
 <section style="padding:var(--mg) 0;">
   <div class="pair" style="align-items:flex-start;">
 
-    <!-- left: taller, touches left -->
+    <!-- elisdream-4.jpg — face against disco ball, staring, taller, touches left -->
     <div style="flex:1;margin-top:0;">
       <div class="photo ph-bw frame-left" style="height:68vh;">
-        <div style="position:absolute;bottom:18px;left:18px;">
-          <div class="caption-light">xviii.</div>
-        </div>
+        <img src="elisdream-4.jpg" alt="">
+        <div style="position:absolute;bottom:18px;left:18px;"><div class="cap-lt">xvii.</div></div>
       </div>
     </div>
 
-    <!-- right: shorter, floated down, touches right -->
+    <!-- elisdream-20.jpg — afro close, red lips, shorter, dropped, touches right -->
     <div style="flex:1;margin-top:calc(var(--mg) * 2.5);">
       <div class="photo ph-bw frame-right" style="height:55vh;">
-        <div style="position:absolute;bottom:18px;left:18px;">
-          <div class="caption-light">xix.</div>
-        </div>
+        <img src="elisdream-20.jpg" alt="">
+        <div style="position:absolute;bottom:18px;left:18px;"><div class="cap-lt">xviii.</div></div>
       </div>
     </div>
 
   </div>
 </section>
+<div class="pgnum"><span>Le Visage</span><span>—</span><span>20 — 21</span></div>
 
-<div class="pgnum">
-  <span>Le Visage</span><span>—</span><span>20 — 21</span>
-</div>
-
-<!-- ══════════════════════════
+<!-- ══════════════════
      LE PLAFOND — silhouette, almost abstract
-     touches left and right edges, margin top and bottom
-══════════════════════════ -->
+     touches left and right, margin top and bottom
+══════════════════ -->
 <section style="padding:var(--mg) 0;">
-  <div class="photo ph-bw" style="width:100%;height:86vh;
-    background:linear-gradient(180deg,#ddd8cc 0%,#c8c2b4 25%,#0a0a08 100%);">
-    <div style="position:absolute;bottom:32px;right:36px;">
-      <div class="caption">xx.</div>
-    </div>
+  <div class="photo ph-bw" style="width:100%;height:86vh;">
+    <!-- elisdream-10.jpg — pure silhouette against grid ceiling, arms back -->
+    <img src="elisdream-10.jpg" alt="">
+    <div style="position:absolute;bottom:32px;right:36px;"><div class="caption">xix.</div></div>
   </div>
 </section>
+<div class="pgnum"><span>Le Plafond</span><span>—</span><span>22 — 23</span></div>
 
-<div class="pgnum">
-  <span>Le Plafond</span><span>—</span><span>22 — 23</span>
-</div>
-
-<!-- ══════════════════════════
+<!-- ══════════════════
      FIN — through the car window
-     image on left touches left edge, text floats right
-══════════════════════════ -->
+     image touches left and top, text floats right
+══════════════════ -->
 <section style="display:flex;min-height:88vh;align-items:stretch;">
 
-  <!-- final image: touches left and top -->
+  <!-- elisdream-7.jpg — through diamond quilt leather, looking back, the closer -->
   <div style="flex:1;padding:0 var(--mg) var(--mg) 0;">
     <div class="photo ph-blue" style="height:100%;min-height:80vh;">
-      <div style="position:absolute;bottom:36px;left:32px;">
-        <div class="caption-light">xxi. — fin.</div>
-      </div>
+      <img src="elisdream-7.jpg" alt="">
+      <div style="position:absolute;bottom:36px;left:32px;"><div class="cap-lt">xx. — fin.</div></div>
     </div>
   </div>
 
-  <!-- closing text -->
   <div style="flex:0.7;display:flex;flex-direction:column;justify-content:flex-end;
     padding:52px 52px 60px;border-left:1px solid var(--ink-ghost);">
-
-    <div class="caption" style="margin-bottom:38px;letter-spacing:0.3em;">
-      Eli's Dream
-    </div>
-
+    <div class="caption" style="margin-bottom:38px;letter-spacing:0.3em;">Eli's Dream</div>
     <p class="fell" style="font-size:clamp(13px,1.7vw,17px);
       line-height:2.1;color:var(--ink-faint);font-style:italic;">
       Mode : Eli<br>
       Photographie : W.A. Jones<br>
       New York City
     </p>
-
     <div style="width:22px;height:1px;background:var(--ink);opacity:0.18;margin:26px 0;"></div>
-
     <div style="opacity:0.09;">
       <svg width="54" height="54" viewBox="0 0 54 54">
         <line x1="0" y1="13.5" x2="54" y2="13.5" stroke="#1c1a15" stroke-width="0.6"/>
@@ -674,10 +531,7 @@
   </div>
 
 </section>
-
-<div class="pgnum">
-  <span>W.A. Jones</span><span>—</span><span>24</span>
-</div>
+<div class="pgnum"><span>W.A. Jones</span><span>—</span><span>24</span></div>
 
 </body>
 </html>
