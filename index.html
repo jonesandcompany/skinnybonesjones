@@ -25,21 +25,17 @@
 
   .cursor {
     position: fixed;
-    width: 10px;
-    height: 10px;
+    width: 10px; height: 10px;
     background: var(--red);
     border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
-    transition: width 0.15s ease, height 0.15s ease, background 0.15s ease;
+    transition: width .15s ease, height .15s ease;
     mix-blend-mode: difference;
   }
 
-  .cursor.hover {
-    width: 28px;
-    height: 28px;
-  }
+  .cursor.hover { width: 28px; height: 28px; }
 
   .header {
     position: fixed;
@@ -56,29 +52,26 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(30px, 4vw, 56px);
     color: var(--paper);
-    letter-spacing: 0.04em;
+    letter-spacing: .04em;
     line-height: 1;
   }
 
-  .title-block .subtitle {
+  .subtitle {
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     color: var(--muted);
-    letter-spacing: 0.15em;
+    letter-spacing: .15em;
     text-transform: uppercase;
     margin-top: 5px;
   }
 
-  .title-block .subtitle em {
-    color: var(--red);
-    font-style: normal;
-  }
+  .subtitle em { color: var(--red); font-style: normal; }
 
   .scroll-hint {
     font-family: 'DM Mono', monospace;
     font-size: 9px;
     color: var(--muted);
-    letter-spacing: 0.12em;
+    letter-spacing: .12em;
     text-transform: uppercase;
     display: flex;
     align-items: center;
@@ -89,20 +82,19 @@
   .scroll-hint::after {
     content: '';
     display: block;
-    width: 32px;
-    height: 1px;
+    width: 32px; height: 1px;
     background: var(--muted);
     animation: pulse 2s ease-in-out infinite;
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 0.3; transform: scaleX(1); }
+    0%, 100% { opacity: .3; transform: scaleX(1); }
     50% { opacity: 1; transform: scaleX(1.5); }
   }
 
   .scroll-container {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    inset: 0;
     overflow-x: scroll;
     overflow-y: hidden;
     scrollbar-width: none;
@@ -117,6 +109,7 @@
     height: 100vh;
     width: max-content;
     position: relative;
+    will-change: transform; /* ChatGPT addition — compositor hint */
   }
 
   /* ── STOP ── */
@@ -140,7 +133,7 @@
     font-family: 'DM Mono', monospace;
     font-size: 9px;
     color: var(--red);
-    letter-spacing: 0.2em;
+    letter-spacing: .2em;
   }
 
   .stop-name {
@@ -156,14 +149,12 @@
     font-family: 'DM Mono', monospace;
     font-size: 8px;
     color: var(--muted);
-    letter-spacing: 0.12em;
+    letter-spacing: .12em;
     text-transform: uppercase;
     line-height: 1.8;
   }
 
-  .stop-meta .duration {
-    color: var(--red);
-  }
+  .stop-meta .duration { color: var(--red); }
 
   /* ── PHOTOS ── */
   .photo {
@@ -176,17 +167,14 @@
   }
 
   .photo img {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     object-fit: cover;
     display: block;
     filter: contrast(1.05);
-    transition: filter 0.4s ease;
+    transition: filter .4s ease;
   }
 
-  .photo:hover img {
-    filter: contrast(1.1) saturate(1.05);
-  }
+  .photo:hover img { filter: contrast(1.1) saturate(1.05); }
 
   .photo-tall     { width: 260px; height: 360px; }
   .photo-portrait { width: 220px; height: 320px; }
@@ -205,7 +193,7 @@
     gap: 6px;
   }
 
-  /* ── TRANSIT BLOCK ── */
+  /* ── TRANSIT ── */
   .transit {
     flex-shrink: 0;
     display: flex;
@@ -223,7 +211,6 @@
     width: 100%;
     position: relative;
     height: 2px;
-    background: transparent;
     display: flex;
     align-items: center;
   }
@@ -235,26 +222,31 @@
     height: 1px;
     background: repeating-linear-gradient(
       to right,
-      var(--red) 0px,
-      var(--red) 6px,
-      transparent 6px,
-      transparent 12px
+      var(--red) 0px, var(--red) 6px,
+      transparent 6px, transparent 12px
     );
   }
 
+  /* ChatGPT addition — subtle arrow pulse */
   .transit-arrow {
     position: absolute;
     right: 0;
     color: var(--red);
     font-size: 10px;
     line-height: 1;
+    animation: arrowTick 3s ease-in-out infinite;
+  }
+
+  @keyframes arrowTick {
+    0%, 85%, 100% { transform: translateX(0); opacity: .9; }
+    90% { transform: translateX(2px); opacity: 1; }
   }
 
   .transit-data {
     font-family: 'DM Mono', monospace;
     font-size: 7.5px;
     color: #444;
-    letter-spacing: 0.12em;
+    letter-spacing: .12em;
     text-transform: uppercase;
     text-align: center;
     line-height: 1.9;
@@ -303,7 +295,7 @@
   .filmstrip-frame img {
     width: 100%; height: 100%;
     object-fit: cover;
-    filter: brightness(0.6) contrast(1.1);
+    filter: brightness(.6) contrast(1.1);
     display: block;
   }
 
@@ -325,7 +317,7 @@
     font-family: 'DM Mono', monospace;
     font-size: 9px;
     color: var(--red);
-    letter-spacing: 0.2em;
+    letter-spacing: .2em;
   }
 
   .redacted-title-wrap {
@@ -356,7 +348,7 @@
     font-family: 'DM Mono', monospace;
     font-size: 8px;
     color: #333;
-    letter-spacing: 0.12em;
+    letter-spacing: .12em;
     text-transform: uppercase;
     line-height: 1.9;
   }
@@ -381,16 +373,12 @@
     background: repeating-linear-gradient(
       -45deg,
       transparent, transparent 8px,
-      rgba(255,255,255,0.015) 8px,
-      rgba(255,255,255,0.015) 9px
+      rgba(255,255,255,.015) 8px,
+      rgba(255,255,255,.015) 9px
     );
   }
 
-  .redacted-stripe {
-    width: 78%; height: 16px;
-    background: #111;
-    border: 1px solid #1d1d1d;
-  }
+  .redacted-stripe { width: 78%; height: 16px; background: #111; border: 1px solid #1d1d1d; }
   .redacted-stripe:nth-child(2) { width: 62%; }
   .redacted-stripe:nth-child(3) { width: 72%; }
 
@@ -398,7 +386,7 @@
     font-family: 'DM Mono', monospace;
     font-size: 8px;
     color: #2a2a2a;
-    letter-spacing: 0.2em;
+    letter-spacing: .2em;
     text-transform: uppercase;
     position: absolute;
     bottom: 14px;
@@ -424,7 +412,7 @@
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     color: var(--muted);
-    letter-spacing: 0.12em;
+    letter-spacing: .12em;
     text-transform: uppercase;
     line-height: 2.1;
     max-width: 300px;
@@ -454,12 +442,12 @@
     font-family: 'DM Mono', monospace;
     font-size: 8px;
     color: #2a2a2a;
-    letter-spacing: 0.15em;
+    letter-spacing: .15em;
     text-transform: uppercase;
     margin-top: 20px;
   }
 
-  /* ── PROGRESS ── */
+  /* ── PROGRESS BAR — with end-of-day flash (ChatGPT addition) ── */
   .progress-bar {
     position: fixed;
     bottom: 0; left: 0;
@@ -469,17 +457,27 @@
     width: 0%;
   }
 
+  .progress-bar.expand {
+    animation: closeDay .6s ease forwards;
+  }
+
+  @keyframes closeDay {
+    0%   { height: 2px; }
+    50%  { height: 100vh; }
+    100% { height: 2px; }
+  }
+
   .location-counter {
     position: fixed;
     bottom: 20px; right: 36px;
     font-family: 'DM Mono', monospace;
     font-size: 9px;
     color: var(--muted);
-    letter-spacing: 0.15em;
+    letter-spacing: .15em;
     z-index: 200;
   }
 
-  /* ── GRAIN ── */
+  /* ── GRAIN (reduced opacity per ChatGPT) ── */
   body::after {
     content: '';
     position: fixed;
@@ -487,7 +485,7 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
     pointer-events: none;
     z-index: 1000;
-    opacity: 0.4;
+    opacity: .28;
   }
 </style>
 </head>
@@ -527,20 +525,17 @@
       <div class="stop-inner">
         <div class="stop-number">01</div>
         <div class="stop-name">West Village<br>Morning</div>
-        <div class="stop-meta">
-          9:45 — 9:54am<br>
-          <span class="duration">9 min</span>
-        </div>
+        <div class="stop-meta">9:45 — 9:54am<br><span class="duration">9 min</span></div>
         <div class="photo-group">
           <div class="photo photo-tall">
             <img src="lealfre/lealfre-21.jpg" alt="">
           </div>
           <div class="photo-group-col">
             <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-4.jpg" alt="">
+              <img src="lealfre/lealfre-4.jpg" alt="" loading="lazy">
             </div>
             <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-50.jpg" alt="">
+              <img src="lealfre/lealfre-50.jpg" alt="" loading="lazy">
             </div>
           </div>
         </div>
@@ -561,20 +556,17 @@
       <div class="stop-inner">
         <div class="stop-number">02</div>
         <div class="stop-name">Dante</div>
-        <div class="stop-meta">
-          10:00 — 10:22am<br>
-          <span class="duration">22 min</span>
-        </div>
+        <div class="stop-meta">10:00 — 10:22am<br><span class="duration">22 min</span></div>
         <div class="photo-group">
           <div class="photo photo-tall">
-            <img src="lealfre/lealfre-2.jpg" alt="">
+            <img src="lealfre/lealfre-2.jpg" alt="" loading="lazy">
           </div>
           <div class="photo-group-col">
             <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-23.jpg" alt="">
+              <img src="lealfre/lealfre-23.jpg" alt="" loading="lazy">
             </div>
             <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-24.jpg" alt="">
+              <img src="lealfre/lealfre-24.jpg" alt="" loading="lazy">
             </div>
           </div>
         </div>
@@ -597,16 +589,13 @@
       <div class="stop-inner">
         <div class="stop-number">03</div>
         <div class="stop-name">Joe's Pizza</div>
-        <div class="stop-meta">
-          11:03 — 11:13am<br>
-          <span class="duration">10 min</span>
-        </div>
+        <div class="stop-meta">11:03 — 11:13am<br><span class="duration">10 min</span></div>
         <div class="photo-group">
           <div class="photo photo-portrait">
-            <img src="lealfre/lealfre-26.jpg" alt="">
+            <img src="lealfre/lealfre-26.jpg" alt="" loading="lazy">
           </div>
           <div class="photo photo-portrait" style="width:210px">
-            <img src="lealfre/lealfre-27.jpg" alt="">
+            <img src="lealfre/lealfre-27.jpg" alt="" loading="lazy">
           </div>
         </div>
       </div>
@@ -626,12 +615,9 @@
       <div class="stop-inner">
         <div class="stop-number">04</div>
         <div class="stop-name">Soho's Finest</div>
-        <div class="stop-meta">
-          11:24 — 11:25am<br>
-          <span class="duration">1 min</span>
-        </div>
+        <div class="stop-meta">11:24 — 11:25am<br><span class="duration">1 min</span></div>
         <div class="photo photo-tall">
-          <img src="lealfre/lealfre-28.jpg" alt="">
+          <img src="lealfre/lealfre-28.jpg" alt="" loading="lazy">
         </div>
       </div>
     </div>
@@ -650,20 +636,17 @@
       <div class="stop-inner">
         <div class="stop-number">05</div>
         <div class="stop-name">M&O Import</div>
-        <div class="stop-meta">
-          11:27 — 11:38am<br>
-          <span class="duration">11 min</span>
-        </div>
+        <div class="stop-meta">11:27 — 11:38am<br><span class="duration">11 min</span></div>
         <div class="photo-group">
           <div class="photo photo-tall">
-            <img src="lealfre/lealfre-5.jpg" alt="">
+            <img src="lealfre/lealfre-5.jpg" alt="" loading="lazy">
           </div>
           <div class="photo-group-col">
             <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-6.jpg" alt="">
+              <img src="lealfre/lealfre-6.jpg" alt="" loading="lazy">
             </div>
             <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-7.jpg" alt="">
+              <img src="lealfre/lealfre-7.jpg" alt="" loading="lazy">
             </div>
           </div>
         </div>
@@ -684,16 +667,13 @@
       <div class="stop-inner">
         <div class="stop-number">06</div>
         <div class="stop-name">Fanelli Cafe</div>
-        <div class="stop-meta">
-          11:42 — 11:48am<br>
-          <span class="duration">6 min / flash ban</span>
-        </div>
+        <div class="stop-meta">11:42 — 11:48am<br><span class="duration">6 min / flash ban</span></div>
         <div class="photo-group">
           <div class="photo photo-small">
-            <img src="lealfre/lealfre-33.jpg" alt="">
+            <img src="lealfre/lealfre-33.jpg" alt="" loading="lazy">
           </div>
           <div class="photo photo-small">
-            <img src="lealfre/lealfre-31.jpg" alt="">
+            <img src="lealfre/lealfre-31.jpg" alt="" loading="lazy">
           </div>
         </div>
       </div>
@@ -714,12 +694,9 @@
       <div class="stop-inner">
         <div class="stop-number">07</div>
         <div class="stop-name">Morgenstern's</div>
-        <div class="stop-meta">
-          12:14 — 12:21pm<br>
-          <span class="duration">7 min</span>
-        </div>
+        <div class="stop-meta">12:14 — 12:21pm<br><span class="duration">7 min</span></div>
         <div class="photo photo-portrait" style="width:240px;height:320px">
-          <img src="lealfre/lealfre-34.jpg" alt="">
+          <img src="lealfre/lealfre-34.jpg" alt="" loading="lazy">
         </div>
       </div>
     </div>
@@ -738,20 +715,17 @@
       <div class="stop-inner">
         <div class="stop-number">08</div>
         <div class="stop-name">McSorley's</div>
-        <div class="stop-meta">
-          12:44 — 1:05pm<br>
-          <span class="duration">21 min</span>
-        </div>
+        <div class="stop-meta">12:44 — 1:05pm<br><span class="duration">21 min</span></div>
         <div class="photo-group">
           <div class="photo photo-tall" style="width:250px">
-            <img src="lealfre/lealfre-41.jpg" alt="">
+            <img src="lealfre/lealfre-41.jpg" alt="" loading="lazy">
           </div>
           <div class="photo-group-col">
             <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-8.jpg" alt="">
+              <img src="lealfre/lealfre-8.jpg" alt="" loading="lazy">
             </div>
             <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-42.jpg" alt="">
+              <img src="lealfre/lealfre-42.jpg" alt="" loading="lazy">
             </div>
           </div>
         </div>
@@ -773,16 +747,13 @@
       <div class="stop-inner">
         <div class="stop-number">09</div>
         <div class="stop-name">Subway →<br>Grand Central</div>
-        <div class="stop-meta">
-          1:11 — 1:24pm<br>
-          <span class="duration">13 min / 6 train</span>
-        </div>
+        <div class="stop-meta">1:11 — 1:24pm<br><span class="duration">13 min / 6 train</span></div>
         <div class="photo-group">
           <div class="photo photo-portrait">
-            <img src="lealfre/lealfre-10.jpg" alt="">
+            <img src="lealfre/lealfre-10.jpg" alt="" loading="lazy">
           </div>
           <div class="photo photo-portrait" style="width:210px">
-            <img src="lealfre/lealfre-43.jpg" alt="">
+            <img src="lealfre/lealfre-43.jpg" alt="" loading="lazy">
           </div>
         </div>
       </div>
@@ -802,19 +773,16 @@
       <div class="stop-inner">
         <div class="stop-number">10</div>
         <div class="stop-name">Grand Central<br>Oyster Bar</div>
-        <div class="stop-meta">
-          1:25 — 1:41pm<br>
-          <span class="duration">16 min</span>
-        </div>
+        <div class="stop-meta">1:25 — 1:41pm<br><span class="duration">16 min</span></div>
         <div class="photo photo-cinema">
-          <img src="lealfre/lealfre-44.jpg" alt="">
+          <img src="lealfre/lealfre-44.jpg" alt="" loading="lazy">
         </div>
         <div class="photo-group" style="margin-top:6px">
           <div class="photo" style="width:204px;height:150px">
-            <img src="lealfre/lealfre-45.jpg" alt="">
+            <img src="lealfre/lealfre-45.jpg" alt="" loading="lazy">
           </div>
           <div class="photo" style="width:204px;height:150px">
-            <img src="lealfre/lealfre-46.jpg" alt="">
+            <img src="lealfre/lealfre-46.jpg" alt="" loading="lazy">
           </div>
         </div>
       </div>
@@ -834,20 +802,17 @@
       <div class="stop-inner">
         <div class="stop-number">11</div>
         <div class="stop-name">The Met</div>
-        <div class="stop-meta">
-          2:16 — 2:22pm<br>
-          <span class="duration">6 min</span>
-        </div>
+        <div class="stop-meta">2:16 — 2:22pm<br><span class="duration">6 min</span></div>
         <div class="photo-group">
           <div class="photo photo-tall">
-            <img src="lealfre/lealfre-47.jpg" alt="">
+            <img src="lealfre/lealfre-47.jpg" alt="" loading="lazy">
           </div>
           <div class="photo-group-col">
             <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-48.jpg" alt="">
+              <img src="lealfre/lealfre-48.jpg" alt="" loading="lazy">
             </div>
             <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-49.jpg" alt="">
+              <img src="lealfre/lealfre-49.jpg" alt="" loading="lazy">
             </div>
           </div>
         </div>
@@ -868,12 +833,9 @@
       <div class="stop-inner">
         <div class="stop-number">12</div>
         <div class="stop-name">Bemelmans Bar</div>
-        <div class="stop-meta">
-          2:49 — 3:31pm<br>
-          <span class="duration">42 min / no flash</span>
-        </div>
+        <div class="stop-meta">2:49 — 3:31pm<br><span class="duration">42 min / no flash</span></div>
         <div class="photo photo-portrait" style="width:210px;height:290px;margin-bottom:6px">
-          <img src="lealfre/lealfre-35.jpg" alt="">
+          <img src="lealfre/lealfre-35.jpg" alt="" loading="lazy">
         </div>
         <div class="filmstrip">
           <div class="filmstrip-holes">
@@ -883,11 +845,11 @@
             <div class="filmstrip-hole"></div>
           </div>
           <div class="filmstrip-frames">
-            <div class="filmstrip-frame"><img src="lealfre/lealfre-13.jpg" alt=""></div>
-            <div class="filmstrip-frame"><img src="lealfre/lealfre-14.jpg" alt=""></div>
-            <div class="filmstrip-frame"><img src="lealfre/lealfre-15.jpg" alt=""></div>
-            <div class="filmstrip-frame"><img src="lealfre/lealfre-16.jpg" alt=""></div>
-            <div class="filmstrip-frame"><img src="lealfre/lealfre-12.jpg" alt=""></div>
+            <div class="filmstrip-frame"><img src="lealfre/lealfre-13.jpg" alt="" loading="lazy"></div>
+            <div class="filmstrip-frame"><img src="lealfre/lealfre-14.jpg" alt="" loading="lazy"></div>
+            <div class="filmstrip-frame"><img src="lealfre/lealfre-15.jpg" alt="" loading="lazy"></div>
+            <div class="filmstrip-frame"><img src="lealfre/lealfre-16.jpg" alt="" loading="lazy"></div>
+            <div class="filmstrip-frame"><img src="lealfre/lealfre-12.jpg" alt="" loading="lazy"></div>
           </div>
           <div class="filmstrip-holes">
             <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
@@ -913,24 +875,21 @@
       <div class="stop-inner">
         <div class="stop-number">13</div>
         <div class="stop-name">J.G. Melon</div>
-        <div class="stop-meta">
-          3:58 — 4:19pm<br>
-          <span class="duration">21 min</span>
-        </div>
+        <div class="stop-meta">3:58 — 4:19pm<br><span class="duration">21 min</span></div>
         <div class="photo-group">
           <div class="photo photo-tall">
-            <img src="lealfre/lealfre-36.jpg" alt="">
+            <img src="lealfre/lealfre-36.jpg" alt="" loading="lazy">
           </div>
           <div class="photo-group-col">
             <div class="photo" style="width:170px;height:177px">
-              <img src="lealfre/lealfre-37.jpg" alt="">
+              <img src="lealfre/lealfre-37.jpg" alt="" loading="lazy">
             </div>
             <div class="photo" style="width:170px;height:177px">
-              <img src="lealfre/lealfre-38.jpg" alt="">
+              <img src="lealfre/lealfre-38.jpg" alt="" loading="lazy">
             </div>
           </div>
           <div class="photo photo-portrait" style="width:190px">
-            <img src="lealfre/lealfre-17.jpg" alt="">
+            <img src="lealfre/lealfre-17.jpg" alt="" loading="lazy">
           </div>
         </div>
       </div>
@@ -952,10 +911,7 @@
         <span class="redacted-title-text">Client gets a haircut</span>
         <div class="redacted-bar-title"></div>
       </div>
-      <div class="redacted-meta">
-        4:38 — 4:57pm<br>
-        19 min
-      </div>
+      <div class="redacted-meta">4:38 — 4:57pm<br>19 min</div>
       <div class="redacted-image">
         <div class="redacted-stripe"></div>
         <div class="redacted-stripe"></div>
@@ -978,20 +934,17 @@
       <div class="stop-inner">
         <div class="stop-number">15</div>
         <div class="stop-name">The Park</div>
-        <div class="stop-meta">
-          5:22 — 5:32pm<br>
-          <span class="duration">10 min</span>
-        </div>
+        <div class="stop-meta">5:22 — 5:32pm<br><span class="duration">10 min</span></div>
         <div class="photo-group">
           <div class="photo photo-tall" style="width:280px">
-            <img src="lealfre/lealfre-19.jpg" alt="">
+            <img src="lealfre/lealfre-19.jpg" alt="" loading="lazy">
           </div>
           <div class="photo-group-col">
             <div class="photo" style="width:210px;height:177px">
-              <img src="lealfre/lealfre-18.jpg" alt="">
+              <img src="lealfre/lealfre-18.jpg" alt="" loading="lazy">
             </div>
             <div class="photo" style="width:210px;height:177px">
-              <img src="lealfre/lealfre-40.jpg" alt="">
+              <img src="lealfre/lealfre-40.jpg" alt="" loading="lazy">
             </div>
           </div>
         </div>
@@ -1024,26 +977,37 @@
     p.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
   });
 
-  // Progress
+  // Progress + counter
   const scroller = document.getElementById('scroller');
   const progress = document.getElementById('progress');
   const counter = document.getElementById('counter');
   const stops = document.querySelectorAll('[data-stop]');
+  let endTriggered = false;
 
   scroller.addEventListener('scroll', () => {
-    const max = scroller.scrollWidth - scroller.clientWidth;
-    progress.style.width = (scroller.scrollLeft / max * 100) + '%';
+    const max = (scroller.scrollWidth - scroller.clientWidth) || 1;
+    const pct = scroller.scrollLeft / max;
+    progress.style.width = (pct * 100) + '%';
+
     let active = 0;
     stops.forEach((s, i) => {
-      if (s.getBoundingClientRect().left < window.innerWidth * 0.6) active = i;
+      if (s.getBoundingClientRect().left < window.innerWidth * .6) active = i;
     });
-    counter.textContent = `${String(active + 1).padStart(2,'0')} / 15`;
+    counter.textContent = `${String(active + 1).padStart(2, '0')} / 15`;
+
+    // End-of-day flash (ChatGPT addition)
+    if (pct > .995 && !endTriggered) {
+      endTriggered = true;
+      progress.classList.add('expand');
+      setTimeout(() => progress.classList.remove('expand'), 600);
+    }
+    if (pct < .98) endTriggered = false;
   });
 
   // Wheel → horizontal
   scroller.addEventListener('wheel', e => {
     e.preventDefault();
-    scroller.scrollLeft += e.deltaY * 1.5;
+    scroller.scrollLeft += e.deltaY * 1.2;
   }, { passive: false });
 
   // Touch with momentum
