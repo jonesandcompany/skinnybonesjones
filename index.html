@@ -50,22 +50,49 @@
 
   .title-block h1 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(30px, 4vw, 56px);
+    font-size: clamp(28px, 3.6vw, 52px);
     color: var(--paper);
     letter-spacing: .04em;
     line-height: 1;
   }
 
+  .title-block h1 .num-large {
+    font-size: clamp(44px, 5.5vw, 80px);
+    color: var(--paper);
+    line-height: .9;
+    display: block;
+  }
+
+  .title-verdict {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    color: #4a4a4a;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-top: 7px;
+  }
+
+  .title-verdict em {
+    color: #333;
+    font-style: normal;
+  }
+
   .subtitle {
     font-family: 'DM Mono', monospace;
-    font-size: 10px;
+    font-size: 9px;
     color: var(--muted);
     letter-spacing: .15em;
     text-transform: uppercase;
-    margin-top: 5px;
+    margin-top: 10px;
   }
 
-  .subtitle em { color: var(--red); font-style: normal; }
+  .subtitle a {
+    color: var(--red);
+    text-decoration: none;
+    font-style: normal;
+  }
+
+  .subtitle a:hover { text-decoration: underline; }
 
   .scroll-hint {
     font-family: 'DM Mono', monospace;
@@ -609,8 +636,16 @@
 
 <div class="header">
   <div class="title-block">
-    <h1>15 Locations, 1 Day</h1>
-    <div class="subtitle">for <em>Le Alfré</em> — New York City</div>
+    <h1>
+      <span class="num-large">15</span>
+      Locations
+    </h1>
+    <h1 style="margin-top:2px">
+      <span class="num-large">1</span>
+      Day
+    </h1>
+    <div class="title-verdict">industry consensus: <em>impossible</em></div>
+    <div class="subtitle">for <a href="https://lealfre.com" target="_blank" rel="noopener">Le Alfré</a> — New York City</div>
     <div class="scroll-hint">Scroll to follow the route</div>
   </div>
 </div>
