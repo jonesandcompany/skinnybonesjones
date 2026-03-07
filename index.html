@@ -1187,39 +1187,27 @@
 </div>
 
 <script>
-  // Scroll indicator — hide once user starts scrolling
+  // ── ALL VARIABLES DECLARED FIRST ────────────────────────────────
+  const fadeCover      = document.getElementById('fadeCover');
+  const cursor         = document.getElementById('cursor');
   const scrollIndicator = document.getElementById('scrollIndicator');
-  const track = document.getElementById('track');
+  const track          = document.getElementById('track');
+  const scroller       = document.getElementById('scroller');
+  const timelineFill   = document.getElementById('timelineFill');
+  const timelineClock  = document.getElementById('timelineClock');
+  const timeline       = document.getElementById('timeline');
+  const stopEls        = Array.from(document.querySelectorAll('[data-stop]'));
+  const ticks          = [];
+  let endTriggered     = false;
+  let lastClockMins    = -1;
+  let stopScrollPcts   = null;
+  let touchStartX      = 0;
+  let touchStartScrollLeft = 0;
+  let lastTouchX       = 0;
+  let velocity         = 0;
+  let rafId            = null;
 
-  // Brief nudge on load to telegraph horizontal direction
-  setTimeout(() => {
-    track.classList.add('nudge');
-    track.addEventListener('animationend', () => track.classList.remove('nudge'), { once: true });
-  }, 900);
-
-  // Hide indicator after first meaningful scroll
-  scroller.addEventListener('scroll', () => {
-    if (scroller.scrollLeft > 40) scrollIndicator.classList.add('hidden');
-  }, { passive: true });
-
-  // Load fade-in — 300ms of black, then reveal
-  const fadeCover = document.getElementById('fadeCover');
-  setTimeout(() => fadeCover.classList.add('gone'), 300);
-
-  // Cursor
-  const cursor = document.getElementById('cursor');
-  document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-  });
-
-  document.querySelectorAll('.photo').forEach(p => {
-    p.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-    p.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-  });
-
-  // ── TIMELINE CLOCK ──────────────────────────────────────────────
-  // Each stop: [data-stop value, time in minutes from midnight]
+  // ── STOP TIMES (minutes from midnight) ──────────────────────────
   const STOPS = [
     { n: 1,  t:  585 },  // 9:45a
     { n: 2,  t:  600 },  // 10:00a
@@ -1234,12 +1222,12 @@
     { n: 11, t:  856 },  // 2:16p
     { n: 12, t:  889 },  // 2:49p
     { n: 13, t:  958 },  // 3:58p
-    { n: 14, t:  998 },  // 4:38p  ← REDACTED — clock holds here
+    { n: 14, t:  998 },  // 4:38p — clock holds here
     { n: 15, t: 1042 },  // 5:22p
   ];
 
-  const DAY_START = STOPS[0].t;   // 585 min
-  const DAY_END   = 1052;         // 5:32p in minutes (end of shoot)
+  const DAY_START = STOPS[0].t;
+  const DAY_END   = 1052; // 5:32p
   const DAY_SPAN  = DAY_END - DAY_START;
 
   function minsToDisplay(m) {
@@ -1250,56 +1238,67 @@
     return `${h12}:${String(min).padStart(2,'0')}${ampm}`;
   }
 
-  const scroller     = document.getElementById('scroller');
-  const timelineFill = document.getElementById('timelineFill');
-  const timelineClock = document.getElementById('timelineClock');
-  const timeline     = document.getElementById('timeline');
-  const stopEls      = Array.from(document.querySelectorAll('[data-stop]'));
-  const ticks        = [];
-  let endTriggered   = false;
-  let lastClockMins  = -1;
+  // ── LOAD FADE-IN ─────────────────────────────────────────────────
+  setTimeout(() => fadeCover.classList.add('gone'), 300);
 
-  // Inject tick marks at mathematically correct positions
+  // ── LOAD NUDGE ───────────────────────────────────────────────────
+  setTimeout(() => {
+    track.classList.add('nudge');
+    track.addEventListener('animationend', () => track.classList.remove('nudge'), { once: true });
+  }, 900);
+
+  // ── CURSOR ───────────────────────────────────────────────────────
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+
+  document.querySelectorAll('.photo').forEach(p => {
+    p.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    p.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+
+  // ── TICK MARKS ───────────────────────────────────────────────────
   STOPS.forEach(s => {
-    const pct = (s.t - DAY_START) / DAY_SPAN * 100;
+    const pct  = (s.t - DAY_START) / DAY_SPAN * 100;
     const tick = document.createElement('div');
-    tick.className = 'timeline-tick';
-    tick.style.left = pct + '%';
+    tick.className    = 'timeline-tick';
+    tick.style.left   = pct + '%';
     tick.dataset.stop = s.n;
     timeline.appendChild(tick);
     ticks.push({ el: tick, pct });
   });
 
-  // Get the scroll-position percentage at which each stop enters view
+  // ── STOP SCROLL POSITION CACHE ───────────────────────────────────
   function getStopScrollPcts() {
     const max = (scroller.scrollWidth - scroller.clientWidth) || 1;
     return stopEls.map(el => {
       const rect = el.getBoundingClientRect();
-      // Position of the stop's left edge in scroll space
-      const scrollPos = scroller.scrollLeft + rect.left - window.innerWidth * 0.4;
-      return Math.max(0, Math.min(1, scrollPos / max));
+      const pos  = scroller.scrollLeft + rect.left - window.innerWidth * 0.4;
+      return Math.max(0, Math.min(1, pos / max));
     });
   }
 
-  // Cache stop scroll positions after layout settles
-  let stopScrollPcts = null;
-  setTimeout(() => { stopScrollPcts = getStopScrollPcts(); }, 300);
+  setTimeout(() => { stopScrollPcts = getStopScrollPcts(); }, 400);
   window.addEventListener('resize', () => { stopScrollPcts = getStopScrollPcts(); });
 
+  // ── SCROLL HANDLER ───────────────────────────────────────────────
   scroller.addEventListener('scroll', () => {
     const max = (scroller.scrollWidth - scroller.clientWidth) || 1;
     const pct = scroller.scrollLeft / max;
 
-    // Fill bar
+    // Hide scroll indicator once moving
+    if (scroller.scrollLeft > 40) scrollIndicator.classList.add('hidden');
+
+    // Timeline fill
     timelineFill.style.width = (pct * 100) + '%';
 
-    // Position clock at leading edge
-    const clampedPct = Math.min(pct * 100, 96); // don't run off right edge
+    // Clock position — travels with fill edge
+    const clampedPct = Math.min(pct * 100, 96);
     timelineClock.style.left = clampedPct + '%';
 
-    // Lerped time ─────────────────────────────────────────────────
+    // Lerped clock time
     if (stopScrollPcts) {
-      // Find which segment we're in
       let segIdx = 0;
       for (let i = 0; i < stopScrollPcts.length - 1; i++) {
         if (pct >= stopScrollPcts[i]) segIdx = i;
@@ -1312,18 +1311,14 @@
 
       let lerped;
       if (fromStop.n === 14) {
-        // Clock holds at 4:38p through the redacted stop
-        lerped = fromStop.t;
+        lerped = fromStop.t; // clock holds at redacted stop
       } else {
-        const segProgress = toPct > fromPct
-          ? (pct - fromPct) / (toPct - fromPct)
-          : 0;
+        const segProgress = toPct > fromPct ? (pct - fromPct) / (toPct - fromPct) : 0;
         lerped = fromStop.t + (toStop.t - fromStop.t) * Math.min(1, Math.max(0, segProgress));
       }
 
       const newMins = Math.round(lerped);
       if (newMins !== lastClockMins) {
-        // Soft digit transition
         timelineClock.classList.add('change');
         setTimeout(() => {
           timelineClock.textContent = minsToDisplay(newMins);
@@ -1332,15 +1327,11 @@
         lastClockMins = newMins;
       }
 
-      // Update tick colors
+      // Tick mark colours
       ticks.forEach(tk => {
-        const stopN = parseInt(tk.el.dataset.stop);
-        const stopData = STOPS.find(s => s.n === stopN);
-        if (stopData && stopData.t <= lerped) {
-          tk.el.classList.add('passed');
-        } else {
-          tk.el.classList.remove('passed');
-        }
+        const stopData = STOPS.find(s => s.n === parseInt(tk.el.dataset.stop));
+        if (stopData && stopData.t <= lerped) tk.el.classList.add('passed');
+        else tk.el.classList.remove('passed');
       });
     }
 
@@ -1351,58 +1342,50 @@
       setTimeout(() => timelineFill.classList.remove('expand'), 600);
     }
     if (pct < .98) endTriggered = false;
+
   }, { passive: true });
 
-  // Wheel → horizontal with variable friction
-  // Small movements drift gently; large flicks ease out
+  // ── WHEEL — variable friction ─────────────────────────────────────
   scroller.addEventListener('wheel', e => {
     e.preventDefault();
-    const raw = e.deltaY;
-    const sign = raw < 0 ? -1 : 1;
-    const abs  = Math.abs(raw);
-    // Ease-out curve: large inputs are dampened
+    const raw    = e.deltaY;
+    const sign   = raw < 0 ? -1 : 1;
+    const abs    = Math.abs(raw);
     const scaled = sign * (abs < 50 ? abs * 0.8 : 40 + (abs - 50) * 0.4);
     scroller.scrollLeft += scaled;
   }, { passive: false });
 
-  // Touch with momentum
-  let touchStartX = 0;
-  let touchStartScrollLeft = 0;
-  let lastTouchX = 0;
-  let velocity = 0;
-  let rafId = null;
-
+  // ── TOUCH — momentum ─────────────────────────────────────────────
   scroller.addEventListener('touchstart', e => {
-    touchStartX = e.touches[0].clientX;
+    touchStartX          = e.touches[0].clientX;
     touchStartScrollLeft = scroller.scrollLeft;
-    lastTouchX = touchStartX;
-    velocity = 0;
+    lastTouchX           = touchStartX;
+    velocity             = 0;
     if (rafId) cancelAnimationFrame(rafId);
   }, { passive: true });
 
   scroller.addEventListener('touchmove', e => {
     const dx = touchStartX - e.touches[0].clientX;
-    velocity = lastTouchX - e.touches[0].clientX;
+    velocity   = lastTouchX - e.touches[0].clientX;
     lastTouchX = e.touches[0].clientX;
     scroller.scrollLeft = touchStartScrollLeft + dx;
   }, { passive: true });
 
   scroller.addEventListener('touchend', () => {
-    // Amplify the exit velocity slightly so a flick carries further
     velocity *= 2.2;
     const decelerate = () => {
       if (Math.abs(velocity) < 0.15) return;
       scroller.scrollLeft += velocity;
-      velocity *= 0.96; // slower decay = longer, smoother coast
+      velocity *= 0.96;
       rafId = requestAnimationFrame(decelerate);
     };
     decelerate();
   });
 
-  // Keyboard
+  // ── KEYBOARD ─────────────────────────────────────────────────────
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') scroller.scrollLeft += 300;
-    if (e.key === 'ArrowLeft') scroller.scrollLeft -= 300;
+    if (e.key === 'ArrowLeft')  scroller.scrollLeft -= 300;
   });
 </script>
 </body>
