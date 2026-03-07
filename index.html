@@ -19,7 +19,9 @@
   html, body {
     background: var(--ink);
     height: 100%;
+    max-height: 100%;
     overflow: hidden;
+    overscroll-behavior: none;
     cursor: none;
   }
 
@@ -31,7 +33,13 @@
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
-    transition: width .15s ease, height .15s ease, opacity .15s ease;
+    transition: width .15s ease, height .15s ease;
+    /* Default: plain red dot */
+  }
+
+  /* Over photos: mix-blend-mode inverts against image tones — red shifts to cyan/green on warm photos */
+  .cursor.on-photo {
+    mix-blend-mode: difference;
   }
 
   .cursor.hover { width: 28px; height: 28px; }
@@ -120,11 +128,13 @@
 
   .scroll-container {
     position: fixed;
-    inset: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     overflow-x: scroll;
     overflow-y: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    touch-action: pan-x;
+    overscroll-behavior: none;
   }
 
   .scroll-container::-webkit-scrollbar { display: none; }
@@ -132,10 +142,10 @@
   .track {
     display: flex;
     align-items: center;
-    height: 100vh;
+    height: 100dvh;
     width: max-content;
     position: relative;
-    will-change: transform; /* ChatGPT addition — compositor hint */
+    will-change: transform;
   }
 
   /* ── STOP ── */
@@ -1254,8 +1264,14 @@
   });
 
   document.querySelectorAll('.photo').forEach(p => {
-    p.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-    p.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    p.addEventListener('mouseenter', () => {
+      cursor.classList.add('hover');
+      cursor.classList.add('on-photo');
+    });
+    p.addEventListener('mouseleave', () => {
+      cursor.classList.remove('hover');
+      cursor.classList.remove('on-photo');
+    });
   });
 
   // ── TICK MARKS ───────────────────────────────────────────────────
@@ -1345,12 +1361,14 @@
 
   }, { passive: true });
 
-  // ── WHEEL — variable friction ─────────────────────────────────────
+  // ── WHEEL — handle both deltaY and deltaX, variable friction ────
   scroller.addEventListener('wheel', e => {
     e.preventDefault();
-    const raw    = e.deltaY;
-    const sign   = raw < 0 ? -1 : 1;
-    const abs    = Math.abs(raw);
+    e.stopPropagation();
+    // Use whichever axis has more movement — handles trackpads sending deltaX
+    const raw  = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    const sign = raw < 0 ? -1 : 1;
+    const abs  = Math.abs(raw);
     const scaled = sign * (abs < 50 ? abs * 0.8 : 40 + (abs - 50) * 0.4);
     scroller.scrollLeft += scaled;
   }, { passive: false });
