@@ -31,8 +31,7 @@
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
-    transition: width .15s ease, height .15s ease;
-    mix-blend-mode: difference;
+    transition: width .15s ease, height .15s ease, opacity .15s ease;
   }
 
   .cursor.hover { width: 28px; height: 28px; }
@@ -530,34 +529,89 @@
     margin-top: 20px;
   }
 
-  /* ── PROGRESS BAR — with end-of-day flash (ChatGPT addition) ── */
-  .progress-bar {
+  /* ── TIMELINE BAR ── */
+  .timeline {
     position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 28px;
+    z-index: 200;
+    pointer-events: none;
+  }
+
+  /* Red fill — the day burning forward */
+  .timeline-fill {
+    position: absolute;
     bottom: 0; left: 0;
     height: 2px;
     background: var(--red);
-    z-index: 200;
     width: 0%;
+    transition: width .05s linear;
   }
 
-  .progress-bar.expand {
+  /* Full ruled line behind the fill */
+  .timeline-rule {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: #1c1c1c;
+  }
+
+  /* Tick marks at each stop */
+  .timeline-tick {
+    position: absolute;
+    bottom: 0;
+    width: 1px;
+    height: 5px;
+    background: #333;
+    transform: translateX(-50%);
+  }
+
+  .timeline-tick.passed {
+    background: var(--red);
+    opacity: .5;
+  }
+
+  /* Traveling clock — lives at leading edge of fill */
+  .timeline-clock {
+    position: absolute;
+    bottom: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: var(--muted);
+    letter-spacing: .12em;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    transition: opacity .2s ease, transform .2s ease;
+  }
+
+  .timeline-clock.change {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px);
+  }
+
+  /* Start / end labels */
+  .timeline-label-start,
+  .timeline-label-end {
+    position: absolute;
+    bottom: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 7px;
+    color: #2a2a2a;
+    letter-spacing: .1em;
+  }
+
+  .timeline-label-start { left: 8px; }
+  .timeline-label-end   { right: 8px; }
+
+  /* End-of-day flash */
+  .timeline-fill.expand {
     animation: closeDay .6s ease forwards;
   }
 
   @keyframes closeDay {
     0%   { height: 2px; }
-    50%  { height: 100vh; }
+    50%  { height: 100vh; opacity: .15; }
     100% { height: 2px; }
-  }
-
-  .location-counter {
-    position: fixed;
-    bottom: 20px; right: 36px;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--muted);
-    letter-spacing: .15em;
-    z-index: 200;
   }
 
   /* ── SCROLL NUDGE — brief hint animation on load ── */
@@ -620,13 +674,33 @@
     z-index: 1000;
     opacity: .28;
   }
+
+  /* ── LOAD FADE-IN ── */
+  .fade-cover {
+    position: fixed;
+    inset: 0;
+    background: var(--ink);
+    z-index: 8000;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity .7s ease;
+  }
+  .fade-cover.gone { opacity: 0; }
 </style>
 </head>
 <body>
 
+<div class="fade-cover" id="fadeCover"></div>
 <div class="cursor" id="cursor"></div>
-<div class="progress-bar" id="progress"></div>
-<div class="location-counter" id="counter">01 / 15</div>
+
+<div class="timeline" id="timeline">
+  <div class="timeline-rule"></div>
+  <div class="timeline-fill" id="timelineFill"></div>
+  <div class="timeline-clock" id="timelineClock">9:45a</div>
+  <div class="timeline-label-start">9:45a</div>
+  <div class="timeline-label-end">5:32p</div>
+  <!-- Tick marks injected by JS -->
+</div>
 <div class="scroll-indicator" id="scrollIndicator">
   scroll
   <div class="scroll-indicator-arrows">
@@ -1128,6 +1202,10 @@
     if (scroller.scrollLeft > 40) scrollIndicator.classList.add('hidden');
   }, { passive: true });
 
+  // Load fade-in — 300ms of black, then reveal
+  const fadeCover = document.getElementById('fadeCover');
+  setTimeout(() => fadeCover.classList.add('gone'), 300);
+
   // Cursor
   const cursor = document.getElementById('cursor');
   document.addEventListener('mousemove', e => {
@@ -1140,37 +1218,151 @@
     p.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
   });
 
-  // Progress + counter
-  const scroller = document.getElementById('scroller');
-  const progress = document.getElementById('progress');
-  const counter = document.getElementById('counter');
-  const stops = document.querySelectorAll('[data-stop]');
-  let endTriggered = false;
+  // ── TIMELINE CLOCK ──────────────────────────────────────────────
+  // Each stop: [data-stop value, time in minutes from midnight]
+  const STOPS = [
+    { n: 1,  t:  585 },  // 9:45a
+    { n: 2,  t:  600 },  // 10:00a
+    { n: 3,  t:  663 },  // 11:03a
+    { n: 4,  t:  684 },  // 11:24a
+    { n: 5,  t:  687 },  // 11:27a
+    { n: 6,  t:  702 },  // 11:42a
+    { n: 7,  t:  734 },  // 12:14p
+    { n: 8,  t:  764 },  // 12:44p
+    { n: 9,  t:  791 },  // 1:11p
+    { n: 10, t:  805 },  // 1:25p
+    { n: 11, t:  856 },  // 2:16p
+    { n: 12, t:  889 },  // 2:49p
+    { n: 13, t:  958 },  // 3:58p
+    { n: 14, t:  998 },  // 4:38p  ← REDACTED — clock holds here
+    { n: 15, t: 1042 },  // 5:22p
+  ];
+
+  const DAY_START = STOPS[0].t;   // 585 min
+  const DAY_END   = 1052;         // 5:32p in minutes (end of shoot)
+  const DAY_SPAN  = DAY_END - DAY_START;
+
+  function minsToDisplay(m) {
+    const h24 = Math.floor(m / 60);
+    const min = Math.floor(m % 60);
+    const h12 = h24 % 12 || 12;
+    const ampm = h24 < 12 ? 'a' : 'p';
+    return `${h12}:${String(min).padStart(2,'0')}${ampm}`;
+  }
+
+  const scroller     = document.getElementById('scroller');
+  const timelineFill = document.getElementById('timelineFill');
+  const timelineClock = document.getElementById('timelineClock');
+  const timeline     = document.getElementById('timeline');
+  const stopEls      = Array.from(document.querySelectorAll('[data-stop]'));
+  const ticks        = [];
+  let endTriggered   = false;
+  let lastClockMins  = -1;
+
+  // Inject tick marks at mathematically correct positions
+  STOPS.forEach(s => {
+    const pct = (s.t - DAY_START) / DAY_SPAN * 100;
+    const tick = document.createElement('div');
+    tick.className = 'timeline-tick';
+    tick.style.left = pct + '%';
+    tick.dataset.stop = s.n;
+    timeline.appendChild(tick);
+    ticks.push({ el: tick, pct });
+  });
+
+  // Get the scroll-position percentage at which each stop enters view
+  function getStopScrollPcts() {
+    const max = (scroller.scrollWidth - scroller.clientWidth) || 1;
+    return stopEls.map(el => {
+      const rect = el.getBoundingClientRect();
+      // Position of the stop's left edge in scroll space
+      const scrollPos = scroller.scrollLeft + rect.left - window.innerWidth * 0.4;
+      return Math.max(0, Math.min(1, scrollPos / max));
+    });
+  }
+
+  // Cache stop scroll positions after layout settles
+  let stopScrollPcts = null;
+  setTimeout(() => { stopScrollPcts = getStopScrollPcts(); }, 300);
+  window.addEventListener('resize', () => { stopScrollPcts = getStopScrollPcts(); });
 
   scroller.addEventListener('scroll', () => {
     const max = (scroller.scrollWidth - scroller.clientWidth) || 1;
     const pct = scroller.scrollLeft / max;
-    progress.style.width = (pct * 100) + '%';
 
-    let active = 0;
-    stops.forEach((s, i) => {
-      if (s.getBoundingClientRect().left < window.innerWidth * .6) active = i;
-    });
-    counter.textContent = `${String(active + 1).padStart(2, '0')} / 15`;
+    // Fill bar
+    timelineFill.style.width = (pct * 100) + '%';
 
-    // End-of-day flash (ChatGPT addition)
+    // Position clock at leading edge
+    const clampedPct = Math.min(pct * 100, 96); // don't run off right edge
+    timelineClock.style.left = clampedPct + '%';
+
+    // Lerped time ─────────────────────────────────────────────────
+    if (stopScrollPcts) {
+      // Find which segment we're in
+      let segIdx = 0;
+      for (let i = 0; i < stopScrollPcts.length - 1; i++) {
+        if (pct >= stopScrollPcts[i]) segIdx = i;
+      }
+
+      const fromStop = STOPS[segIdx];
+      const toStop   = STOPS[Math.min(segIdx + 1, STOPS.length - 1)];
+      const fromPct  = stopScrollPcts[segIdx] || 0;
+      const toPct    = stopScrollPcts[Math.min(segIdx + 1, stopScrollPcts.length - 1)] || 1;
+
+      let lerped;
+      if (fromStop.n === 14) {
+        // Clock holds at 4:38p through the redacted stop
+        lerped = fromStop.t;
+      } else {
+        const segProgress = toPct > fromPct
+          ? (pct - fromPct) / (toPct - fromPct)
+          : 0;
+        lerped = fromStop.t + (toStop.t - fromStop.t) * Math.min(1, Math.max(0, segProgress));
+      }
+
+      const newMins = Math.round(lerped);
+      if (newMins !== lastClockMins) {
+        // Soft digit transition
+        timelineClock.classList.add('change');
+        setTimeout(() => {
+          timelineClock.textContent = minsToDisplay(newMins);
+          timelineClock.classList.remove('change');
+        }, 180);
+        lastClockMins = newMins;
+      }
+
+      // Update tick colors
+      ticks.forEach(tk => {
+        const stopN = parseInt(tk.el.dataset.stop);
+        const stopData = STOPS.find(s => s.n === stopN);
+        if (stopData && stopData.t <= lerped) {
+          tk.el.classList.add('passed');
+        } else {
+          tk.el.classList.remove('passed');
+        }
+      });
+    }
+
+    // End-of-day flash
     if (pct > .995 && !endTriggered) {
       endTriggered = true;
-      progress.classList.add('expand');
-      setTimeout(() => progress.classList.remove('expand'), 600);
+      timelineFill.classList.add('expand');
+      setTimeout(() => timelineFill.classList.remove('expand'), 600);
     }
     if (pct < .98) endTriggered = false;
-  });
+  }, { passive: true });
 
-  // Wheel → horizontal
+  // Wheel → horizontal with variable friction
+  // Small movements drift gently; large flicks ease out
   scroller.addEventListener('wheel', e => {
     e.preventDefault();
-    scroller.scrollLeft += e.deltaY * 1.2;
+    const raw = e.deltaY;
+    const sign = raw < 0 ? -1 : 1;
+    const abs  = Math.abs(raw);
+    // Ease-out curve: large inputs are dampened
+    const scaled = sign * (abs < 50 ? abs * 0.8 : 40 + (abs - 50) * 0.4);
+    scroller.scrollLeft += scaled;
   }, { passive: false });
 
   // Touch with momentum
