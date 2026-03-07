@@ -1,1410 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>15 Locations, 1 Day — for Le Alfré</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Bebas+Neue&display=swap');
-
-  :root {
-    --ink: #0a0a0a;
-    --paper: #f0ebe2;
-    --red: #c1272d;
-    --muted: #8a8278;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html, body {
-    background: var(--ink);
-    height: 100%;
-    max-height: 100%;
-    overflow: hidden;
-    overscroll-behavior: none;
-    cursor: none;
-  }
-
-  .cursor {
-    position: fixed;
-    width: 10px; height: 10px;
-    background: var(--red);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: width .15s ease, height .15s ease;
-    /* Default: plain red dot */
-  }
-
-  /* Over photos: mix-blend-mode inverts against image tones — red shifts to cyan/green on warm photos */
-  .cursor.on-photo {
-    mix-blend-mode: difference;
-  }
-
-  .cursor.hover { width: 28px; height: 28px; }
-
-  .header {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 20px 36px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    pointer-events: none;
-  }
-
-  .title-block h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(28px, 3.6vw, 52px);
-    color: var(--paper);
-    letter-spacing: .04em;
-    line-height: 1;
-  }
-
-  .title-block h1 .num-large {
-    font-size: clamp(44px, 5.5vw, 80px);
-    color: var(--paper);
-    line-height: .9;
-    display: block;
-  }
-
-  .title-verdict {
-    font-family: 'DM Mono', monospace;
-    font-size: 8.5px;
-    color: #4a4a4a;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    margin-top: 7px;
-  }
-
-  .title-verdict em {
-    color: #333;
-    font-style: normal;
-  }
-
-  .subtitle {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--muted);
-    letter-spacing: .15em;
-    text-transform: uppercase;
-    margin-top: 10px;
-  }
-
-  .subtitle a {
-    color: var(--red);
-    text-decoration: none;
-    font-style: normal;
-  }
-
-  .subtitle a:hover { text-decoration: underline; }
-
-  .scroll-hint {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--muted);
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 6px;
-  }
-
-  .scroll-hint::after {
-    content: '';
-    display: block;
-    width: 32px; height: 1px;
-    background: var(--muted);
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: .3; transform: scaleX(1); }
-    50% { opacity: 1; transform: scaleX(1.5); }
-  }
-
-  .scroll-container {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    touch-action: pan-x;
-    overscroll-behavior: none;
-  }
-
-  .scroll-container::-webkit-scrollbar { display: none; }
-
-  .track {
-    display: flex;
-    align-items: center;
-    height: 100dvh;
-    width: max-content;
-    position: relative;
-    will-change: transform;
-  }
-
-  /* ── STOP ── */
-  .stop {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0 32px;
-    flex-shrink: 0;
-  }
-
-  .stop-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .stop-number {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--red);
-    letter-spacing: .2em;
-  }
-
-  .stop-name {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(16px, 2vw, 24px);
-    color: var(--paper);
-    font-style: italic;
-    line-height: 1.1;
-    max-width: 200px;
-  }
-
-  .stop-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 8px;
-    color: var(--muted);
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    line-height: 1.8;
-  }
-
-  .stop-meta .duration { color: var(--red); }
-
-  /* ── PHOTOS ── */
-  .photo {
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-    cursor: none;
-  }
-
-  .photo img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-    filter: contrast(1.05);
-    transition: filter .4s ease;
-  }
-
-  .photo:hover img { filter: contrast(1.1) saturate(1.05); }
-
-  .photo-tall     { width: 260px; height: 360px; }
-  .photo-portrait { width: 220px; height: 320px; }
-  .photo-small    { width: 200px; height: 270px; }
-  .photo-cinema   { width: 420px; height: 240px; }
-
-  .photo-group {
-    display: flex;
-    gap: 6px;
-    align-items: flex-end;
-  }
-
-  .photo-group-col {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  /* ── TRANSIT ── */
-  .transit {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0 20px;
-    gap: 10px;
-    z-index: 2;
-    align-self: center;
-    min-width: 120px;
-  }
-
-  .transit-line {
-    width: 100%;
-    position: relative;
-    height: 2px;
-    display: flex;
-    align-items: center;
-  }
-
-  .transit-line::before {
-    content: '';
-    position: absolute;
-    left: 0; right: 16px;
-    height: 1px;
-    background: repeating-linear-gradient(
-      to right,
-      var(--red) 0px, var(--red) 6px,
-      transparent 6px, transparent 12px
-    );
-  }
-
-  /* ChatGPT addition — subtle arrow pulse */
-  .transit-arrow {
-    position: absolute;
-    right: 0;
-    color: var(--red);
-    font-size: 10px;
-    line-height: 1;
-    animation: arrowTick 3s ease-in-out infinite;
-  }
-
-  @keyframes arrowTick {
-    0%, 85%, 100% { transform: translateX(0); opacity: .9; }
-    90% { transform: translateX(2px); opacity: 1; }
-  }
-
-  .transit-data {
-    font-family: 'DM Mono', monospace;
-    font-size: 7.5px;
-    color: #444;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    text-align: center;
-    line-height: 1.9;
-    white-space: nowrap;
-  }
-
-  .transit-data .dep { color: var(--muted); }
-  .transit-data .arr { color: var(--muted); }
-  .transit-data .elapsed { color: var(--red); }
-
-  /* ── FILM STRIP ── */
-  .filmstrip {
-    display: flex;
-    flex-direction: column;
-    background: #0a0a0a;
-    border: 1px solid #222;
-  }
-
-  .filmstrip-holes {
-    display: flex;
-    gap: 10px;
-    padding: 5px 8px;
-  }
-
-  .filmstrip-hole {
-    width: 9px; height: 9px;
-    border-radius: 2px;
-    border: 1px solid #333;
-    background: #111;
-    flex-shrink: 0;
-  }
-
-  .filmstrip-frames {
-    display: flex;
-    gap: 2px;
-    padding: 0 3px;
-  }
-
-  .filmstrip-frame {
-    width: 90px; height: 120px;
-    background: #1a1a1a;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .filmstrip-frame img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    filter: brightness(.6) contrast(1.1);
-    display: block;
-  }
-
-  /* ── REDACTED ── */
-  .redacted-stop {
-    position: relative;
-    padding: 0 32px;
-    flex-shrink: 0;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 16px;
-    align-self: center;
-  }
-
-  .redacted-number {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--red);
-    letter-spacing: .2em;
-  }
-
-  .redacted-title-wrap {
-    position: relative;
-    display: inline-block;
-  }
-
-  .redacted-title-text {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(16px, 2vw, 24px);
-    font-style: italic;
-    color: var(--paper);
-    position: relative;
-    z-index: 1;
-  }
-
-  .redacted-bar-title {
-    position: absolute;
-    top: 35%; bottom: 15%;
-    left: -4px; right: -4px;
-    background: #111;
-    border-top: 2px solid #1d1d1d;
-    border-bottom: 2px solid #1d1d1d;
-    z-index: 2;
-  }
-
-  .redacted-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 8px;
-    color: #333;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    line-height: 1.9;
-  }
-
-  /* ── REDACTED IMAGE — photo with classification overlay ── */
-  .redacted-image {
-    width: 240px; height: 320px;
-    background: #0a0a0a;
-    border: 1px solid #1a1a1a;
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .redacted-image img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-    filter: brightness(.55) contrast(1.1) saturate(0.7);
-  }
-
-  /* Dark overlay — warm not pure black */
-  .redacted-image::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(8, 6, 4, 0.52);
-    z-index: 2;
-  }
-
-  /* Diagonal hatch — faint, suggests classified file texture */
-  .redacted-image::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      -45deg,
-      transparent, transparent 10px,
-      rgba(255,255,255,.018) 10px,
-      rgba(255,255,255,.018) 11px
-    );
-    z-index: 3;
-    pointer-events: none;
-  }
-
-  .redact-face-bar {
-    position: absolute;
-    left: 18%; right: 14%;
-    background: #0d0b09;
-    border-top: 1.5px solid #1e1b18;
-    border-bottom: 1.5px solid #1e1b18;
-    z-index: 4;
-  }
-
-  /* Two separate bars — one over the client, one over the barber */
-  .redact-face-bar.bar-1 { top: 22%; height: 13px; }
-  .redact-face-bar.bar-2 { top: 9%; height: 11px; width: 45%; left: 44%; }
-
-  .redact-stamp {
-    position: absolute;
-    bottom: 22px;
-    left: 50%;
-    transform: translateX(-50%) rotate(-4deg);
-    border: 1.5px solid rgba(193, 39, 45, 0.55);
-    padding: 4px 10px;
-    font-family: 'DM Mono', monospace;
-    font-size: 7px;
-    color: rgba(193, 39, 45, 0.55);
-    letter-spacing: .22em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    z-index: 5;
-  }
-
-  .redact-case {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    font-family: 'DM Mono', monospace;
-    font-size: 6.5px;
-    color: rgba(138, 130, 120, 0.4);
-    letter-spacing: .15em;
-    text-transform: uppercase;
-    line-height: 1.8;
-    z-index: 5;
-  }
-
-  /* ── VERTICAL POSITIONING ── */
-  .stop-high { align-self: flex-start; padding-top: 100px; }
-  .stop-mid  { align-self: center; }
-  .stop-low  { align-self: flex-end; padding-bottom: 100px; }
-
-  /* ── INTRO / OUTRO ── */
-  .panel-intro {
-    width: 72vw; height: 100vh;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 0 40px 72px;
-    z-index: 2;
-    position: relative;
-  }
-
-  /* Soft fade at right edge of intro — draws eye rightward */
-  .panel-intro::after {
-    content: '';
-    position: absolute;
-    top: 0; right: 0;
-    width: 100px; height: 100%;
-    background: linear-gradient(to right, transparent, var(--ink) 92%);
-    pointer-events: none;
-    z-index: 3;
-  }
-
-  .intro-text {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    line-height: 2.1;
-    max-width: 300px;
-  }
-
-  .intro-text strong { color: var(--paper); font-weight: 400; }
-
-  .panel-end {
-    width: 340px; height: 100vh;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 48px;
-    z-index: 2;
-  }
-
-  .end-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 12px;
-    font-style: italic;
-    color: var(--muted);
-    line-height: 1.9;
-  }
-
-  .end-credit {
-    font-family: 'DM Mono', monospace;
-    font-size: 8px;
-    color: #2a2a2a;
-    letter-spacing: .15em;
-    text-transform: uppercase;
-    margin-top: 20px;
-  }
-
-  /* ── TIMELINE BAR ── */
-  .timeline {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    height: 28px;
-    z-index: 200;
-    pointer-events: none;
-  }
-
-  /* Red fill — the day burning forward */
-  .timeline-fill {
-    position: absolute;
-    bottom: 0; left: 0;
-    height: 2px;
-    background: var(--red);
-    width: 0%;
-    transition: width .05s linear;
-  }
-
-  /* Full ruled line behind the fill */
-  .timeline-rule {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 1px;
-    background: #1c1c1c;
-  }
-
-  /* Tick marks at each stop */
-  .timeline-tick {
-    position: absolute;
-    bottom: 0;
-    width: 1px;
-    height: 5px;
-    background: #333;
-    transform: translateX(-50%);
-  }
-
-  .timeline-tick.passed {
-    background: var(--red);
-    opacity: .5;
-  }
-
-  /* Traveling clock — lives at leading edge of fill */
-  .timeline-clock {
-    position: absolute;
-    bottom: 8px;
-    font-family: 'DM Mono', monospace;
-    font-size: 8px;
-    color: var(--muted);
-    letter-spacing: .12em;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    transition: opacity .2s ease, transform .2s ease;
-  }
-
-  .timeline-clock.change {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-4px);
-  }
-
-  /* Start / end labels */
-  .timeline-label-start,
-  .timeline-label-end {
-    position: absolute;
-    bottom: 8px;
-    font-family: 'DM Mono', monospace;
-    font-size: 7px;
-    color: #2a2a2a;
-    letter-spacing: .1em;
-  }
-
-  .timeline-label-start { left: 8px; }
-  .timeline-label-end   { right: 8px; }
-
-  /* End-of-day flash */
-  .timeline-fill.expand {
-    animation: closeDay .6s ease forwards;
-  }
-
-  @keyframes closeDay {
-    0%   { height: 2px; }
-    50%  { height: 100vh; opacity: .15; }
-    100% { height: 2px; }
-  }
-
-  /* ── SCROLL NUDGE — brief hint animation on load ── */
-  @keyframes nudgeScroll {
-    0%   { transform: translateX(0); }
-    20%  { transform: translateX(60px); }
-    40%  { transform: translateX(0); }
-    100% { transform: translateX(0); }
-  }
-
-  .track.nudge {
-    animation: nudgeScroll 1.4s cubic-bezier(.4,0,.2,1) forwards;
-  }
-
-  /* ── SCROLL INDICATOR — bottom right corner ── */
-  .scroll-indicator {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: 'DM Mono', monospace;
-    font-size: 8px;
-    color: var(--muted);
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    z-index: 200;
-    opacity: 1;
-    transition: opacity 1s ease;
-    pointer-events: none;
-  }
-
-  .scroll-indicator.hidden { opacity: 0; }
-
-  .scroll-indicator-arrows {
-    display: flex;
-    gap: 3px;
-  }
-
-  .scroll-indicator-arrows span {
-    color: var(--red);
-    animation: arrowFade 1.6s ease-in-out infinite;
-  }
-
-  .scroll-indicator-arrows span:nth-child(2) { animation-delay: .2s; }
-  .scroll-indicator-arrows span:nth-child(3) { animation-delay: .4s; }
-
-  @keyframes arrowFade {
-    0%, 100% { opacity: .15; }
-    50%       { opacity: 1; }
-  }
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1000;
-    opacity: .28;
-  }
-
-  /* ── LOAD FADE-IN ── */
-  .fade-cover {
-    position: fixed;
-    inset: 0;
-    background: var(--ink);
-    z-index: 8000;
-    pointer-events: none;
-    opacity: 1;
-    transition: opacity .7s ease;
-  }
-  .fade-cover.gone { opacity: 0; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weddings — W.A. Jones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #faf9f7;
+      --ink: #1a1916;
+      --mid: #8a8680;
+      --rule: #d8d5cf;
+      --gap: 3px;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      background: rgba(250,249,247,0.93);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    nav .wordmark {
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    nav ul {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    nav ul a {
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--mid);
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover,
+    nav ul a.active { color: var(--ink); }
+
+    /* ── HEADER STATEMENT ── */
+    .statement {
+      margin-top: 57px;
+      padding: 7rem 2.5rem 5rem;
+      max-width: 780px;
+    }
+
+    .statement h1 {
+      font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      margin-bottom: 2rem;
+    }
+
+    .statement p {
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--mid);
+      max-width: 480px;
+    }
+
+    /* ── IMAGE GRID SYSTEM ── */
+
+    .img-row {
+      display: grid;
+      gap: var(--gap);
+      margin-bottom: var(--gap);
+    }
+
+    /* layouts */
+    .row-1    { grid-template-columns: 1fr; }
+    .row-2    { grid-template-columns: 1fr 1fr; }
+    .row-3    { grid-template-columns: 1fr 1fr 1fr; }
+    .row-2-wide-l { grid-template-columns: 1.65fr 1fr; }
+    .row-2-wide-r { grid-template-columns: 1fr 1.65fr; }
+    .row-2-thin-l { grid-template-columns: 0.6fr 1fr; }
+
+    .img-row img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* heights */
+    .h-full  { height: 88vh; }
+    .h-tall  { height: 70vh; }
+    .h-mid   { height: 56vh; }
+    .h-short { height: 44vh; }
+
+    /* ── INTERLUDE TEXT ── */
+    .interlude {
+      padding: 5.5rem 2.5rem;
+      max-width: 400px;
+    }
+
+    .interlude p {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--mid);
+      line-height: 2;
+    }
+
+    /* ── CONTACT STRIP ── */
+    .contact-strip {
+      margin-top: 8rem;
+      padding: 4rem 2.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .contact-strip p {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+
+    .contact-strip a {
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    .contact-strip a:hover { color: var(--mid); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 2.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer span {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+
+    footer a {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--mid);
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--ink); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 700px) {
+      nav { padding: 1rem 1.25rem; }
+      nav ul { display: none; }
+
+      .statement { padding: 4rem 1.25rem 3rem; }
+
+      .row-2,
+      .row-3,
+      .row-2-wide-l,
+      .row-2-wide-r,
+      .row-2-thin-l {
+        grid-template-columns: 1fr;
+      }
+
+      .h-full  { height: 72vw; }
+      .h-tall  { height: 65vw; }
+      .h-mid   { height: 58vw; }
+      .h-short { height: 52vw; }
+
+      .interlude { padding: 3.5rem 1.25rem; }
+
+      .contact-strip {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 3rem 1.25rem;
+      }
+
+      footer { padding: 1.5rem 1.25rem; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="fade-cover" id="fadeCover"></div>
-<div class="cursor" id="cursor"></div>
+  <nav>
+    <a class="wordmark" href="../index.html">W.A. Jones</a>
+    <ul>
+      <li><a href="../apartmento/index.html">Hotels</a></li>
+      <li><a href="../harvardclub/index.html">Events</a></li>
+      <li><a href="#" class="active">Weddings</a></li>
+      <li><a href="../rosesmag/index.html">Editorial</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
 
-<div class="timeline" id="timeline">
-  <div class="timeline-rule"></div>
-  <div class="timeline-fill" id="timelineFill"></div>
-  <div class="timeline-clock" id="timelineClock">9:45a</div>
-  <div class="timeline-label-start">9:45a</div>
-  <div class="timeline-label-end">5:32p</div>
-  <!-- Tick marks injected by JS -->
-</div>
-<div class="scroll-indicator" id="scrollIndicator">
-  scroll
-  <div class="scroll-indicator-arrows">
-    <span>›</span><span>›</span><span>›</span>
+  <!-- OPENING STATEMENT -->
+  <div class="statement">
+    <h1>Are you sure<br>you want me<br>to do this?</h1>
+    <p>I'm not a wedding photographer. I spent years making documentary films. A few people who already knew my work decided that was exactly the problem they wanted to hire me to solve. This is what they got.</p>
   </div>
-</div>
 
-<div class="header">
-  <div class="title-block">
-    <h1>
-      <span class="num-large">15</span>
-      Locations
-    </h1>
-    <h1 style="margin-top:2px">
-      <span class="num-large">1</span>
-      Day
-    </h1>
-    <div class="title-verdict">industry consensus: <em>impossible</em></div>
-    <div class="subtitle">for <a href="https://lealfre.com" target="_blank" rel="noopener">Le Alfré</a> — New York City</div>
-    <div class="scroll-hint">Scroll to follow the route</div>
+  <!-- MORNING / GETTING READY -->
+  <!-- Full bleed opener: formal garden, the calm before -->
+  <div class="img-row row-1">
+    <img class="h-tall" src="weddings-5.jpg" alt="Formal garden, stone reflecting pool, before the ceremony" loading="eager">
   </div>
-</div>
 
-<div class="scroll-container" id="scroller">
-  <div class="track" id="track">
-
-    <!-- INTRO -->
-    <div class="panel-intro">
-      <div class="intro-text">
-        <strong>One client.</strong><br>
-        One photographer.<br>
-        No crew. No releases.<br>
-        Fifteen locations.<br>
-        One roll not for distribution.<br>
-        <br>
-        West Village to the Upper East Side.<br>
-        9:45am to 5:32pm.
-      </div>
-    </div>
-
-    <!-- 01 WEST VILLAGE -->
-    <div class="stop stop-high" data-stop="1">
-      <div class="stop-inner">
-        <div class="stop-number">01</div>
-        <div class="stop-name">West Village<br>Morning</div>
-        <div class="stop-meta">9:45 — 9:54am<br><span class="duration">9 min</span></div>
-        <div class="photo-group">
-          <div class="photo photo-tall">
-            <img src="lealfre/lealfre-21.jpg" alt="">
-          </div>
-          <div class="photo-group-col">
-            <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-4.jpg" alt="" loading="lazy">
-            </div>
-            <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-50.jpg" alt="" loading="lazy">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 9:54</span><br>
-        <span class="arr">ARR 10:00</span><br>
-        <span class="elapsed">6 MIN / ON FOOT</span>
-      </div>
-    </div>
-
-    <!-- 02 DANTE -->
-    <div class="stop stop-low" data-stop="2">
-      <div class="stop-inner">
-        <div class="stop-number">02</div>
-        <div class="stop-name">Dante</div>
-        <div class="stop-meta">10:00 — 10:22am<br><span class="duration">22 min</span></div>
-        <div class="photo-group">
-          <div class="photo photo-tall">
-            <img src="lealfre/lealfre-2.jpg" alt="" loading="lazy">
-          </div>
-          <div class="photo-group-col">
-            <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-23.jpg" alt="" loading="lazy">
-            </div>
-            <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-24.jpg" alt="" loading="lazy">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 10:22</span><br>
-        <span class="arr">ARR 11:03</span><br>
-        <span class="elapsed">41 MIN</span><br>
-        PRODUCTION MTG<br>
-        PRODUCT DETAILS
-      </div>
-    </div>
-
-    <!-- 03 JOE'S PIZZA -->
-    <div class="stop stop-mid" data-stop="3">
-      <div class="stop-inner">
-        <div class="stop-number">03</div>
-        <div class="stop-name">Joe's Pizza</div>
-        <div class="stop-meta">11:03 — 11:13am<br><span class="duration">10 min</span></div>
-        <div class="photo-group">
-          <div class="photo photo-portrait">
-            <img src="lealfre/lealfre-26.jpg" alt="" loading="lazy">
-          </div>
-          <div class="photo photo-portrait" style="width:210px">
-            <img src="lealfre/lealfre-27.jpg" alt="" loading="lazy">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 11:13</span><br>
-        <span class="arr">ARR 11:24</span><br>
-        <span class="elapsed">11 MIN / ON FOOT</span>
-      </div>
-    </div>
-
-    <!-- 04 SOHO'S FINEST -->
-    <div class="stop stop-high" data-stop="4">
-      <div class="stop-inner">
-        <div class="stop-number">04</div>
-        <div class="stop-name">Soho's Finest</div>
-        <div class="stop-meta">11:24 — 11:25am<br><span class="duration">1 min</span></div>
-        <div class="photo photo-tall">
-          <img src="lealfre/lealfre-28.jpg" alt="" loading="lazy">
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 11:25</span><br>
-        <span class="arr">ARR 11:27</span><br>
-        <span class="elapsed">2 MIN / ON FOOT</span>
-      </div>
-    </div>
-
-    <!-- 05 M&O -->
-    <div class="stop stop-low" data-stop="5">
-      <div class="stop-inner">
-        <div class="stop-number">05</div>
-        <div class="stop-name">M&O Import</div>
-        <div class="stop-meta">11:27 — 11:38am<br><span class="duration">11 min</span></div>
-        <div class="photo-group">
-          <div class="photo photo-tall">
-            <img src="lealfre/lealfre-5.jpg" alt="" loading="lazy">
-          </div>
-          <div class="photo-group-col">
-            <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-6.jpg" alt="" loading="lazy">
-            </div>
-            <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-7.jpg" alt="" loading="lazy">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 11:38</span><br>
-        <span class="arr">ARR 11:42</span><br>
-        <span class="elapsed">4 MIN / ON FOOT</span>
-      </div>
-    </div>
-
-    <!-- 06 FANELLI'S -->
-    <div class="stop stop-mid" data-stop="6">
-      <div class="stop-inner">
-        <div class="stop-number">06</div>
-        <div class="stop-name">Fanelli Cafe</div>
-        <div class="stop-meta">11:42 — 11:48am<br><span class="duration">6 min / flash ban</span></div>
-        <div class="photo-group">
-          <div class="photo photo-small">
-            <img src="lealfre/lealfre-33.jpg" alt="" loading="lazy">
-          </div>
-          <div class="photo photo-small">
-            <img src="lealfre/lealfre-31.jpg" alt="" loading="lazy">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 11:48</span><br>
-        <span class="arr">ARR 12:14</span><br>
-        <span class="elapsed">26 MIN</span><br>
-        OUTFIT CHANGE
-      </div>
-    </div>
-
-    <!-- 07 MORGENSTERN'S -->
-    <div class="stop stop-high" data-stop="7">
-      <div class="stop-inner">
-        <div class="stop-number">07</div>
-        <div class="stop-name">Morgenstern's</div>
-        <div class="stop-meta">12:14 — 12:21pm<br><span class="duration">7 min</span></div>
-        <div class="photo photo-portrait" style="width:240px;height:320px">
-          <img src="lealfre/lealfre-34.jpg" alt="" loading="lazy">
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 12:21</span><br>
-        <span class="arr">ARR 12:44</span><br>
-        <span class="elapsed">23 MIN / ON FOOT</span>
-      </div>
-    </div>
-
-    <!-- 08 MCSORLEY'S -->
-    <div class="stop stop-low" data-stop="8">
-      <div class="stop-inner">
-        <div class="stop-number">08</div>
-        <div class="stop-name">McSorley's</div>
-        <div class="stop-meta">12:44 — 1:05pm<br><span class="duration">21 min</span></div>
-        <div class="photo-group">
-          <div class="photo photo-tall" style="width:250px">
-            <img src="lealfre/lealfre-41.jpg" alt="" loading="lazy">
-          </div>
-          <div class="photo-group-col">
-            <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-8.jpg" alt="" loading="lazy">
-            </div>
-            <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-42.jpg" alt="" loading="lazy">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 1:05</span><br>
-        <span class="arr">ARR 1:11</span><br>
-        <span class="elapsed">6 MIN / ON FOOT</span><br>
-        TO ASTOR PL
-      </div>
-    </div>
-
-    <!-- 09 SUBWAY -->
-    <div class="stop stop-mid" data-stop="9">
-      <div class="stop-inner">
-        <div class="stop-number">09</div>
-        <div class="stop-name">Subway →<br>Grand Central</div>
-        <div class="stop-meta">1:11 — 1:24pm<br><span class="duration">13 min / 6 train</span></div>
-        <div class="photo-group">
-          <div class="photo photo-portrait">
-            <img src="lealfre/lealfre-10.jpg" alt="" loading="lazy">
-          </div>
-          <div class="photo photo-portrait" style="width:210px">
-            <img src="lealfre/lealfre-43.jpg" alt="" loading="lazy">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 1:24</span><br>
-        <span class="arr">ARR 1:25</span><br>
-        <span class="elapsed">1 MIN / DOWNSTAIRS</span>
-      </div>
-    </div>
-
-    <!-- 10 OYSTER BAR -->
-    <div class="stop stop-high" data-stop="10">
-      <div class="stop-inner">
-        <div class="stop-number">10</div>
-        <div class="stop-name">Grand Central<br>Oyster Bar</div>
-        <div class="stop-meta">1:25 — 1:41pm<br><span class="duration">16 min</span></div>
-        <div class="photo photo-cinema">
-          <img src="lealfre/lealfre-44.jpg" alt="" loading="lazy">
-        </div>
-        <div class="photo-group" style="margin-top:6px">
-          <div class="photo" style="width:204px;height:150px">
-            <img src="lealfre/lealfre-45.jpg" alt="" loading="lazy">
-          </div>
-          <div class="photo" style="width:204px;height:150px">
-            <img src="lealfre/lealfre-46.jpg" alt="" loading="lazy">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 1:41</span><br>
-        <span class="arr">ARR 2:16</span><br>
-        <span class="elapsed">35 MIN / 4 TRAIN + ON FOOT</span>
-      </div>
-    </div>
-
-    <!-- 11 THE MET -->
-    <div class="stop stop-low" data-stop="11">
-      <div class="stop-inner">
-        <div class="stop-number">11</div>
-        <div class="stop-name">The Met</div>
-        <div class="stop-meta">2:16 — 2:22pm<br><span class="duration">6 min</span></div>
-        <div class="photo-group">
-          <div class="photo photo-tall">
-            <img src="lealfre/lealfre-47.jpg" alt="" loading="lazy">
-          </div>
-          <div class="photo-group-col">
-            <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-48.jpg" alt="" loading="lazy">
-            </div>
-            <div class="photo" style="width:190px;height:177px">
-              <img src="lealfre/lealfre-49.jpg" alt="" loading="lazy">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 2:22</span><br>
-        <span class="arr">ARR 2:49</span><br>
-        <span class="elapsed">27 MIN / ON FOOT</span>
-      </div>
-    </div>
-
-    <!-- 12 BEMELMANS -->
-    <div class="stop stop-mid" data-stop="12">
-      <div class="stop-inner">
-        <div class="stop-number">12</div>
-        <div class="stop-name">Bemelmans Bar</div>
-        <div class="stop-meta">2:49 — 3:31pm<br><span class="duration">42 min / no flash</span></div>
-        <div class="photo photo-portrait" style="width:210px;height:290px;margin-bottom:6px">
-          <img src="lealfre/lealfre-35.jpg" alt="" loading="lazy">
-        </div>
-        <div class="filmstrip">
-          <div class="filmstrip-holes">
-            <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-            <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-            <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-            <div class="filmstrip-hole"></div>
-          </div>
-          <div class="filmstrip-frames">
-            <div class="filmstrip-frame"><img src="lealfre/lealfre-13.jpg" alt="" loading="lazy"></div>
-            <div class="filmstrip-frame"><img src="lealfre/lealfre-14.jpg" alt="" loading="lazy"></div>
-            <div class="filmstrip-frame"><img src="lealfre/lealfre-15.jpg" alt="" loading="lazy"></div>
-            <div class="filmstrip-frame"><img src="lealfre/lealfre-16.jpg" alt="" loading="lazy"></div>
-            <div class="filmstrip-frame"><img src="lealfre/lealfre-12.jpg" alt="" loading="lazy"></div>
-          </div>
-          <div class="filmstrip-holes">
-            <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-            <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-            <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
-            <div class="filmstrip-hole"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 3:31</span><br>
-        <span class="arr">ARR 3:58</span><br>
-        <span class="elapsed">27 MIN / ON FOOT</span>
-      </div>
-    </div>
-
-    <!-- 13 JG MELON -->
-    <div class="stop stop-high" data-stop="13">
-      <div class="stop-inner">
-        <div class="stop-number">13</div>
-        <div class="stop-name">J.G. Melon</div>
-        <div class="stop-meta">3:58 — 4:19pm<br><span class="duration">21 min</span></div>
-        <div class="photo-group">
-          <div class="photo photo-tall">
-            <img src="lealfre/lealfre-36.jpg" alt="" loading="lazy">
-          </div>
-          <div class="photo-group-col">
-            <div class="photo" style="width:170px;height:177px">
-              <img src="lealfre/lealfre-37.jpg" alt="" loading="lazy">
-            </div>
-            <div class="photo" style="width:170px;height:177px">
-              <img src="lealfre/lealfre-38.jpg" alt="" loading="lazy">
-            </div>
-          </div>
-          <div class="photo photo-portrait" style="width:190px">
-            <img src="lealfre/lealfre-17.jpg" alt="" loading="lazy">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 4:19</span><br>
-        <span class="arr">ARR 4:38</span><br>
-        <span class="elapsed">19 MIN / ON FOOT</span>
-      </div>
-    </div>
-
-    <!-- 14 REDACTED HAIRCUT -->
-    <div class="redacted-stop" data-stop="14">
-      <div class="redacted-number">14</div>
-      <div class="redacted-title-wrap">
-        <span class="redacted-title-text">Client gets a haircut</span>
-        <div class="redacted-bar-title"></div>
-      </div>
-      <div class="redacted-meta">4:38 — 4:57pm<br>19 min</div>
-      <div class="redacted-image">
-        <img src="lealfre/lealfre-54.jpg" alt="">
-        <div class="redact-face-bar bar-1"></div>
-        <div class="redact-face-bar bar-2"></div>
-        <div class="redact-case">ROLL 14<br>FRAME 001–019<br>NYC — UES</div>
-        <div class="redact-stamp">Contents withheld</div>
-      </div>
-    </div>
-
-    <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
-      <div class="transit-data">
-        <span class="dep">DEP 4:57</span><br>
-        <span class="arr">ARR 5:22</span><br>
-        <span class="elapsed">25 MIN / ON FOOT</span>
-      </div>
-    </div>
-
-    <!-- 15 THE PARK -->
-    <div class="stop stop-low" data-stop="15">
-      <div class="stop-inner">
-        <div class="stop-number">15</div>
-        <div class="stop-name">The Park</div>
-        <div class="stop-meta">5:22 — 5:32pm<br><span class="duration">10 min</span></div>
-        <div class="photo-group">
-          <div class="photo photo-tall" style="width:280px">
-            <img src="lealfre/lealfre-19.jpg" alt="" loading="lazy">
-          </div>
-          <div class="photo-group-col">
-            <div class="photo" style="width:210px;height:177px">
-              <img src="lealfre/lealfre-18.jpg" alt="" loading="lazy">
-            </div>
-            <div class="photo" style="width:210px;height:177px">
-              <img src="lealfre/lealfre-40.jpg" alt="" loading="lazy">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- END -->
-    <div class="panel-end">
-      <div class="end-text">
-        Photography by W.A. Jones.<br>
-        One day. No crew.<br>
-        No releases.
-      </div>
-      <div class="end-credit">© Skinnybones Jones — New York</div>
-    </div>
-
+  <!-- Two-up: flowers + bride in white -->
+  <div class="img-row row-2">
+    <img class="h-mid" src="weddings-6.jpg" alt="White flower detail" loading="lazy">
+    <img class="h-mid" src="weddings-7.jpg" alt="Bride in white slip dress, marble interior" loading="lazy">
   </div>
-</div>
 
-<script>
-  // ── ALL VARIABLES DECLARED FIRST ────────────────────────────────
-  const fadeCover      = document.getElementById('fadeCover');
-  const cursor         = document.getElementById('cursor');
-  const scrollIndicator = document.getElementById('scrollIndicator');
-  const track          = document.getElementById('track');
-  const scroller       = document.getElementById('scroller');
-  const timelineFill   = document.getElementById('timelineFill');
-  const timelineClock  = document.getElementById('timelineClock');
-  const timeline       = document.getElementById('timeline');
-  const stopEls        = Array.from(document.querySelectorAll('[data-stop]'));
-  const ticks          = [];
-  let endTriggered     = false;
-  let lastClockMins    = -1;
-  let stopScrollPcts   = null;
-  let touchStartX      = 0;
-  let touchStartScrollLeft = 0;
-  let lastTouchX       = 0;
-  let velocity         = 0;
-  let rafId            = null;
+  <!-- Peacock arrangement — full bleed detail -->
+  <div class="img-row row-2-wide-l">
+    <img class="h-mid" src="ddwedding-3.jpg" alt="Elaborate floral arrangement detail" loading="lazy">
+    <img class="h-mid" src="ccwedding.jpg" alt="Couple portrait" loading="lazy">
+  </div>
 
-  // ── STOP TIMES (minutes from midnight) ──────────────────────────
-  const STOPS = [
-    { n: 1,  t:  585 },  // 9:45a
-    { n: 2,  t:  600 },  // 10:00a
-    { n: 3,  t:  663 },  // 11:03a
-    { n: 4,  t:  684 },  // 11:24a
-    { n: 5,  t:  687 },  // 11:27a
-    { n: 6,  t:  702 },  // 11:42a
-    { n: 7,  t:  734 },  // 12:14p
-    { n: 8,  t:  764 },  // 12:44p
-    { n: 9,  t:  791 },  // 1:11p
-    { n: 10, t:  805 },  // 1:25p
-    { n: 11, t:  856 },  // 2:16p
-    { n: 12, t:  889 },  // 2:49p
-    { n: 13, t:  958 },  // 3:58p
-    { n: 14, t:  998 },  // 4:38p — clock holds here
-    { n: 15, t: 1042 },  // 5:22p
-  ];
+  <div class="interlude"><p>Ceremony</p></div>
 
-  const DAY_START = STOPS[0].t;
-  const DAY_END   = 1052; // 5:32p
-  const DAY_SPAN  = DAY_END - DAY_START;
+  <!-- CEREMONY -->
+  <!-- Wide couple on rooftop -->
+  <div class="img-row row-1">
+    <img class="h-tall" src="weddings-8.jpg" alt="Couple in formal attire, Manhattan rooftop" loading="lazy">
+  </div>
 
-  function minsToDisplay(m) {
-    const h24 = Math.floor(m / 60);
-    const min = Math.floor(m % 60);
-    const h12 = h24 % 12 || 12;
-    const ampm = h24 < 12 ? 'a' : 'p';
-    return `${h12}:${String(min).padStart(2,'0')}${ampm}`;
-  }
+  <!-- Three details: stone arch groomsmen / cornhole / tablescape -->
+  <div class="img-row row-3">
+    <img class="h-short" src="ddwedding-14.jpg" alt="Two groomsmen in suits at stone archway" loading="lazy">
+    <img class="h-short" src="ddwedding-16.jpg" alt="Monogrammed cornhole board, wedding lawn games" loading="lazy">
+    <img class="h-short" src="ddwedding-22.jpg" alt="Reception tablescape, bottles and glassware" loading="lazy">
+  </div>
 
-  // ── LOAD FADE-IN ─────────────────────────────────────────────────
-  setTimeout(() => fadeCover.classList.add('gone'), 300);
+  <!-- Asymmetric: ceremony wide + tight portrait -->
+  <div class="img-row row-2-wide-r">
+    <img class="h-mid" src="ccwedding-5.jpg" alt="Ceremony moment" loading="lazy">
+    <img class="h-mid" src="weddings-10.jpg" alt="Rooftop ceremony, first dance, city backdrop" loading="lazy">
+  </div>
 
-  // ── LOAD NUDGE ───────────────────────────────────────────────────
-  setTimeout(() => {
-    track.classList.add('nudge');
-    track.addEventListener('animationend', () => track.classList.remove('nudge'), { once: true });
-  }, 900);
+  <div class="interlude"><p>Reception</p></div>
 
-  // ── CURSOR ───────────────────────────────────────────────────────
-  document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top  = e.clientY + 'px';
-  });
+  <!-- RECEPTION -->
+  <!-- Two-up: laughing women + couple candid -->
+  <div class="img-row row-2">
+    <img class="h-mid" src="weddings-4.jpg" alt="Two guests laughing, warmth and candor" loading="lazy">
+    <img class="h-mid" src="ccwedding-9.jpg" alt="Candid reception moment" loading="lazy">
+  </div>
 
-  document.querySelectorAll('.photo').forEach(p => {
-    p.addEventListener('mouseenter', () => {
-      cursor.classList.add('hover');
-      cursor.classList.add('on-photo');
-    });
-    p.addEventListener('mouseleave', () => {
-      cursor.classList.remove('hover');
-      cursor.classList.remove('on-photo');
-    });
-  });
+  <!-- Full bleed: rooftop string lights at dusk — the money shot -->
+  <div class="img-row row-1">
+    <img class="h-full" src="weddings-9.jpg" alt="Rooftop reception at dusk, string lights, Manhattan skyline" loading="lazy">
+  </div>
 
-  // ── TICK MARKS ───────────────────────────────────────────────────
-  STOPS.forEach(s => {
-    const pct  = (s.t - DAY_START) / DAY_SPAN * 100;
-    const tick = document.createElement('div');
-    tick.className    = 'timeline-tick';
-    tick.style.left   = pct + '%';
-    tick.dataset.stop = s.n;
-    timeline.appendChild(tick);
-    ticks.push({ el: tick, pct });
-  });
+  <!-- Three-up: shoes / B&W groomsmen / wine guy with tattoos -->
+  <div class="img-row row-3">
+    <img class="h-short" src="weddings-12.jpg" alt="Star-studded shoes detail on patterned floor" loading="lazy">
+    <img class="h-short" src="weddings-11.jpg" alt="Groomsmen portrait, black and white" loading="lazy">
+    <img class="h-short" src="ddwedding-26.jpg" alt="Guest with wine glass, tattoos, late reception energy" loading="lazy">
+  </div>
 
-  // ── STOP SCROLL POSITION CACHE ───────────────────────────────────
-  function getStopScrollPcts() {
-    const max = (scroller.scrollWidth - scroller.clientWidth) || 1;
-    return stopEls.map(el => {
-      const rect = el.getBoundingClientRect();
-      const pos  = scroller.scrollLeft + rect.left - window.innerWidth * 0.4;
-      return Math.max(0, Math.min(1, pos / max));
-    });
-  }
+  <!-- Asymmetric: dance floor wide -->
+  <div class="img-row row-2-wide-l">
+    <img class="h-mid" src="weddings-13.jpg" alt="Dance floor, guests in motion" loading="lazy">
+    <img class="h-mid" src="weddings-14.jpg" alt="Guest portrait, late evening warmth" loading="lazy">
+  </div>
 
-  setTimeout(() => { stopScrollPcts = getStopScrollPcts(); }, 400);
-  window.addEventListener('resize', () => { stopScrollPcts = getStopScrollPcts(); });
+  <div class="interlude"><p>Late Night</p></div>
 
-  // ── SCROLL HANDLER ───────────────────────────────────────────────
-  scroller.addEventListener('scroll', () => {
-    const max = (scroller.scrollWidth - scroller.clientWidth) || 1;
-    const pct = scroller.scrollLeft / max;
+  <!-- LATE NIGHT -->
+  <!-- Three-up: peace sign / neon sign / pcwedding energy -->
+  <div class="img-row row-3">
+    <img class="h-mid" src="pcwedding-6.jpg" alt="Late night reception energy" loading="lazy">
+    <img class="h-mid" src="weddings-15.jpg" alt="Neon sign: Awesome Since 1983, disco ball overhead" loading="lazy">
+    <img class="h-mid" src="pcwedding-9.jpg" alt="Late night celebration" loading="lazy">
+  </div>
 
-    // Hide scroll indicator once moving
-    if (scroller.scrollLeft > 40) scrollIndicator.classList.add('hidden');
+  <!-- Final full bleed: the room winding down -->
+  <div class="img-row row-2">
+    <img class="h-mid" src="pcwedding-12.jpg" alt="End of the night" loading="lazy">
+    <img class="h-mid" src="weddings-2.jpg" alt="Wedding celebration close" loading="lazy">
+  </div>
 
-    // Timeline fill
-    timelineFill.style.width = (pct * 100) + '%';
+  <!-- CONTACT -->
+  <div class="contact-strip">
+    <p>If this is what you're looking for</p>
+    <a href="mailto:alex@wajones.co">alex@wajones.co</a>
+  </div>
 
-    // Clock position — travels with fill edge
-    const clampedPct = Math.min(pct * 100, 96);
-    timelineClock.style.left = clampedPct + '%';
+  <footer>
+    <span>W.A. Jones</span>
+    <a href="../index.html">Back to portfolio</a>
+  </footer>
 
-    // Lerped clock time
-    if (stopScrollPcts) {
-      let segIdx = 0;
-      for (let i = 0; i < stopScrollPcts.length - 1; i++) {
-        if (pct >= stopScrollPcts[i]) segIdx = i;
-      }
-
-      const fromStop = STOPS[segIdx];
-      const toStop   = STOPS[Math.min(segIdx + 1, STOPS.length - 1)];
-      const fromPct  = stopScrollPcts[segIdx] || 0;
-      const toPct    = stopScrollPcts[Math.min(segIdx + 1, stopScrollPcts.length - 1)] || 1;
-
-      let lerped;
-      if (fromStop.n === 14) {
-        lerped = fromStop.t; // clock holds at redacted stop
-      } else {
-        const segProgress = toPct > fromPct ? (pct - fromPct) / (toPct - fromPct) : 0;
-        lerped = fromStop.t + (toStop.t - fromStop.t) * Math.min(1, Math.max(0, segProgress));
-      }
-
-      const newMins = Math.round(lerped);
-      if (newMins !== lastClockMins) {
-        timelineClock.classList.add('change');
-        setTimeout(() => {
-          timelineClock.textContent = minsToDisplay(newMins);
-          timelineClock.classList.remove('change');
-        }, 180);
-        lastClockMins = newMins;
-      }
-
-      // Tick mark colours
-      ticks.forEach(tk => {
-        const stopData = STOPS.find(s => s.n === parseInt(tk.el.dataset.stop));
-        if (stopData && stopData.t <= lerped) tk.el.classList.add('passed');
-        else tk.el.classList.remove('passed');
-      });
-    }
-
-    // End-of-day flash
-    if (pct > .995 && !endTriggered) {
-      endTriggered = true;
-      timelineFill.classList.add('expand');
-      setTimeout(() => timelineFill.classList.remove('expand'), 600);
-    }
-    if (pct < .98) endTriggered = false;
-
-  }, { passive: true });
-
-  // ── WHEEL — handle both deltaY and deltaX, variable friction ────
-  scroller.addEventListener('wheel', e => {
-    e.preventDefault();
-    e.stopPropagation();
-    // Use whichever axis has more movement — handles trackpads sending deltaX
-    const raw  = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    const sign = raw < 0 ? -1 : 1;
-    const abs  = Math.abs(raw);
-    const scaled = sign * (abs < 50 ? abs * 0.8 : 40 + (abs - 50) * 0.4);
-    scroller.scrollLeft += scaled;
-  }, { passive: false });
-
-  // ── TOUCH — momentum ─────────────────────────────────────────────
-  scroller.addEventListener('touchstart', e => {
-    touchStartX          = e.touches[0].clientX;
-    touchStartScrollLeft = scroller.scrollLeft;
-    lastTouchX           = touchStartX;
-    velocity             = 0;
-    if (rafId) cancelAnimationFrame(rafId);
-  }, { passive: true });
-
-  scroller.addEventListener('touchmove', e => {
-    const dx = touchStartX - e.touches[0].clientX;
-    velocity   = lastTouchX - e.touches[0].clientX;
-    lastTouchX = e.touches[0].clientX;
-    scroller.scrollLeft = touchStartScrollLeft + dx;
-  }, { passive: true });
-
-  scroller.addEventListener('touchend', () => {
-    velocity *= 2.2;
-    const decelerate = () => {
-      if (Math.abs(velocity) < 0.15) return;
-      scroller.scrollLeft += velocity;
-      velocity *= 0.96;
-      rafId = requestAnimationFrame(decelerate);
-    };
-    decelerate();
-  });
-
-  // ── KEYBOARD ─────────────────────────────────────────────────────
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') scroller.scrollLeft += 300;
-    if (e.key === 'ArrowLeft')  scroller.scrollLeft -= 300;
-  });
-</script>
 </body>
 </html>
