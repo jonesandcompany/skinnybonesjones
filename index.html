@@ -76,7 +76,56 @@
     opacity: .45;
   }
 
-  /* ─── GRID: BRAND EVENT (top register) ────────────── */
+  /* ─── PORSCHE HERO: full-bleed above grid ──────────── */
+  .fora-hero-wrap {
+    padding: 0 48px;
+    margin-bottom: 6px;
+  }
+
+  .fora-hero-wrap figure {
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    aspect-ratio: 21/8;
+  }
+
+  .fora-hero-wrap figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+    display: block;
+    transition: transform .7s cubic-bezier(.25,.46,.45,.94), filter .7s ease;
+    filter: saturate(.92);
+  }
+
+  .fora-hero-wrap figure:hover img {
+    transform: scale(1.018);
+    filter: saturate(1.06);
+  }
+
+  .fora-hero-wrap figure figcaption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 40px 16px 12px;
+    background: linear-gradient(transparent, rgba(26,24,20,.45));
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    font-weight: 300;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(242,237,230,.7);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity .35s ease, transform .35s ease;
+  }
+
+  .fora-hero-wrap figure:hover figcaption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── GRID: BRAND EVENT (below hero) ───────────────── */
   .fora-grid-brand {
     padding: 0 48px;
     display: grid;
@@ -86,24 +135,17 @@
     margin-bottom: 6px;
   }
 
-  /* hero: plane windows — wide left anchor */
-  .gi-hero   { grid-column: 1 / 6; grid-row: 1 / 3; }
-  /* "Nowhere to Go" wall — tall right */
-  .gi-wall   { grid-column: 6 / 9; grid-row: 1 / 3; }
-  /* Porsche close */
-  .gi-car1   { grid-column: 9 / 13; grid-row: 1; }
-  /* tote bags product */
-  .gi-bags   { grid-column: 9 / 11; grid-row: 2; }
-  /* espresso bar */
+  .gi-hero   { grid-column: 1 / 5; grid-row: 1 / 3; }
+  .gi-wall   { grid-column: 5 / 8; grid-row: 1 / 3; }
+  .gi-car1   { grid-column: 8 / 13; grid-row: 1; }
+  .gi-bags   { grid-column: 8 / 11; grid-row: 2; }
   .gi-coffee { grid-column: 11 / 13; grid-row: 2; }
 
-  /* second row: street-level brand */
   .gi-porsche-blur  { grid-column: 1 / 5; }
   .gi-porsche-plant { grid-column: 5 / 8; }
   .gi-exterior      { grid-column: 8 / 10; }
   .gi-team          { grid-column: 10 / 13; }
 
-  /* third row: crowd / interior atmosphere */
   .gi-audience  { grid-column: 1 / 5; }
   .gi-crowd     { grid-column: 5 / 8; }
   .gi-tshirt    { grid-column: 8 / 10; }
@@ -132,9 +174,7 @@
   .rf-cart      { grid-column: 7 / 10; }
   .rf-bar       { grid-column: 10 / 13; }
 
-  .rf-window    { grid-column: 1 / 5; }
-  .rf-bartender { grid-column: 5 / 9; }
-  .rf-magcover  { grid-column: 9 / 13; }
+  .rf-window    { grid-column: 1 / 7; }
 
   /* ─── ALL GRID IMAGES ─────────────────────────────── */
   .fora-grid-brand figure,
@@ -179,9 +219,7 @@
   .rf-flowers2     { aspect-ratio: 3/4; }
   .rf-cart         { aspect-ratio: 3/4; }
   .rf-bar          { aspect-ratio: 3/4; }
-  .rf-window       { aspect-ratio: 4/3; }
-  .rf-bartender    { aspect-ratio: 4/3; }
-  .rf-magcover     { aspect-ratio: 4/3; }
+  .rf-window       { aspect-ratio: 16/7; }
 
   /* ─── CAPTION OVERLAY on hover ────────────────────── */
   .fora-grid-brand figure figcaption,
@@ -301,71 +339,79 @@
     <span>New York, NY</span>
   </div>
 
+  <!-- PORSCHE HERO: full-bleed -->
+  <div class="fora-hero-wrap">
+    <figure data-hero-idx="0">
+      <img src="foratravel/foratravel-9.jpg" alt="Red Porsche 911 in motion — Fora brand event, NYC">
+      <figcaption>Fora brand event, NYC</figcaption>
+    </figure>
+  </div>
+
   <!-- REGISTER 1: Brand event -->
   <div class="fora-grid-brand">
 
-    <figure class="gi-hero" data-idx="0">
+    <figure class="gi-hero" data-idx="1">
       <img src="foratravel/foratravel.jpg" alt="Fora Travel — plane windows installation">
       <figcaption>Brand installation</figcaption>
     </figure>
 
-    <figure class="gi-wall" data-idx="1">
+    <figure class="gi-wall" data-idx="2">
       <img src="foratravel/foratravel-5.jpg" alt="Nowhere to Go But Everywhere wall lettering">
       <figcaption>Nowhere to go but everywhere</figcaption>
     </figure>
 
-    <figure class="gi-car1" data-idx="2">
-      <img src="foratravel/foratravel-9.jpg" alt="Red Porsche 911 in motion — Fora brand event">
-      <figcaption>Fora brand event, NYC</figcaption>
+    <figure class="gi-car1" data-idx="3">
+      <img src="foratravel/foratravel-10.jpg" alt="Porsche with plant, Fora signage">
+      <figcaption></figcaption>
     </figure>
 
-    <figure class="gi-bags" data-idx="3">
+    <figure class="gi-bags" data-idx="4">
       <img src="foratravel/foratravel-4.jpg" alt="Fora tote bags, product display">
       <figcaption>Product display</figcaption>
     </figure>
 
-    <figure class="gi-coffee" data-idx="4">
+    <figure class="gi-coffee" data-idx="5">
       <img src="foratravel/foratravel-7.jpg" alt="Rhythm Zero x Fora branded drink">
       <figcaption></figcaption>
     </figure>
 
-    <figure class="gi-porsche-blur" data-idx="5">
+    <figure class="gi-porsche-blur" data-idx="6">
       <img src="foratravel/foratravel-3.jpg" alt="Porsche close, tropical plant, Fora signage">
       <figcaption></figcaption>
     </figure>
 
-    <figure class="gi-porsche-plant" data-idx="6">
-      <img src="foratravel/foratravel-10.jpg" alt="Porsche with plant, street">
-      <figcaption></figcaption>
-    </figure>
-
-    <figure class="gi-exterior" data-idx="7">
-      <img src="foratravel/foratravel-11.jpg" alt="Fora exterior — red umbrella, bistro chairs">
-      <figcaption>Fora HQ, New York</figcaption>
-    </figure>
-
-    <figure class="gi-team" data-idx="8">
-      <img src="foratravel/foratravel-12.jpg" alt="Fora team portrait, storefront steps">
-      <figcaption></figcaption>
-    </figure>
-
-    <figure class="gi-audience" data-idx="9">
-      <img src="foratravel/foratravel-13.jpg" alt="Audience at Fora event">
-      <figcaption></figcaption>
-    </figure>
-
-    <figure class="gi-crowd" data-idx="10">
-      <img src="foratravel/foratravel-14.jpg" alt="Crowd at Fora launch event">
-      <figcaption></figcaption>
-    </figure>
-
-    <figure class="gi-tshirt" data-idx="11">
+    <figure class="gi-porsche-plant" data-idx="7">
       <img src="foratravel/foratravel-6.jpg" alt="Fora espresso bar">
       <figcaption></figcaption>
     </figure>
 
-    <figure class="gi-sofas" data-idx="12">
+    <figure class="gi-exterior" data-idx="8">
+      <img src="foratravel/foratravel-11.jpg" alt="Fora exterior — red umbrella, bistro chairs">
+      <figcaption>Fora HQ, New York</figcaption>
+    </figure>
+
+    <figure class="gi-team" data-idx="9">
+      <img src="foratravel/foratravel-12.jpg" alt="Fora team portrait, storefront steps">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-audience" data-idx="10">
+      <img src="foratravel/foratravel-13.jpg" alt="Audience at Fora event">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-crowd" data-idx="11">
+      <img src="foratravel/foratravel-14.jpg" alt="Crowd at Fora launch event">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-tshirt" data-idx="12">
       <img src="foratravel/foratravel-2.jpg" alt="Fora storefront, NYC">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-sofas" data-idx="13">
+      <img src="foratravel/foratravel-8.jpg" alt="Framed print, Fora office">
       <figcaption></figcaption>
     </figure>
 
@@ -376,38 +422,28 @@
 
   <div class="fora-grid-rf">
 
-    <figure class="rf-flowers1" data-idx="13">
-      <img src="foratravel/forastaff7.jpg" alt="Flower arranging workshop — Rocco Forte activation">
+    <figure class="rf-flowers1" data-idx="14">
+      <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff7.jpg" alt="Flower arranging workshop — Rocco Forte activation">
       <figcaption>Flower workshop</figcaption>
     </figure>
 
-    <figure class="rf-flowers2" data-idx="14">
-      <img src="foratravel/forastaff8.jpg" alt="Florals, Rocco Forte event">
+    <figure class="rf-flowers2" data-idx="15">
+      <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff8.jpg" alt="Florals, Rocco Forte event">
       <figcaption></figcaption>
     </figure>
 
-    <figure class="rf-cart" data-idx="15">
+    <figure class="rf-cart" data-idx="16">
       <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff9.jpg" alt="Rocco Forte Hotels service cart">
       <figcaption>Rocco Forte Hotels</figcaption>
     </figure>
 
-    <figure class="rf-bar" data-idx="16">
-      <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff10.jpg" alt="Bartender, Rocco Forte activation">
+    <figure class="rf-bar" data-idx="17">
+      <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff10.jpg" alt="Service, Rocco Forte activation">
       <figcaption></figcaption>
     </figure>
 
-    <figure class="rf-window" data-idx="17">
+    <figure class="rf-window" data-idx="18">
       <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff11.jpg" alt="Interior, tall gothic windows">
-      <figcaption></figcaption>
-    </figure>
-
-    <figure class="rf-bartender" data-idx="18">
-      <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff12.jpg" alt="Bartender portrait, Dante bar">
-      <figcaption>Bar portrait</figcaption>
-    </figure>
-
-    <figure class="rf-magcover" data-idx="19">
-      <img src="https://jonesandcompany.github.io/Chelsea-hotel/fora%20staff.jpg" alt="Fora team reading travel magazine">
       <figcaption></figcaption>
     </figure>
 
@@ -435,7 +471,7 @@
 
     // Collect all figures in section order
     const figures = Array.from(
-      document.querySelectorAll('.fora-grid-brand figure, .fora-grid-rf figure')
+      document.querySelectorAll('.fora-hero-wrap figure, .fora-grid-brand figure, .fora-grid-rf figure')
     );
     let current = 0;
 
