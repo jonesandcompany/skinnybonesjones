@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOXERS — W.A. JONES</title>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050505;
+    --neon-yellow: #f5e642;
+    --neon-pink: #ff2d78;
+    --neon-green: #39ff14;
+    --acid-orange: #ff6b00;
+    --electric-blue: #00cfff;
+    --white: #f0ece0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Courier Prime', monospace;
+    overflow-x: hidden;
+  }
+
+  /* grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url('../%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ── PHOTO BLOCKS ── */
+  .photo {
+    overflow: hidden;
+    position: relative;
+    transition: filter 0.3s ease;
+    cursor: pointer;
+  }
+  .photo:hover { filter: brightness(1.08) contrast(1.05); }
+
+  /* scanlines */
+  .photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* photo colour moods */
+  .ph-crowd  { background: linear-gradient(135deg,#1a0a2e,#0d0620,#1e0510); box-shadow: inset 0 0 80px rgba(255,45,120,0.2); }
+  .ph-blue   { background: linear-gradient(160deg,#000820,#001530,#000510); box-shadow: inset 0 0 80px rgba(0,100,200,0.3); }
+  .ph-pink   { background: linear-gradient(145deg,#1a0015,#2a0020,#0f000a); box-shadow: inset 0 0 80px rgba(255,45,120,0.35); }
+  .ph-orange { background: linear-gradient(135deg,#1a0800,#2a1000,#0f0500); box-shadow: inset 0 0 80px rgba(255,107,0,0.3); }
+  .ph-bw     { background: linear-gradient(135deg,#111,#1a1a1a,#080808); }
+  .ph-yellow { background: linear-gradient(135deg,#1a1000,#251800,#0f0800); box-shadow: inset 0 0 80px rgba(245,230,66,0.2); }
+  .ph-purple { background: linear-gradient(145deg,#0f0020,#1a0035,#080010); box-shadow: inset 0 0 80px rgba(150,0,255,0.3); }
+  .ph-fire   { background: linear-gradient(135deg,#1a0500,#300a00,#0a0200); box-shadow: inset 0 0 80px rgba(255,150,0,0.25); }
+
+  /* ── TYPOGRAPHY ── */
+  .marker { font-family: 'Permanent Marker', cursive; }
+  .elite  { font-family: 'Special Elite', cursive; }
+  .mono   { font-family: 'Courier Prime', monospace; }
+
+  .caption {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+
+  /* page number strip */
+  .pgnum {
+    padding: 11px 40px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid rgba(245,230,66,0.08);
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(245,230,66,0.28);
+    text-transform: uppercase;
+  }
+
+  /* annotation strip between spreads */
+  .anno {
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .anno-line { flex:1; height:1px; background:rgba(245,230,66,0.1); }
+
+  /* scratch divider */
+  .scratch { width:100%; height:1px; background:linear-gradient(to right,transparent,var(--neon-yellow),transparent); opacity:0.25; margin:7px 0; }
+
+  /* ── LAYOUT GRIDS ── */
+  .grid-2   { display:grid; grid-template-columns:1fr 1fr; gap:3px; }
+  .grid-3   { display:grid; grid-template-columns:1fr 1fr 1fr; gap:3px; }
+  .grid-4   { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; background:#0a0a0a; padding:2px; }
+
+  .asym {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+    height: 70vh;
+  }
+  .asym .main { grid-row: 1 / 3; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .grid-2, .asym { grid-template-columns:1fr; height:auto; }
+    .asym .main { grid-row:auto; }
+    .grid-3 { grid-template-columns:1fr 1fr; }
+    .grid-4 { grid-template-columns:repeat(2,1fr); }
+    .grid-4 .photo { height:50vw !important; max-height:none; }
+    .half-text { grid-template-columns:1fr !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════
+     COVER
+══════════════════════════ -->
+<section style="min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a0020,#0a0015,#000);
+    box-shadow:inset 0 0 200px rgba(255,45,120,0.18),inset 0 0 100px rgba(0,100,255,0.08);">
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,0.9) 100%);"></div>
+  </div>
+
+  <div style="position:relative;z-index:10;padding:60px 40px 50px;">
+    <div class="caption" style="color:var(--neon-yellow);opacity:0.7;margin-bottom:18px;">
+      W.A. Jones &nbsp;/&nbsp; New York City &nbsp;/&nbsp; Nightlife
+    </div>
+    <div class="scratch"></div>
+
+    <h1 class="marker" style="font-size:clamp(90px,20vw,190px);line-height:0.85;color:var(--neon-yellow);
+      text-shadow:4px 4px 0 var(--neon-pink),-2px -2px 0 rgba(255,107,0,0.4),0 0 60px rgba(245,230,66,0.25);
+      letter-spacing:-0.02em;">BOXERS</h1>
+
+    <div class="marker" style="font-size:clamp(16px,3.5vw,28px);color:var(--neon-green);
+      margin-top:10px;transform:rotate(-1.5deg);display:inline-block;
+      text-shadow:2px 2px 0 rgba(0,0,0,0.8);">↳ Hell's Kitchen, Manhattan</div>
+
+    <div style="display:flex;gap:28px;margin-top:28px;font-size:10px;letter-spacing:0.2em;
+      text-transform:uppercase;color:rgba(240,236,224,0.35);">
+      <span>Hush &amp; The Q</span>
+      <span>—</span>
+      <span>25 photographs</span>
+      <span>—</span>
+      <span>2023–2024</span>
+    </div>
+  </div>
+</section>
+
+<div class="pgnum"><span>W.A. Jones / Boxers NYC</span><span>01</span></div>
+
+<!-- ══════════════════════════
+     SPREAD 1 — FULL BLEED OPENER
+══════════════════════════ -->
+<section style="position:relative;">
+  <div class="photo ph-crowd" style="width:100%;height:100vh;background-image:url('../boxers/boxers-23.jpg);background-size:cover;background-position:center;">
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:10;">
+      <!-- hollow outlined B -->
+      <div class="marker" style="font-size:clamp(110px,26vw,260px);line-height:0.8;
+        color:transparent;-webkit-text-stroke:3px var(--neon-yellow);
+        text-shadow:none;position:relative;display:inline-block;">B
+        <span style="position:absolute;top:4px;left:3px;color:transparent;
+          -webkit-text-stroke:3px var(--neon-pink);opacity:0.45;">B</span>
+      </div>
+      <div class="marker" style="font-size:clamp(38px,7vw,72px);color:var(--neon-yellow);
+        letter-spacing:0.32em;text-shadow:3px 3px 0 var(--neon-pink);">OXERS</div>
+      <div class="mono" style="font-size:11px;letter-spacing:0.4em;
+        color:rgba(245,230,66,0.45);margin-top:18px;text-transform:uppercase;">
+        Hell's Kitchen &nbsp;·&nbsp; New York City &nbsp;·&nbsp; 2023–2024
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="pgnum"><span>Photography: W.A. Jones</span><span>02 — 03</span></div>
+
+<!-- ══════════════════════════
+     SPREAD 2 — INTRO + ORANGE DRESS
+══════════════════════════ -->
+<section class="half-text" style="display:grid;grid-template-columns:1fr 1fr;min-height:55vh;
+  border-top:1px solid rgba(245,230,66,0.12);">
+
+  <div style="padding:50px 44px;display:flex;flex-direction:column;justify-content:center;
+    border-right:1px solid rgba(245,230,66,0.08);">
+
+    <div style="margin-bottom:18px;">
+      <span style="font-size:20px;filter:drop-shadow(0 0 6px var(--neon-yellow));">♛</span>
+      <span class="mono" style="font-size:10px;color:var(--neon-yellow);letter-spacing:0.22em;margin-left:10px;">HELL'S KITCHEN</span>
+    </div>
+
+    <h2 class="marker" style="font-size:clamp(26px,4.5vw,44px);color:var(--neon-yellow);
+      line-height:1.1;margin-bottom:24px;transform:rotate(-0.5deg);">
+      Every night<br>
+      <span style="color:var(--neon-pink);">somebody</span><br>
+      becomes<br>
+      <span style="color:var(--neon-green);">somebody</span>
+    </h2>
+
+    <p class="elite" style="font-size:15px;line-height:1.75;color:rgba(240,236,224,0.72);margin-bottom:18px;">
+      Boxers is a gay sports bar on 8th Avenue that stopped
+      being a sports bar somewhere around midnight. Most of these
+      photographs were made at Hush and The Q — two venues
+      under the same roof and the same ownership — across many
+      nights that became one long night.
+    </p>
+
+    <p class="elite" style="font-size:15px;line-height:1.75;color:rgba(240,236,224,0.55);">
+      One afternoon the bar opened its rooftop. Shiny men dressed
+      as firemen. It was the Fourth of July.
+    </p>
+
+    <div style="margin-top:28px;padding-top:18px;border-top:1px solid rgba(245,230,66,0.12);">
+      <span class="marker" style="font-size:11px;transform:rotate(-2deg);display:inline-block;
+        color:var(--neon-pink);">— all photographs</span>
+      <span class="marker" style="font-size:11px;transform:rotate(1deg);display:inline-block;
+        margin-left:8px;color:var(--white);">W.A. Jones</span>
+    </div>
+  </div>
+
+  <div class="photo ph-orange" style="min-height:55vh;background-image:url('../boxers/boxers-11.jpg);background-size:cover;background-position:center top;">
+    <div style="position:absolute;bottom:20px;right:20px;z-index:10;text-align:right;">
+      <div class="caption" style="color:var(--acid-orange);">orange / 2024</div>
+    </div>
+  </div>
+</section>
+
+<div class="pgnum"><span>Boxers NYC</span><span>04 — 05</span></div>
+
+<!-- ══════════════════════════
+     SPREAD 3 — ASYMMETRIC: boots + two portraits
+══════════════════════════ -->
+<section class="asym">
+  <div class="photo ph-pink main" style="background-image:url('../boxers/boxers-28.jpg);background-size:cover;background-position:center;"></div>
+  <div class="photo ph-crowd" style="background-image:url('../boxers/boxers-10.jpg);background-size:cover;background-position:center;"></div>
+  <div class="photo ph-bw" style="background-image:url('../boxers/boxers-19.jpg);background-size:cover;background-position:center;"></div>
+</section>
+
+<div class="anno">
+  <span class="marker" style="font-size:20px;color:var(--neon-yellow);transform:rotate(-2deg);">BODY</span>
+  <span class="mono" style="font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:0.2em;">AS</span>
+  <span class="marker" style="font-size:20px;color:var(--neon-pink);transform:rotate(1.5deg);">COSTUME</span>
+  <div class="anno-line"></div>
+  <span class="caption">p. 06–07</span>
+</div>
+
+<div class="pgnum"><span>W.A. Jones</span><span>06 — 07</span></div>
+
+<!-- ══════════════════════════
+     SPREAD 4 — PULL QUOTE + BLUE SPOTLIGHT
+══════════════════════════ -->
+<section class="half-text" style="display:grid;grid-template-columns:1fr 1.5fr;min-height:72vh;">
+
+  <div style="padding:52px 44px;display:flex;flex-direction:column;justify-content:center;
+    background:var(--black);border-right:1px solid rgba(255,255,255,0.04);">
+
+    <div class="marker" style="font-size:26px;color:var(--neon-pink);margin-bottom:20px;
+      transform:rotate(12deg);display:inline-block;">→</div>
+
+    <!-- THE REAL PULL QUOTE -->
+    <blockquote class="marker" style="font-size:clamp(24px,4vw,42px);color:var(--white);
+      line-height:1.15;margin-bottom:24px;border:none;">
+      "It's not about<br>
+      holding out for<br>
+      <span style="color:var(--neon-pink);">a good night,</span><br>
+      but rather<br>
+      <span style="color:var(--neon-green);">a letting go."</span>
+    </blockquote>
+
+    <div style="width:38px;height:2px;background:var(--neon-yellow);margin-bottom:14px;"></div>
+    <div class="caption" style="color:rgba(245,230,66,0.4);line-height:2;">
+      Jeremy Atherton Lin<br>
+      <em>Gay Bar: Why We Went Out</em>
+    </div>
+
+    <!-- Basquiat annotation box -->
+    <div style="margin-top:36px;padding:14px 16px;border:1px solid rgba(245,230,66,0.18);
+      transform:rotate(-0.8deg);">
+      <p class="marker" style="font-size:13px;color:var(--neon-yellow);line-height:1.8;">
+        <span style="text-decoration:line-through;text-decoration-color:var(--neon-pink);
+          text-decoration-thickness:3px;opacity:0.55;">sports bar</span><br>
+        ↓<br>
+        church<br>
+        ↓<br>
+        <span style="color:var(--neon-pink);">SOMETHING ELSE</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="photo ph-blue" style="min-height:72vh;background-image:url('../boxers/boxers-6.jpg);background-size:cover;background-position:center;">
+    <div style="position:absolute;bottom:30px;left:30px;z-index:10;">
+      <div class="marker" style="font-size:14px;color:var(--electric-blue);">BLUE</div>
+      <div class="caption" style="color:rgba(0,207,255,0.45);">The Q / 8th Ave</div>
+    </div>
+  </div>
+</section>
+
+<div class="pgnum"><span>Portraits</span><span>08 — 09</span></div>
+
+<!-- ══════════════════════════
+     SPREAD 5 — CONTACT SHEET
+══════════════════════════ -->
+<div style="padding:8px 40px 4px;background:var(--black);">
+  <span class="mono" style="font-size:9px;letter-spacing:0.25em;
+    color:rgba(245,230,66,0.28);text-transform:uppercase;">contact sheet — frame 22–34</span>
+</div>
+
+<section class="grid-4">
+  <div class="photo ph-bw" style="height:28vw;max-height:260px;background-image:url('../boxers/boxers-14.jpg);background-size:cover;background-position:center;"></div>
+  <div class="photo ph-pink" style="height:28vw;max-height:260px;background-image:url('../boxers/boxers-3.jpg);background-size:cover;background-position:center;"></div>
+  <div class="photo ph-pink" style="height:28vw;max-height:260px;background-image:url('../boxers/boxers-38.jpg);background-size:cover;background-position:center;"></div>
+  <div class="photo ph-crowd" style="height:28vw;max-height:260px;background-image:url('../boxers/boxers-25.jpg);background-size:cover;background-position:center;"></div>
+  <div class="photo ph-orange" style="height:28vw;max-height:260px;background-image:url('../boxers/boxers-34.jpg);background-size:cover;background-position:center;"></div>
+  <div class="photo ph-bw" style="height:28vw;max-height:260px;background-image:url('../boxers/boxers-32.jpg);background-size:cover;background-position:center;"></div>
+  <div class="photo ph-crowd" style="height:28vw;max-height:260px;background-image:url('../boxers/boxers-4.jpg);background-size:cover;background-position:center;"></div>
+  <div class="photo ph-purple" style="height:28vw;max-height:260px;background-image:url('../boxers/boxers-17.jpg);background-size:cover;background-position:center;"></div>
+</section>
+
+<div class="pgnum"><span>Boxers NYC — Contact</span><span>10 — 11</span></div>
+
+<!-- ══════════════════════════
+     SPREAD 6 — CENTERFOLD: neon ring (boxers-23)
+══════════════════════════ -->
+<div style="padding:18px 40px 6px;">
+  <div style="display:flex;align-items:center;gap:14px;">
+    <span class="marker" style="font-size:11px;color:rgba(245,230,66,0.35);
+      transform:rotate(-1deg);display:inline-block;">★ centerfold</span>
+    <div style="flex:1;height:1px;background:rgba(245,230,66,0.08);"></div>
+  </div>
+</div>
+
+<section style="position:relative;">
+  <div class="photo ph-fire" style="width:100%;height:90vh;background-image:url('../boxers/boxers-40.jpg);background-size:cover;background-position:center;box-shadow:inset 0 0 200px rgba(255,170,0,0.18),inset 0 0 80px rgba(255,45,120,0.12);">
+  </div>
+  <div style="position:absolute;bottom:40px;left:40px;z-index:10;">
+    <div class="marker" style="font-size:clamp(26px,5vw,50px);color:var(--neon-yellow);
+      line-height:1;text-shadow:3px 3px 0 var(--neon-pink);">ENTER<br>THE<br>RING</div>
+    <div class="caption" style="margin-top:12px;color:rgba(245,230,66,0.38);">
+      Hush / Hell's Kitchen
+    </div>
+  </div>
+</section>
+
+<div class="pgnum"><span>Centerfold</span><span>12 — 13</span></div>
+
+<!-- ══════════════════════════
+     SPREAD 7 — tuxedo+harness / fire hands
+══════════════════════════ -->
+<section class="grid-2">
+  <div class="photo ph-bw" style="height:55vh;background-image:url('../boxers/boxers-20.jpg);background-size:cover;background-position:center;">
+    <div style="position:absolute;top:20px;left:20px;z-index:10;">
+      <span class="marker" style="font-size:13px;color:rgba(255,255,255,0.35);
+        transform:rotate(-2deg);display:inline-block;">black tie /</span>
+      <span class="marker" style="font-size:13px;color:var(--neon-pink);
+        transform:rotate(1deg);display:inline-block;margin-left:5px;">leather</span>
+    </div>
+  </div>
+  <div class="photo ph-crowd" style="height:55vh;background-image:url('../boxers/boxers-2.jpg);background-size:cover;background-position:center;">
+    <div style="position:absolute;bottom:20px;right:20px;z-index:10;">
+      <span class="marker" style="font-size:22px;">🔥</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     SPREAD 8 — three portraits (22, 36, 43)
+══════════════════════════ -->
+<section class="grid-3">
+  <div class="photo ph-pink"  style="height:48vh;background-image:url('../boxers/boxers-7.jpg);background-size:cover;background-position:center;"></div>
+  <div class="photo ph-crowd" style="height:48vh;background-image:url('../boxers/boxers-43.jpg);background-size:cover;background-position:center;">
+    <!-- boxers-43: the tender one -->
+    <div style="position:absolute;bottom:10px;left:12px;z-index:10;">
+      <span class="marker" style="font-size:9px;color:rgba(255,255,255,0.22);">tender</span>
+    </div>
+  </div>
+  <div class="photo ph-crowd" style="height:48vh;background-image:url('../boxers/boxers-46.jpg);background-size:cover;background-position:center;"></div>
+</section>
+
+<div class="pgnum"><span>W.A. Jones / Portraits</span><span>14 — 15</span></div>
+
+<!-- ══════════════════════════
+     SPREAD 9 — CLOSER: kiss me (boxers-45)
+══════════════════════════ -->
+<section style="position:relative;">
+  <div class="photo ph-blue" style="width:100%;height:85vh;background-image:url('../boxers/boxers-45.jpg);background-size:cover;background-position:center top;">
+  </div>
+  <div style="position:absolute;top:40px;left:40px;z-index:10;">
+    <div class="marker" style="font-size:clamp(34px,7vw,76px);color:var(--neon-pink);
+      line-height:1;text-shadow:4px 4px 0 rgba(0,0,0,0.6),0 0 40px rgba(255,45,120,0.4);">
+      kiss<br>me
+    </div>
+    <div class="caption" style="color:rgba(255,45,120,0.45);margin-top:10px;">
+      Hush / neon / 8th ave
+    </div>
+  </div>
+</section>
+
+<div class="pgnum"><span>Closing</span><span>16</span></div>
+
+<!-- ══════════════════════════
+     COLOPHON
+══════════════════════════ -->
+<section style="min-height:52vh;display:flex;flex-direction:column;justify-content:center;
+  align-items:center;text-align:center;padding:80px 40px;position:relative;overflow:hidden;">
+
+  <!-- ghost background text -->
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    font-family:'Permanent Marker',cursive;font-size:28vw;color:transparent;
+    -webkit-text-stroke:1px rgba(245,230,66,0.04);pointer-events:none;white-space:nowrap;
+    user-select:none;">NYC</div>
+
+  <div style="position:relative;z-index:10;">
+    <div class="marker" style="font-size:clamp(13px,2.2vw,20px);color:var(--neon-yellow);
+      letter-spacing:0.16em;margin-bottom:14px;transform:rotate(-0.4deg);">
+      W . A . &nbsp; J O N E S
+    </div>
+    <div class="scratch" style="max-width:180px;margin:14px auto;"></div>
+    <div class="caption" style="color:rgba(240,236,224,0.28);line-height:2.4;font-size:10px;">
+      Photography · New York City<br>
+      skinnybonesjones.biz<br>
+      <br>
+      All photographs © W.A. Jones<br>
+      Hush &amp; The Q — Hell's Kitchen, Manhattan<br>
+      Venues owned by Boxers NYC<br>
+      2023 — 2024
+    </div>
+    <div class="marker" style="margin-top:38px;font-size:13px;
+      color:rgba(245,230,66,0.18);letter-spacing:0.3em;">THE END ♛</div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weddings — W.A. Jones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #faf9f7;
+      --ink: #1a1916;
+      --mid: #8a8680;
+      --rule: #d8d5cf;
+      --gap: 3px;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      background: rgba(250,249,247,0.93);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    nav .wordmark {
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    nav ul {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    nav ul a {
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--mid);
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover,
+    nav ul a.active { color: var(--ink); }
+
+    /* ── HEADER STATEMENT ── */
+    .statement {
+      margin-top: 57px;
+      padding: 7rem 2.5rem 5rem;
+      max-width: 780px;
+    }
+
+    .statement h1 {
+      font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .statement p {
+      font-size: 1.1rem;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--mid);
+    }
+
+    /* ── IMAGE GRID SYSTEM ── */
+    .img-row {
+      display: grid;
+      gap: var(--gap);
+      margin-bottom: var(--gap);
+    }
+
+    .row-1         { grid-template-columns: 1fr; }
+    .row-2         { grid-template-columns: 1fr 1fr; }
+    .row-3         { grid-template-columns: 1fr 1fr 1fr; }
+    .row-wide-l    { grid-template-columns: 1.65fr 1fr; }
+    .row-wide-r    { grid-template-columns: 1fr 1.65fr; }
+    .row-narrow-l  { grid-template-columns: 0.7fr 1fr; }
+    .row-narrow-r  { grid-template-columns: 1fr 0.7fr; }
+
+    .img-row img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .h-hero  { height: 85vh; }
+    .h-tall  { height: 68vh; }
+    .h-mid   { height: 55vh; }
+    .h-short { height: 42vh; }
+
+    /* ── INTERLUDE ── */
+    .interlude {
+      padding: 5rem 2.5rem;
+      max-width: 400px;
+    }
+
+    .interlude p {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+
+    /* ── CONTACT STRIP ── */
+    .contact-strip {
+      margin-top: 8rem;
+      padding: 4rem 2.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .contact-strip p {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+
+    .contact-strip a {
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    .contact-strip a:hover { color: var(--mid); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 2.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer span {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+
+    footer a {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--mid);
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--ink); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 700px) {
+      nav { padding: 1rem 1.25rem; }
+      nav ul { display: none; }
+
+      .statement { padding: 4rem 1.25rem 3rem; }
+
+      .row-2, .row-3,
+      .row-wide-l, .row-wide-r,
+      .row-narrow-l, .row-narrow-r {
+        grid-template-columns: 1fr;
+      }
+
+      .h-hero  { height: 75vw; }
+      .h-tall  { height: 68vw; }
+      .h-mid   { height: 60vw; }
+      .h-short { height: 55vw; }
+
+      .interlude { padding: 3rem 1.25rem; }
+
+      .contact-strip {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 3rem 1.25rem;
+      }
+
+      footer { padding: 1.5rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="wordmark" href="../index.html">W.A. Jones</a>
+    <ul>
+      <li><a href="../foratravel/index.html">Events</a></li>
+      <li><a href="#" class="active">Weddings</a></li>
+      <li><a href="../theuntitledmagazine/index.html">Editorial</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- OPENING STATEMENT -->
+  <div class="statement">
+    <h1>I'm not a wedding<br>photographer.</h1>
+    <p>But I can shoot your wedding anyway.</p>
+  </div>
+
+  <!-- BLOCK 1: CC wedding — desert ceremony opener -->
+  <!-- Wide: groom waiting, bride approaching — the moment before -->
+  <div class="img-row row-1">
+    <img class="h-hero" src="../weddings/ccwedding-2.jpg" alt="Groom waiting, bride walking toward him through the garden" loading="eager">
+  </div>
+
+  <!-- Two up: bride laughing arms up / kiss against cacti -->
+  <div class="img-row row-2">
+    <img class="h-mid" src="../weddings/ccwedding-3.jpg" alt="Bride laughing, arms raised, unbridled joy" loading="lazy">
+    <img class="h-mid" src="../weddings/ccwedding-8.jpg" alt="Couple kissing in front of tall cacti, warm afternoon light" loading="lazy">
+  </div>
+
+  <!-- Detail: rings on tattooed hands -->
+  <div class="img-row row-narrow-l">
+    <img class="h-mid" src="../weddings/ccwedding-9.jpg" alt="Rings on tattooed hands, close detail" loading="lazy">
+    <img class="h-mid" src="../weddings/ccwedding-4.jpg" alt="Couple portrait, tattoos, intimacy" loading="lazy">
+  </div>
+
+  <div class="interlude"><p>Palm Springs</p></div>
+
+  <!-- BLOCK 2: DD wedding — garden dinner party -->
+  <!-- Wide establishing: guests on lawn, moody sky, palms -->
+  <div class="img-row row-1">
+    <img class="h-tall" src="../weddings/ddwedding.jpg" alt="Wide shot, guests gathered on lawn at dusk, palm trees, moody sky" loading="lazy">
+  </div>
+
+  <!-- Three details: cocktails being poured / couple in bougainvillea / woman in colorful outfit -->
+  <div class="img-row row-3">
+    <img class="h-short" src="../weddings/ddwedding-10.jpg" alt="Bartender pouring cocktails into a row of coupes" loading="lazy">
+    <img class="h-short" src="../weddings/ddwedding-12.jpg" alt="Couple laughing together in front of bougainvillea" loading="lazy">
+    <img class="h-short" src="../weddings/ddwedding-2.jpg" alt="Guest in vibrant colorful outfit, holding a drink" loading="lazy">
+  </div>
+
+  <!-- Long table dinner, string lights -->
+  <div class="img-row row-wide-r">
+    <img class="h-mid" src="../weddings/ddwedding-15.jpg" alt="Boutonniere pinning detail, hands close together" loading="lazy">
+    <img class="h-mid" src="../weddings/ddwedding-16.jpg" alt="Long outdoor dinner table, string lights, guests mid-conversation" loading="lazy">
+  </div>
+
+  <!-- Full bleed: full room dinner in swing -->
+  <div class="img-row row-1">
+    <img class="h-tall" src="../weddings/ddwedding-18.jpg" alt="Full room view, outdoor dinner reception in full swing, bougainvillea walls" loading="lazy">
+  </div>
+
+  <!-- Three: women laughing / cake / group photo chaos -->
+  <div class="img-row row-3">
+    <img class="h-short" src="../weddings/ddwedding-14.jpg" alt="Two women laughing hard, one throwing her head back" loading="lazy">
+    <img class="h-short" src="../weddings/ddwedding-22.jpg" alt="Wedding cake detail, dried orange slices on white frosting" loading="lazy">
+    <img class="h-short" src="../weddings/ddwedding-13.jpg" alt="Group moment, someone photographing the group on a phone" loading="lazy">
+  </div>
+
+  <div class="interlude"><p>Late Night</p></div>
+
+  <!-- BLOCK 3: DD late night dancing -->
+  <!-- Women on the couch — total chaos, best shot in the set -->
+  <div class="img-row row-wide-l">
+    <img class="h-mid" src="../weddings/ddwedding-27.jpg" alt="Women piled on a couch, laughing and collapsing, pure chaos" loading="lazy">
+    <img class="h-mid" src="../weddings/ddwedding-29.jpg" alt="Woman in floral dress dancing alone, warm glow" loading="lazy">
+  </div>
+
+  <!-- Dance floor energy -->
+  <div class="img-row row-2">
+    <img class="h-mid" src="../weddings/ddwedding-31.jpg" alt="Dance floor, woman in orange dress spinning" loading="lazy">
+    <img class="h-mid" src="../weddings/ddwedding-32.jpg" alt="Couple embracing and laughing on dance floor" loading="lazy">
+  </div>
+
+  <div class="interlude"><p>New York</p></div>
+
+  <!-- BLOCK 4: NYC weddings series -->
+  <!-- Couple rooftop wide -->
+  <div class="img-row row-1">
+    <img class="h-tall" src="../weddings/weddings-10.jpg" alt="Rooftop ceremony, wide shot, Manhattan skyline backdrop" loading="lazy">
+  </div>
+
+  <!-- Two: couple portrait / two friends laughing -->
+  <div class="img-row row-narrow-r">
+    <img class="h-mid" src="../weddings/weddings-4.jpg" alt="Two guests, laughing warmly, candid moment" loading="lazy">
+    <img class="h-mid" src="../weddings/weddings-8.jpg" alt="Couple in tuxedo and gown, Manhattan rooftop, daytime" loading="lazy">
+  </div>
+
+  <!-- Three: shoes detail / dance floor / B&W groomsmen -->
+  <div class="img-row row-3">
+    <img class="h-short" src="../weddings/weddings-12.jpg" alt="Star-studded dress shoes detail on patterned carpet" loading="lazy">
+    <img class="h-short" src="../weddings/weddings-13.jpg" alt="Dance floor, guests mid-motion, someone raising a hand" loading="lazy">
+    <img class="h-short" src="../weddings/weddings-11.jpg" alt="Two groomsmen, black and white, suits and beers" loading="lazy">
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact-strip">
+    <p>If this is what you're looking for</p>
+    <a href="mailto:alex@wajones.co">alex@wajones.co</a>
+  </div>
+
+  <footer>
+    <span>W.A. Jones</span>
+    <a href="../index.html">Back</a>
+  </footer>
+
+</body>
+</html>

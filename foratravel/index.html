@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fora Travel — W.A. Jones</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  /* ─── SITE TOKENS ─────────────────────────────────── */
+  :root {
+    --paper:   #f2ede6;
+    --ink:     #1a1814;
+    --rust:    #8b4a2b;
+    --muted:   #8a8278;
+    --dim:     rgba(26,24,20,.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+  }
+
+  /* ─── SECTION WRAPPER ─────────────────────────────── */
+  .fora-section {
+    padding: 80px 0 100px;
+    border-top: 1px solid rgba(26,24,20,.12);
+  }
+
+  /* ─── SECTION HEADER ──────────────────────────────── */
+  .fora-header {
+    padding: 0 48px 48px;
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+  }
+
+  .fora-header h2 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 400;
+    letter-spacing: .02em;
+    line-height: 1;
+  }
+
+  .fora-header .client-credit {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ─── CREDENTIAL STRIP ────────────────────────────── */
+  .fora-credential {
+    margin: 0 48px 52px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(26,24,20,.10);
+    border-bottom: 1px solid rgba(26,24,20,.10);
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 300;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    gap: 28px;
+  }
+
+  .fora-credential span::before {
+    content: '— ';
+    opacity: .45;
+  }
+
+  /* ─── PORSCHE HERO: full-bleed above grid ──────────── */
+  .fora-hero-wrap {
+    padding: 0 48px;
+    margin-bottom: 6px;
+  }
+
+  .fora-hero-wrap figure {
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    aspect-ratio: 21/8;
+  }
+
+  .fora-hero-wrap figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+    display: block;
+    transition: transform .7s cubic-bezier(.25,.46,.45,.94), filter .7s ease;
+    filter: saturate(.92);
+  }
+
+  .fora-hero-wrap figure:hover img {
+    transform: scale(1.018);
+    filter: saturate(1.06);
+  }
+
+  .fora-hero-wrap figure figcaption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 40px 16px 12px;
+    background: linear-gradient(transparent, rgba(26,24,20,.45));
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    font-weight: 300;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(242,237,230,.7);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity .35s ease, transform .35s ease;
+  }
+
+  .fora-hero-wrap figure:hover figcaption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── GRID: BRAND EVENT (below hero) ───────────────── */
+  .fora-grid-brand {
+    padding: 0 48px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: auto;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .gi-hero   { grid-column: 1 / 5; grid-row: 1 / 3; }
+  .gi-wall   { grid-column: 5 / 8; grid-row: 1 / 3; }
+  .gi-car1   { grid-column: 8 / 13; grid-row: 1; }
+  .gi-bags   { grid-column: 8 / 11; grid-row: 2; }
+  .gi-coffee { grid-column: 11 / 13; grid-row: 2; }
+
+  .gi-porsche-blur  { grid-column: 1 / 5; }
+  .gi-porsche-plant { grid-column: 5 / 8; }
+  .gi-exterior      { grid-column: 8 / 10; }
+  .gi-team          { grid-column: 10 / 13; }
+
+  .gi-audience  { grid-column: 1 / 5; }
+  .gi-crowd     { grid-column: 5 / 8; }
+  .gi-tshirt    { grid-column: 8 / 10; }
+  .gi-sofas     { grid-column: 10 / 13; }
+
+  /* ─── GRID: ROCCO FORTE (second register) ─────────── */
+  .fora-register-label {
+    padding: 36px 48px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .fora-grid-rf {
+    padding: 0 48px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 6px;
+  }
+
+  .rf-flowers1  { grid-column: 1 / 4; }
+  .rf-flowers2  { grid-column: 4 / 7; }
+  .rf-cart      { grid-column: 7 / 10; }
+  .rf-bar       { grid-column: 10 / 13; }
+
+  .rf-window    { grid-column: 1 / 7; }
+
+  /* ─── ALL GRID IMAGES ─────────────────────────────── */
+  .fora-grid-brand figure,
+  .fora-grid-rf figure {
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .fora-grid-brand figure img,
+  .fora-grid-rf figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .55s cubic-bezier(.25,.46,.45,.94),
+                filter .55s ease;
+    filter: saturate(.92);
+  }
+
+  .fora-grid-brand figure:hover img,
+  .fora-grid-rf figure:hover img {
+    transform: scale(1.025);
+    filter: saturate(1.06);
+  }
+
+  /* enforce aspect ratios per slot */
+  .gi-hero         { aspect-ratio: 3/4; }
+  .gi-wall         { aspect-ratio: 2/3; }
+  .gi-car1         { aspect-ratio: 16/9; }
+  .gi-bags         { aspect-ratio: 4/3; }
+  .gi-coffee       { aspect-ratio: 4/3; }
+  .gi-porsche-blur { aspect-ratio: 4/3; }
+  .gi-porsche-plant{ aspect-ratio: 3/4; }
+  .gi-exterior     { aspect-ratio: 2/3; }
+  .gi-team         { aspect-ratio: 4/3; }
+  .gi-audience     { aspect-ratio: 16/10; }
+  .gi-crowd        { aspect-ratio: 3/2; }
+  .gi-tshirt       { aspect-ratio: 3/4; }
+  .gi-sofas        { aspect-ratio: 4/3; }
+  .rf-flowers1     { aspect-ratio: 3/4; }
+  .rf-flowers2     { aspect-ratio: 3/4; }
+  .rf-cart         { aspect-ratio: 3/4; }
+  .rf-bar          { aspect-ratio: 3/4; }
+  .rf-window       { aspect-ratio: 16/7; }
+
+  /* ─── CAPTION OVERLAY on hover ────────────────────── */
+  .fora-grid-brand figure figcaption,
+  .fora-grid-rf figure figcaption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 28px 12px 10px;
+    background: linear-gradient(transparent, rgba(26,24,20,.55));
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    font-weight: 300;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(242,237,230,.8);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity .35s ease, transform .35s ease;
+  }
+
+  .fora-grid-brand figure:hover figcaption,
+  .fora-grid-rf figure:hover figcaption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── LIGHTBOX ────────────────────────────────────── */
+  #fora-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,24,20,.94);
+    z-index: 9000;
+    align-items: center;
+    justify-content: center;
+  }
+  #fora-lightbox.open { display: flex; }
+
+  #fora-lightbox img {
+    max-width: 88vw;
+    max-height: 88vh;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+  }
+
+  #fora-lb-close {
+    position: absolute;
+    top: 24px; right: 30px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .14em;
+    color: rgba(242,237,230,.55);
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: color .2s;
+  }
+  #fora-lb-close:hover { color: var(--paper); }
+
+  #fora-lb-prev, #fora-lb-next {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    background: none; border: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    color: rgba(242,237,230,.45);
+    cursor: pointer;
+    padding: 20px;
+    transition: color .2s;
+  }
+  #fora-lb-prev { left: 12px; }
+  #fora-lb-next { right: 12px; }
+  #fora-lb-prev:hover, #fora-lb-next:hover { color: var(--paper); }
+
+  #fora-lb-counter {
+    position: absolute;
+    bottom: 24px; left: 50%; transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .14em;
+    color: rgba(242,237,230,.4);
+  }
+
+  /* ─── MOBILE ──────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .fora-header, .fora-credential, .fora-register-label { padding-left: 20px; padding-right: 20px; }
+    .fora-grid-brand, .fora-grid-rf { padding: 0 20px; gap: 4px; }
+
+    .fora-grid-brand { grid-template-columns: 1fr 1fr; }
+    .fora-grid-brand figure, .fora-grid-rf figure { grid-column: auto !important; grid-row: auto !important; }
+    .gi-hero, .gi-wall, .gi-car1, .gi-bags, .gi-coffee,
+    .gi-porsche-blur, .gi-porsche-plant, .gi-exterior, .gi-team,
+    .gi-audience, .gi-crowd, .gi-tshirt, .gi-sofas { aspect-ratio: 1; }
+
+    .fora-grid-rf { grid-template-columns: 1fr 1fr; }
+    .rf-flowers1, .rf-flowers2, .rf-cart, .rf-bar,
+    .rf-window, .rf-bartender, .rf-magcover { aspect-ratio: 1; grid-column: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     FORA TRAVEL SECTION
+     Drop between Commercial and Events in index.html
+     Image paths assume: foratravel/ subdirectory
+     (or adjust to repo root if flat file structure)
+════════════════════════════════════════════════════ -->
+<section class="fora-section" id="fora">
+
+  <div class="fora-header">
+    <h2>Fora Travel</h2>
+    <span class="client-credit">Commercial · Brand &amp; Hospitality</span>
+  </div>
+
+  <div class="fora-credential">
+    <span>In association with Rocco Forte Hotels</span>
+    <span>New York, NY</span>
+  </div>
+
+  <!-- PORSCHE HERO: full-bleed -->
+  <div class="fora-hero-wrap">
+    <figure data-hero-idx="0">
+      <img src="foratravel/foratravel-9.jpg" alt="Red Porsche 911 in motion — Fora brand event, NYC">
+      <figcaption>Fora brand event, NYC</figcaption>
+    </figure>
+  </div>
+
+  <!-- REGISTER 1: Brand event -->
+  <div class="fora-grid-brand">
+
+    <figure class="gi-hero" data-idx="1">
+      <img src="foratravel/foratravel.jpg" alt="Fora Travel — plane windows installation">
+      <figcaption>Brand installation</figcaption>
+    </figure>
+
+    <figure class="gi-wall" data-idx="2">
+      <img src="foratravel/foratravel-5.jpg" alt="Nowhere to Go But Everywhere wall lettering">
+      <figcaption>Nowhere to go but everywhere</figcaption>
+    </figure>
+
+    <figure class="gi-car1" data-idx="3">
+      <img src="foratravel/foratravel-10.jpg" alt="Porsche with plant, Fora signage">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-bags" data-idx="4">
+      <img src="foratravel/foratravel-4.jpg" alt="Fora tote bags, product display">
+      <figcaption>Product display</figcaption>
+    </figure>
+
+    <figure class="gi-coffee" data-idx="5">
+      <img src="foratravel/foratravel-7.jpg" alt="Rhythm Zero x Fora branded drink">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-porsche-blur" data-idx="6">
+      <img src="foratravel/foratravel-3.jpg" alt="Porsche close, tropical plant, Fora signage">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-porsche-plant" data-idx="7">
+      <img src="foratravel/foratravel-6.jpg" alt="Fora espresso bar">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-exterior" data-idx="8">
+      <img src="foratravel/foratravel-11.jpg" alt="Fora exterior — red umbrella, bistro chairs">
+      <figcaption>Fora HQ, New York</figcaption>
+    </figure>
+
+    <figure class="gi-team" data-idx="9">
+      <img src="foratravel/foratravel-12.jpg" alt="Fora team portrait, storefront steps">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-audience" data-idx="10">
+      <img src="foratravel/foratravel-13.jpg" alt="Audience at Fora event">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-crowd" data-idx="11">
+      <img src="foratravel/foratravel-14.jpg" alt="Crowd at Fora launch event">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-tshirt" data-idx="12">
+      <img src="foratravel/foratravel-2.jpg" alt="Fora storefront, NYC">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="gi-sofas" data-idx="13">
+      <img src="foratravel/foratravel-8.jpg" alt="Framed print, Fora office">
+      <figcaption></figcaption>
+    </figure>
+
+  </div>
+
+  <!-- REGISTER 2: Rocco Forte activation -->
+  <div class="fora-register-label">Rocco Forte Hotels activation</div>
+
+  <div class="fora-grid-rf">
+
+    <figure class="rf-flowers1" data-idx="14">
+      <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff7.jpg" alt="Flower arranging workshop — Rocco Forte activation">
+      <figcaption>Flower workshop</figcaption>
+    </figure>
+
+    <figure class="rf-flowers2" data-idx="15">
+      <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff8.jpg" alt="Florals, Rocco Forte event">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="rf-cart" data-idx="16">
+      <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff9.jpg" alt="Rocco Forte Hotels service cart">
+      <figcaption>Rocco Forte Hotels</figcaption>
+    </figure>
+
+    <figure class="rf-bar" data-idx="17">
+      <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff10.jpg" alt="Service, Rocco Forte activation">
+      <figcaption></figcaption>
+    </figure>
+
+    <figure class="rf-window" data-idx="18">
+      <img src="https://jonesandcompany.github.io/Chelsea-hotel/forastaff11.jpg" alt="Interior, tall gothic windows">
+      <figcaption></figcaption>
+    </figure>
+
+  </div>
+
+</section>
+
+<!-- ─── LIGHTBOX ──────────────────────────────────── -->
+<div id="fora-lightbox" role="dialog" aria-modal="true">
+  <span id="fora-lb-close" role="button" tabindex="0">Close</span>
+  <button id="fora-lb-prev" aria-label="Previous">&#8592;</button>
+  <img id="fora-lb-img" src="" alt="">
+  <button id="fora-lb-next" aria-label="Next">&#8594;</button>
+  <div id="fora-lb-counter"></div>
+</div>
+
+<script>
+  (function () {
+    const lb        = document.getElementById('fora-lightbox');
+    const lbImg     = document.getElementById('fora-lb-img');
+    const lbCounter = document.getElementById('fora-lb-counter');
+    const lbClose   = document.getElementById('fora-lb-close');
+    const lbPrev    = document.getElementById('fora-lb-prev');
+    const lbNext    = document.getElementById('fora-lb-next');
+
+    // Collect all figures in section order
+    const figures = Array.from(
+      document.querySelectorAll('.fora-hero-wrap figure, .fora-grid-brand figure, .fora-grid-rf figure')
+    );
+    let current = 0;
+
+    function open(idx) {
+      current = idx;
+      const img = figures[idx].querySelector('img');
+      lbImg.src = img.src;
+      lbImg.alt = img.alt;
+      lbCounter.textContent = (idx + 1) + ' / ' + figures.length;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      lb.classList.remove('open');
+      lbImg.src = '';
+      document.body.style.overflow = '';
+    }
+
+    function prev() { open((current - 1 + figures.length) % figures.length); }
+    function next() { open((current + 1) % figures.length); }
+
+    figures.forEach((fig, i) => {
+      fig.addEventListener('click', () => open(i));
+    });
+
+    lbClose.addEventListener('click', close);
+    lbPrev.addEventListener('click', prev);
+    lbNext.addEventListener('click', next);
+
+    lb.addEventListener('click', e => {
+      if (e.target === lb) close();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    });
+
+    // Touch/swipe
+    let touchX = null;
+    lb.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+    lb.addEventListener('touchend', e => {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
+      touchX = null;
+    });
+  })();
+</script>
+
+</body>
+</html>
