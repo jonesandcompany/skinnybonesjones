@@ -30,6 +30,7 @@
     overflow: hidden;
   }
 
+  /* ── GRID ── */
   .grid {
     display: grid;
     width: 100vw;
@@ -38,21 +39,105 @@
     grid-template-rows: 1fr 1fr;
     gap: var(--gap);
     background: var(--black);
+    position: relative;
   }
 
+  /* ── CELL ── */
   .cell {
     position: relative;
     overflow: hidden;
     background: #1a1a1a;
     cursor: pointer;
+    opacity: 0;
+    animation: fadeIn 0.6s ease forwards;
+    z-index: 1;
     transition: background 0.3s ease;
   }
 
-  .cell:hover {
-    background: #222;
+  .cell:nth-child(1) { animation-delay: 0.05s; }
+  .cell:nth-child(2) { animation-delay: 0.15s; }
+  .cell:nth-child(3) { animation-delay: 0.25s; }
+  .cell:nth-child(4) { animation-delay: 0.35s; }
+
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  .cell:hover { background: #222; }
+
+  /* ── EXPANDED STATE ── */
+  .cell.expanded {
+    position: fixed;
+    z-index: 100;
+    cursor: default;
+    overflow-y: auto;
+    transition:
+      top 0.7s cubic-bezier(0.76, 0, 0.24, 1),
+      left 0.7s cubic-bezier(0.76, 0, 0.24, 1),
+      width 0.7s cubic-bezier(0.76, 0, 0.24, 1),
+      height 0.7s cubic-bezier(0.76, 0, 0.24, 1);
   }
 
-  /* Category label — blend mode so image tones sculpt the type */
+  /* Each cell expands from its own corner */
+  .cell[data-pos="tl"].expanded { top: 0; left: 0; width: 100vw; height: 100vh; }
+  .cell[data-pos="tr"].expanded { top: 0; right: 0; width: 100vw; height: 100vh; left: 0; }
+  .cell[data-pos="bl"].expanded { bottom: 0; left: 0; width: 100vw; height: 100vh; top: 0; }
+  .cell[data-pos="br"].expanded { bottom: 0; right: 0; width: 100vw; height: 100vh; top: 0; left: 0; }
+
+  /* ── BG IMAGE ── */
+  .bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1), filter 0.7s ease;
+    z-index: 0;
+    filter: saturate(1) brightness(1);
+  }
+
+  .cell:hover:not(.expanded) .bg {
+    transform: scale(1.03);
+  }
+
+  .cell.expanded .bg {
+    transform: scale(1.0);
+    filter: saturate(0.2) brightness(0.7);
+  }
+
+  /* ── SCRIM ── */
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.42);
+    transition: background 0.7s ease;
+    z-index: 1;
+  }
+
+  .cell:hover:not(.expanded) .scrim {
+    background: rgba(0,0,0,0.22);
+  }
+
+  .cell.expanded .scrim {
+    background: rgba(0,0,0,0.55);
+  }
+
+  /* ── GRAIN ── */
+  .cell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.21;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    mix-blend-mode: overlay;
+    z-index: 4;
+    transition: opacity 0.7s ease;
+  }
+
+  .cell.expanded::after {
+    opacity: 0.6;
+  }
+
+  /* ── CATEGORY LABEL ── */
   .cat-label {
     position: absolute;
     inset: 0;
@@ -66,18 +151,49 @@
     text-transform: uppercase;
     color: var(--white);
     mix-blend-mode: overlay;
-    transition: mix-blend-mode 0.2s ease;
+    transition: 
+      font-size 0.4s ease,
+      top 0.4s ease,
+      left 0.4s ease,
+      right 0.4s ease,
+      bottom 0.4s ease,
+      inset 0.4s ease,
+      mix-blend-mode 0.2s ease,
+      opacity 0.3s ease;
     user-select: none;
     padding: 0 2vw;
     text-align: center;
     z-index: 3;
   }
 
-  .cell:hover .cat-label {
+  .cell:hover:not(.expanded) .cat-label {
     mix-blend-mode: normal;
   }
 
-  /* Sub-project list — bottom left */
+  /* Expanded: label shrinks to corner, becomes close button */
+  .cell.expanded .cat-label {
+    inset: auto;
+    font-size: clamp(13px, 1.4vw, 20px);
+    mix-blend-mode: normal;
+    opacity: 0.7;
+    cursor: pointer;
+    letter-spacing: 0.12em;
+    padding: 0;
+    display: block;
+    transition: opacity 0.2s ease;
+  }
+
+  .cell.expanded .cat-label:hover {
+    opacity: 1;
+  }
+
+  /* Corner positions for each cell's label when expanded */
+  .cell[data-pos="tl"].expanded .cat-label { top: 22px; left: 24px; }
+  .cell[data-pos="tr"].expanded .cat-label { top: 22px; right: 24px; left: auto; text-align: right; }
+  .cell[data-pos="bl"].expanded .cat-label { bottom: 22px; left: 24px; top: auto; }
+  .cell[data-pos="br"].expanded .cat-label { bottom: 22px; right: 24px; top: auto; left: auto; text-align: right; }
+
+  /* ── COLLAPSED SUB-LIST ── */
   .sub-list {
     position: absolute;
     bottom: 18px;
@@ -92,13 +208,60 @@
     line-height: 1.8;
     transition: opacity 0.3s ease;
     z-index: 3;
+    pointer-events: none;
   }
 
-  .cell:hover .sub-list {
-    opacity: 0.7;
+  .cell:hover:not(.expanded) .sub-list { opacity: 0.7; }
+  .cell.expanded .sub-list { opacity: 0; pointer-events: none; }
+
+  /* ── EXPANDED PROJECT LIST ── */
+  .project-list {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 64px;
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease 0s;
   }
 
-  /* Center nameplate */
+  .cell.expanded .project-list {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease 0.15s;
+  }
+
+  .project-list a,
+  .project-list span {
+    display: block;
+    font-family: 'Erogenous', serif;
+    font-size: clamp(48px, 6.5vw, 90px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 0.1em;
+    text-decoration: none;
+    transition: opacity 0.2s ease, letter-spacing 0.2s ease;
+    opacity: 0.85;
+  }
+
+  .project-list a:hover {
+    opacity: 1;
+    letter-spacing: 0.02em;
+  }
+
+  /* Dead links — no hover effect */
+  .project-list span {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  /* ── NAMEPLATE ── */
   .nameplate-wrap {
     position: fixed;
     top: 50%;
@@ -106,7 +269,10 @@
     transform: translate(-50%, -50%);
     z-index: 10;
     pointer-events: none;
+    transition: opacity 0.3s ease;
   }
+
+  .nameplate-wrap.hidden { opacity: 0; }
 
   .nameplate {
     font-family: 'DM Mono', monospace;
@@ -120,7 +286,7 @@
     white-space: nowrap;
   }
 
-  /* Registration cross */
+  /* ── REGISTRATION CROSS ── */
   .cross {
     position: fixed;
     top: 50%;
@@ -130,95 +296,57 @@
     pointer-events: none;
     width: 24px;
     height: 24px;
+    transition: opacity 0.3s ease;
   }
+
+  .cross.hidden { opacity: 0; }
+
   .cross::before, .cross::after {
     content: '';
     position: absolute;
     background: var(--black);
   }
-  .cross::before {
-    width: 1px;
-    height: 24px;
-    left: 50%;
-    top: 0;
-  }
-  .cross::after {
-    width: 24px;
-    height: 1px;
-    top: 50%;
-    left: 0;
-  }
+  .cross::before { width: 1px; height: 24px; left: 50%; top: 0; }
+  .cross::after  { width: 24px; height: 1px; top: 50%; left: 0; }
 
-  /* Background photo */
-  .bg {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-repeat: no-repeat;
-    transition: transform 0.6s ease;
-    z-index: 0;
-  }
-
-  .cell:hover .bg {
-    transform: scale(1.03);
-  }
-
-  /* Dark scrim */
-  .scrim {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.42);
-    transition: background 0.4s ease;
-    z-index: 1;
-  }
-
-  .cell:hover .scrim {
-    background: rgba(0,0,0,0.22);
-  }
-
-  /* Load animation */
-  .cell {
-    opacity: 0;
-    animation: fadeIn 0.6s ease forwards;
-  }
-  .cell:nth-child(1) { animation-delay: 0.05s; }
-  .cell:nth-child(2) { animation-delay: 0.15s; }
-  .cell:nth-child(3) { animation-delay: 0.25s; }
-  .cell:nth-child(4) { animation-delay: 0.35s; }
-
-  @keyframes fadeIn {
-    to { opacity: 1; }
-  }
-
-  /* Grain overlay */
-  .cell::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.21;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 180px 180px;
-    mix-blend-mode: overlay;
-    z-index: 2;
-  }
+  /* ── MOBILE ── */
   @media (max-width: 600px) {
     .grid {
       grid-template-columns: 1fr;
-      grid-template-rows: repeat(4, 1fr);
-      height: auto;
-      min-height: 100vh;
+      grid-template-rows: repeat(4, 25vh);
+      height: 100vh;
+      overflow: hidden;
     }
+
     .cell { min-height: 25vh; }
     .cat-label { font-size: clamp(40px, 12vw, 72px); }
+
+    /* Mobile expand: top cells expand downward, bottom cells upward */
+    .cell[data-pos="tl"].expanded,
+    .cell[data-pos="tr"].expanded {
+      top: 0; left: 0; width: 100vw; height: 100vh;
+    }
+    .cell[data-pos="bl"].expanded,
+    .cell[data-pos="br"].expanded {
+      top: 0; left: 0; width: 100vw; height: 100vh;
+    }
+
+    .cell.expanded .cat-label { font-size: 13px; }
+
+    .project-list { padding: 60px 32px; }
+    .project-list a,
+    .project-list span {
+      font-size: clamp(36px, 11vw, 64px);
+    }
   }
 </style>
 </head>
 <body>
 
-<div class="grid">
+<div class="grid" id="grid">
 
-  <div class="cell">
+  <!-- EDITORIAL — top left -->
+  <div class="cell" data-pos="tl" data-cat="Editorial">
     <div class="bg" style="background-image: url('images/image_1.jpg'); background-position: center center;"></div>
     <div class="scrim"></div>
     <div class="cat-label">Editorial</div>
@@ -228,9 +356,16 @@
       Skip Marley<br>
       Eli's Dream
     </div>
+    <div class="project-list">
+      <span>Untitled Magazine</span>
+      <span>Roses Mag</span>
+      <span>Skip Marley</span>
+      <a href="elisdream/">Eli's Dream</a>
+    </div>
   </div>
 
-  <div class="cell">
+  <!-- COMMERCIAL — top right -->
+  <div class="cell" data-pos="tr" data-cat="Commercial">
     <div class="bg" style="background-image: url('images/image_2.jpg'); background-position: center top;"></div>
     <div class="scrim"></div>
     <div class="cat-label">Commercial</div>
@@ -240,9 +375,16 @@
       Le Alfré<br>
       Harden
     </div>
+    <div class="project-list">
+      <span>Belstaff</span>
+      <span>Bond Official</span>
+      <a href="lealfre/">Le Alfré</a>
+      <span>Harden</span>
+    </div>
   </div>
 
-  <div class="cell">
+  <!-- EVENTS — bottom left -->
+  <div class="cell" data-pos="bl" data-cat="Events">
     <div class="bg" style="background-image: url('images/image_3.jpg'); background-position: center bottom;"></div>
     <div class="scrim"></div>
     <div class="cat-label">Events</div>
@@ -250,28 +392,125 @@
       Fora / Rocco Forte<br>
       Harvard Club<br>
       Pardon Me<br>
-      Boxers
+      Boxers<br>
+      Weddings
+    </div>
+    <div class="project-list">
+      <a href="foratravel/">Fora / Rocco Forte</a>
+      <span>Harvard Club</span>
+      <span>Pardon Me</span>
+      <a href="boxers/">Boxers</a>
+      <a href="weddings/">Weddings</a>
     </div>
   </div>
 
-  <div class="cell">
+  <!-- TRAVEL — bottom right -->
+  <div class="cell" data-pos="br" data-cat="Travel">
     <div class="bg" style="background-image: url('images/image_4.jpg'); background-position: center center;"></div>
     <div class="scrim"></div>
     <div class="cat-label">Travel</div>
     <div class="sub-list">
       Europe<br>
       California<br>
-      Mexico<br>
+      Hotels<br>
       New York
+    </div>
+    <div class="project-list">
+      <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">Europe</a>
+      <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">California</a>
+      <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">Hotels</a>
+      <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">New York</a>
     </div>
   </div>
 
 </div>
 
-<div class="cross"></div>
-<div class="nameplate-wrap">
+<div class="cross" id="cross"></div>
+<div class="nameplate-wrap" id="nameplate">
   <div class="nameplate">W.A. Jones</div>
 </div>
+
+<script>
+  const cells = document.querySelectorAll('.cell');
+  const cross = document.getElementById('cross');
+  const nameplate = document.getElementById('nameplate');
+  let expanded = null;
+
+  cells.forEach(cell => {
+    cell.addEventListener('click', function(e) {
+
+      // If this cell is already expanded
+      if (this.classList.contains('expanded')) {
+        const label = this.querySelector('.cat-label');
+        const projectList = this.querySelector('.project-list');
+
+        // Close if clicking the label, or clicking outside the project-list
+        if (
+          label.contains(e.target) ||
+          e.target === label ||
+          !projectList.contains(e.target)
+        ) {
+          closeCell(this);
+        }
+        return;
+      }
+
+      // If another cell is expanded, close it first
+      if (expanded && expanded !== this) {
+        closeCell(expanded);
+        setTimeout(() => openCell(this), 50);
+        return;
+      }
+
+      openCell(this);
+    });
+  });
+
+  function openCell(cell) {
+    // Capture current position before going fixed
+    const rect = cell.getBoundingClientRect();
+    cell.style.top    = rect.top + 'px';
+    cell.style.left   = rect.left + 'px';
+    cell.style.width  = rect.width + 'px';
+    cell.style.height = rect.height + 'px';
+
+    // Force reflow
+    cell.getBoundingClientRect();
+
+    // Now animate to full screen
+    cell.classList.add('expanded');
+    cell.style.top    = '0';
+    cell.style.left   = '0';
+    cell.style.width  = '100vw';
+    cell.style.height = '100vh';
+
+    cross.classList.add('hidden');
+    nameplate.classList.add('hidden');
+    expanded = cell;
+
+    // Prevent body scroll on mobile
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCell(cell) {
+    cell.classList.remove('expanded');
+    cell.style.top    = '';
+    cell.style.left   = '';
+    cell.style.width  = '';
+    cell.style.height = '';
+
+    cross.classList.remove('hidden');
+    nameplate.classList.remove('hidden');
+    expanded = null;
+
+    document.body.style.overflow = '';
+  }
+
+  // ESC key to close
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && expanded) closeCell(expanded);
+  });
+</script>
 
 </body>
 </html>
