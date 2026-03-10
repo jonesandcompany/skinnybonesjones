@@ -208,8 +208,10 @@
   /* ── COLLAPSED SUB-LIST ── */
   .sub-list {
     position: absolute;
-    bottom: 18px;
-    left: 20px;
+    top: calc(50% + 3.2rem);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     font-weight: 300;
@@ -217,10 +219,12 @@
     text-transform: uppercase;
     color: var(--white);
     opacity: 0.4;
-    line-height: 1.8;
+    line-height: 2;
+    text-align: center;
     transition: opacity 0.3s ease;
     z-index: 3;
     pointer-events: none;
+    white-space: normal;
   }
 
   .cell:hover:not(.expanded) .sub-list { opacity: 0.7; }
@@ -366,60 +370,10 @@
 
     .cell.expanded .cat-label { font-size: 13px; }
 
-    /* On mobile expanded: hide the desktop vertical list */
-    .project-list { display: none; }
-
-    /* Mobile expanded content: category name large + projects as bulleted strip */
-    .mobile-expanded {
-      display: none;
-    }
-
-    .cell.expanded .mobile-expanded {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      position: absolute;
-      inset: 0;
-      padding: 0 28px;
-      z-index: 3;
-      pointer-events: auto;
-    }
-
-    .mobile-expanded .mob-cat {
-      font-family: 'Erogenous', serif;
-      font-size: clamp(52px, 14vw, 80px);
-      font-weight: 400;
-      letter-spacing: -0.02em;
-      text-transform: uppercase;
-      color: var(--white);
-      line-height: 1;
-      margin-bottom: 16px;
-      pointer-events: none;
-    }
-
-    .mobile-expanded .mob-projects {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      font-weight: 300;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--white);
-      opacity: 0.7;
-      line-height: 1.9;
-      pointer-events: auto;
-    }
-
-    .mobile-expanded .mob-projects a {
-      color: var(--white);
-      text-decoration: none;
-    }
-
-    .mobile-expanded .mob-projects a:active {
-      opacity: 0.5;
-    }
-
-    .mobile-expanded .mob-projects .dead {
-      opacity: 0.35;
+    .project-list { padding: 60px 32px; }
+    .project-list a,
+    .project-list span {
+      font-size: clamp(36px, 11vw, 64px);
     }
   }
 </style>
@@ -435,22 +389,13 @@
     <div class="close-hint">tap to close</div>
     <div class="cat-label">Editorial</div>
     <div class="sub-list">
-      Untitled Magazine<br>
-      Roses Mag<br>
-      Skip Marley<br>
-      Eli's Dream
+      Untitled Magazine · Roses Mag · Skip Marley · Eli's Dream
     </div>
     <div class="project-list">
       <span>Untitled Magazine</span>
       <span>Roses Mag</span>
       <span>Skip Marley</span>
       <a href="elisdream/">Eli's Dream</a>
-    </div>
-    <div class="mobile-expanded">
-      <div class="mob-cat">Editorial</div>
-      <div class="mob-projects">
-        <span class="dead">Untitled Magazine</span> · <span class="dead">Roses Mag</span> · <span class="dead">Skip Marley</span> · <a href="elisdream/">Eli's Dream</a>
-      </div>
     </div>
   </div>
 
@@ -461,22 +406,13 @@
     <div class="close-hint">tap to close</div>
     <div class="cat-label">Commercial</div>
     <div class="sub-list">
-      Belstaff<br>
-      Bond Official<br>
-      Le Alfré<br>
-      Harden
+      Belstaff · Bond Official · Le Alfré · Harden
     </div>
     <div class="project-list">
       <span>Belstaff</span>
       <span>Bond Official</span>
       <a href="lealfre/">Le Alfré</a>
       <span>Harden</span>
-    </div>
-    <div class="mobile-expanded">
-      <div class="mob-cat">Commercial</div>
-      <div class="mob-projects">
-        <span class="dead">Belstaff</span> · <span class="dead">Bond Official</span> · <a href="lealfre/">Le Alfré</a> · <span class="dead">Harden</span>
-      </div>
     </div>
   </div>
 
@@ -487,11 +423,7 @@
     <div class="close-hint">tap to close</div>
     <div class="cat-label">Events</div>
     <div class="sub-list">
-      Fora / Rocco Forte<br>
-      Harvard Club<br>
-      Pardon Me<br>
-      Boxers<br>
-      Weddings
+      Fora / Rocco Forte · Harvard Club · Pardon Me · Boxers · Weddings
     </div>
     <div class="project-list">
       <a href="foratravel/">Fora / Rocco Forte</a>
@@ -499,12 +431,6 @@
       <span>Pardon Me</span>
       <a href="boxers/">Boxers</a>
       <a href="weddings/">Weddings</a>
-    </div>
-    <div class="mobile-expanded">
-      <div class="mob-cat">Events</div>
-      <div class="mob-projects">
-        <a href="foratravel/">Fora / Rocco Forte</a> · <span class="dead">Harvard Club</span> · <span class="dead">Pardon Me</span> · <a href="boxers/">Boxers</a> · <a href="weddings/">Weddings</a>
-      </div>
     </div>
   </div>
 
@@ -515,22 +441,13 @@
     <div class="close-hint">tap to close</div>
     <div class="cat-label">Travel</div>
     <div class="sub-list">
-      Europe<br>
-      California<br>
-      Hotels<br>
-      New York
+      Europe · California · Hotels · New York
     </div>
     <div class="project-list">
       <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">Europe</a>
       <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">California</a>
       <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">Hotels</a>
       <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">New York</a>
-    </div>
-    <div class="mobile-expanded">
-      <div class="mob-cat">Travel</div>
-      <div class="mob-projects">
-        <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">Europe</a> · <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">California</a> · <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">Hotels</a> · <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">New York</a>
-      </div>
     </div>
   </div>
 
