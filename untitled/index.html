@@ -14,7 +14,7 @@
       --mid: #888888;
       --sky: #5b9fd4;
       --rule: #d8d8d6;
-      --gap: 3px;
+      --gap: 4px;
     }
 
     body {
@@ -22,6 +22,12 @@
       color: var(--ink);
       font-family: 'DM Mono', monospace;
       -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
     }
 
     /* ── NAV ── */
@@ -50,7 +56,7 @@
 
     /* ── MASTHEAD ── */
     .masthead {
-      padding-top: 80px;
+      padding-top: 57px;
       border-bottom: 1px solid var(--rule);
     }
 
@@ -102,98 +108,148 @@
       color: var(--mid);
     }
 
-    .meta-value {
-      font-size: 13px;
-      letter-spacing: 0.03em;
-    }
-
+    .meta-value { font-size: 13px; letter-spacing: 0.03em; }
     .meta-value.byline { color: var(--sky); }
 
-    /* ── CONTENT ── */
-    .content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 40px 80px;
+    /* ── LAYOUT SECTIONS ── */
+
+    /* Full-bleed wrapper — edge to edge */
+    .bleed {
+      width: 100%;
+      margin-bottom: var(--gap);
     }
 
-    .section-label {
+    /* Contained wrapper — max 1200px, padded */
+    .contained {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* ── 1. ROOFTOP — full width banner across the top ── */
+    .rooftop {
+      width: 100%;
+      margin-bottom: var(--gap);
+    }
+
+    /* ── 2. HERO + TEXT BLOCK ── */
+    .hero-row {
+      max-width: 1200px;
+      margin: 0 auto var(--gap);
+      padding: 0 40px;
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .hero-row .hero-img {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hero-row .hero-text {
+      flex: 0 0 260px;
+      padding-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .text-kicker {
       font-size: 9px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--mid);
-      padding: 22px 0 14px;
-      border-top: 1px solid var(--rule);
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--rule);
     }
 
-    /* All images: full width of their container, natural height — zero cropping */
-    img {
-      display: block;
-      width: 100%;
-      height: auto;
+    .text-headline {
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--ink);
     }
 
-    /* ── HERO SPREAD ──
-       theuntitledmag-7.jpg = rooftop triptych, landscape (~16:5 very wide)
-       theuntitledmag-2.jpg = dreads street, portrait (~2:3)
-
-       Grid: give the landscape image proportionally more width so both
-       render at a similar perceived height on screen.
-       ~16:5 at flex 1.85 vs ~2:3 at flex 1 ≈ both around 500px tall at 1200px wide.
-    */
-    .hero-spread {
-      display: flex;
-      gap: var(--gap);
-      align-items: flex-start;
-      margin-bottom: var(--gap);
-    }
-
-    .hero-spread .col-landscape { flex: 1.85; }
-    .hero-spread .col-portrait  { flex: 1; }
-
-    .spread-note {
-      font-size: 9px;
-      letter-spacing: 0.14em;
+    .text-body {
+      font-size: 11px;
+      line-height: 1.8;
       color: var(--mid);
-      padding: 10px 0 22px;
       font-style: italic;
     }
 
-    /* ── NEWSSTAND ROW ──
-       theuntitledmag-4.jpg = newsstand turning, landscape (~3:2)
-       theuntitledmag-5.jpg = newsstand facing, portrait (~2:3)
-       theuntitledmag-6.jpg = street crowd, portrait (~2:3)
+    .text-credit {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rule);
+      padding-top: 14px;
+      border-top: 1px solid var(--rule);
+    }
 
-       Flex widths chosen so all three render at matching height.
-       landscape(3:2) at flex 2 vs portrait(2:3) at flex 1 each ≈ same height.
-    */
-    .row-newsstand {
+    .text-credit span {
+      color: var(--sky);
+    }
+
+    /* ── 3. NEWSSTAND WIDE — large, contained ── */
+    .newsstand-wide {
+      max-width: 1200px;
+      margin: 0 auto var(--gap);
+      padding: 0 40px;
+    }
+
+    /* ── 4. DOORWAY — centered, narrower for intimacy ── */
+    .doorway-wrap {
+      max-width: 780px;
+      margin: 0 auto var(--gap);
+      padding: 0 40px;
+    }
+
+    /* ── 5. PAIR — newsstand facing + street crowd ── */
+    .pair-row {
+      max-width: 1200px;
+      margin: 0 auto var(--gap);
+      padding: 0 40px;
       display: flex;
       gap: var(--gap);
       align-items: flex-start;
-      margin-bottom: var(--gap);
     }
 
-    .row-newsstand .col-land { flex: 2; }
-    .row-newsstand .col-port { flex: 1; }
+    .pair-row > * { flex: 1; min-width: 0; }
 
-    /* ── PORTRAIT PAIR ──
-       theuntitledmag.jpg   = woman white wall, portrait (~2:3)
-       theuntitledmag-3.jpg = doorway two subjects, portrait (~2:3)
-       Both similar ratio — simple 2-col, same width, natural height.
-    */
-    .row-portraits {
+    /* ── 6. CLOSER — white wall woman, full contained width ── */
+    .closer {
+      max-width: 1200px;
+      margin: 0 auto 0;
+      padding: 0 40px;
+    }
+
+    /* ── CAPTION STRIP ── */
+    .caption-strip {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 40px 48px;
       display: flex;
-      gap: var(--gap);
-      align-items: flex-start;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .row-portraits > * { flex: 1; }
+    .caption-strip span {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--mid);
+      font-style: italic;
+    }
 
     /* ── FADE ── */
     .fade-up {
       opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
+      transform: translateY(14px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
     }
 
     .fade-up.visible {
@@ -225,25 +281,31 @@
     footer a:hover { color: var(--ink); }
 
     /* ── MOBILE ── */
-    @media (max-width: 680px) {
+    @media (max-width: 700px) {
       nav { padding: 14px 20px; }
       .masthead-inner { padding: 36px 20px 28px; }
-      .content { padding: 0 20px 60px; }
 
-      .hero-spread,
-      .row-newsstand,
-      .row-portraits {
+      .hero-row {
         flex-direction: column;
+        padding: 0 20px;
+        gap: 24px;
       }
 
-      .hero-spread .col-landscape,
-      .hero-spread .col-portrait,
-      .row-newsstand .col-land,
-      .row-newsstand .col-port,
-      .row-portraits > * {
+      .hero-row .hero-text {
         flex: unset;
         width: 100%;
       }
+
+      .newsstand-wide,
+      .doorway-wrap,
+      .pair-row,
+      .closer,
+      .caption-strip {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .pair-row { flex-direction: column; }
 
       footer { padding: 20px; }
     }
@@ -251,11 +313,13 @@
 </head>
 <body>
 
+  <!-- NAV -->
   <nav>
     <a href="../">W.A. Jones</a>
     <a href="../">← Index</a>
   </nav>
 
+  <!-- MASTHEAD -->
   <header class="masthead">
     <div class="masthead-inner">
       <p class="pub-label">Editorial</p>
@@ -281,42 +345,59 @@
     </div>
   </header>
 
-  <div class="content">
-
-    <div class="section-label fade-up">Printed spread — both pages</div>
-
-    <div class="hero-spread fade-up">
-      <div class="col-landscape">
-        <img src="theuntitledmag-7.jpg" alt="Skip Marley, rooftop, New York City">
-      </div>
-      <div class="col-portrait">
-        <img src="theuntitledmag-2.jpg" alt="Skip Marley, NYC street">
-      </div>
-    </div>
-
-    <p class="spread-note fade-up">Both pages: photography by W.A. Jones</p>
-
-    <div class="section-label fade-up">Additional frames</div>
-
-    <div class="row-newsstand fade-up">
-      <div class="col-land">
-        <img src="theuntitledmag-4.jpg" alt="Skip Marley at newsstand">
-      </div>
-      <div class="col-port">
-        <img src="theuntitledmag-5.jpg" alt="Skip Marley at newsstand, facing">
-      </div>
-      <div class="col-port">
-        <img src="theuntitledmag-6.jpg" alt="Skip Marley, street crowd">
-      </div>
-    </div>
-
-    <div class="row-portraits fade-up">
-      <img src="theuntitledmag.jpg" alt="Editorial frame, white wall">
-      <img src="theuntitledmag-3.jpg" alt="Skip Marley, townhouse doorway">
-    </div>
-
+  <!-- 1. ROOFTOP TRIPTYCH — full width banner -->
+  <div class="rooftop fade-up">
+    <img src="theuntitledmag-7.jpg" alt="Skip Marley, rooftop, New York City">
   </div>
 
+  <!-- 2. HERO (dreads) + TEXT -->
+  <div class="hero-row fade-up">
+    <div class="hero-img">
+      <img src="theuntitledmag-2.jpg" alt="Skip Marley, NYC street">
+    </div>
+    <div class="hero-text">
+      <p class="text-kicker">The Innovate Issue</p>
+      <p class="text-headline">Skip Marley</p>
+      <p class="text-body">
+        Photography by W.A. Jones.<br>
+        Text by George Wayne.<br><br>
+        New York City.
+      </p>
+      <p class="text-credit">
+        Published in<br>
+        <span>Untitled Magazine</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- 3. NEWSSTAND WIDE — landscape, large -->
+  <div class="newsstand-wide fade-up">
+    <img src="theuntitledmag-4.jpg" alt="Skip Marley at the newsstand">
+  </div>
+
+  <!-- 4. DOORWAY — two subjects, centered, intimate scale -->
+  <div class="doorway-wrap fade-up">
+    <img src="theuntitledmag-3.jpg" alt="Skip Marley, townhouse doorway, New York City">
+  </div>
+
+  <!-- 5. PAIR — newsstand facing + street crowd -->
+  <div class="pair-row fade-up">
+    <img src="theuntitledmag-5.jpg" alt="Skip Marley at newsstand, facing camera">
+    <img src="theuntitledmag-6.jpg" alt="Skip Marley, street crowd">
+  </div>
+
+  <!-- 6. CLOSER — white wall woman, full width -->
+  <div class="closer fade-up">
+    <img src="theuntitledmag.jpg" alt="Editorial frame">
+  </div>
+
+  <!-- CAPTION STRIP -->
+  <div class="caption-strip fade-up">
+    <span>All photographs: W.A. Jones — New York City</span>
+    <span>© Untitled Magazine</span>
+  </div>
+
+  <!-- FOOTER -->
   <footer>
     <span>© W.A. Jones — All rights reserved</span>
     <a href="../">wajones.co</a>
@@ -330,7 +411,7 @@
           observer.unobserve(el.target);
         }
       });
-    }, { threshold: 0.06 });
+    }, { threshold: 0.05 });
 
     document.querySelectorAll('.fade-up').forEach(el => {
       if (el.getBoundingClientRect().top < window.innerHeight) {
