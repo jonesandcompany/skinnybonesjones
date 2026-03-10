@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harden — W.A. Jones</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper: #f5f2ed;
+    --ink: #1a1814;
+    --mid: #8a8278;
+    --rule: #c8c3bb;
+    --accent: #1a1814;
+  }
+
+  html { font-size: 12px; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 40px 48px 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 16px;
+  }
+
+  .back {
+    text-decoration: none;
+    color: var(--mid);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .back:hover { color: var(--ink); }
+
+  .doc-meta {
+    text-align: right;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--mid);
+    line-height: 1.8;
+  }
+
+  /* ── TITLE BLOCK ── */
+  .title-block {
+    padding: 32px 48px 28px;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: end;
+    gap: 24px;
+  }
+
+  .client-name {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .doc-title {
+    font-size: 9px;
+    color: var(--mid);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .doc-number {
+    font-size: 9px;
+    color: var(--mid);
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+
+  /* ── SESSION HEADERS ── */
+  .session-header {
+    padding: 20px 48px 16px;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr 120px;
+    gap: 24px;
+    align-items: baseline;
+  }
+
+  .session-label {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .session-desc {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+
+  .session-season {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--mid);
+    text-align: right;
+  }
+
+  /* ── FILMSTRIP ── */
+  .filmstrip-section {
+    padding: 48px 48px 56px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .filmstrip-row-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Two heroes side by side */
+  .hero-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    margin-bottom: 3px;
+  }
+
+  .hero-pair .img-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 2/3;
+  }
+
+  /* Filmstrip of 5 */
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
+  }
+
+  .strip .img-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 2/3;
+  }
+
+  /* ── SESSION 2 ── */
+  .session2-section {
+    padding: 48px 48px 56px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* Full bleed hero */
+  .hero-full {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 3/2;
+    margin-bottom: 3px;
+  }
+
+  /* Three column row */
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+    margin-bottom: 3px;
+  }
+
+  .three-col .img-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 2/3;
+  }
+
+  /* Two col wide */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    margin-bottom: 3px;
+  }
+
+  .two-col .img-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 2/3;
+  }
+
+  /* Four col strip */
+  .four-col {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3px;
+  }
+
+  .four-col .img-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 2/3;
+  }
+
+  /* ── IMAGES ── */
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.4s ease;
+  }
+
+  /* ── SKU LABELS ── */
+  .img-wrap {
+    position: relative;
+  }
+
+  .sku {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.7);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    pointer-events: none;
+    mix-blend-mode: difference;
+  }
+
+  .sku-dark {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: rgba(0,0,0,0.45);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    pointer-events: none;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--rule);
+  }
+
+  .footer-left {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--mid);
+  }
+
+  .footer-right {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--mid);
+  }
+
+  /* ── COLUMN RULE ── */
+  .col-rule {
+    padding: 0 48px;
+    margin: 0;
+    border: none;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* ── INLINE META ROW ── */
+  .meta-row {
+    padding: 10px 48px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--mid);
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    header, .title-block, .session-header,
+    .filmstrip-section, .session2-section,
+    .meta-row, footer {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .title-block {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .doc-title { display: none; }
+
+    .session-header {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .session-desc { display: none; }
+
+    .hero-pair {
+      grid-template-columns: 1fr;
+    }
+
+    .strip {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .three-col {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .four-col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero-full {
+      aspect-ratio: 2/3;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="../index.html" class="back">← W.A. Jones</a>
+  <div class="doc-meta">
+    PHOTOGRAPHY / LOOKBOOK &amp; LINE SHEET<br>
+    CLIENT: HARDEN, LOS ANGELES<br>
+    DOC NO. LB-2023–2024
+  </div>
+</header>
+
+<!-- TITLE BLOCK -->
+<div class="title-block">
+  <div class="client-name">Harden</div>
+  <div class="doc-title">Lookbook &amp; Line Sheet Photography — Two Seasons</div>
+  <div class="doc-number">Photography: W.A. Jones<br>New York</div>
+</div>
+
+<!-- SESSION 1 META -->
+<div class="session-header">
+  <div class="session-label">Session 01</div>
+  <div class="session-desc">Location — Interior / Stairwell, Window Light</div>
+  <div></div>
+  <div class="session-season">AW 2023</div>
+</div>
+
+<!-- SESSION 1 CONTENT -->
+<div class="filmstrip-section">
+
+  <div class="filmstrip-row-label">
+    <span>HRD-AW23 / HERO</span>
+    <span>2 of 2</span>
+  </div>
+
+  <!-- Two hero portraits -->
+  <div class="hero-pair">
+    <div class="img-wrap">
+      <img src="Harden-4.jpg" alt="Harden AW23" loading="lazy">
+      <span class="sku">HRD-AW23-004</span>
+    </div>
+    <div class="img-wrap">
+      <img src="Harden-9.jpg" alt="Harden AW23" loading="lazy">
+      <span class="sku">HRD-AW23-009</span>
+    </div>
+  </div>
+
+  <!-- Bored chair pair -->
+  <div class="meta-row" style="padding-top:20px; padding-bottom:20px; border:none; padding-left:0; padding-right:0; margin-bottom: 12px;">
+    <span style="font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--mid);">HRD-AW23 / STAIRWELL SEQUENCE</span>
+    <span style="font-size:9px; letter-spacing:0.1em; color:var(--mid);">5 of 5</span>
+  </div>
+
+  <!-- Filmstrip: chairs + stairwell -->
+  <div class="strip">
+    <div class="img-wrap">
+      <img src="Harden-5.jpg" alt="Harden AW23" loading="lazy">
+      <span class="sku">HRD-AW23-005</span>
+    </div>
+    <div class="img-wrap">
+      <img src="Harden-6.jpg" alt="Harden AW23" loading="lazy">
+      <span class="sku">HRD-AW23-006</span>
+    </div>
+    <div class="img-wrap">
+      <img src="Harden-19.jpg" alt="Harden AW23" loading="lazy">
+      <span class="sku">HRD-AW23-019</span>
+    </div>
+    <div class="img-wrap">
+      <img src="Harden-20.jpg" alt="Harden AW23" loading="lazy">
+      <span class="sku">HRD-AW23-020</span>
+    </div>
+    <div class="img-wrap">
+      <img src="Harden-21.jpg" alt="Harden AW23" loading="lazy">
+      <span class="sku">HRD-AW23-021</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- SESSION 2 META -->
+<div class="session-header">
+  <div class="session-label">Session 02</div>
+  <div class="session-desc">Studio / Seamless + Exterior, New York</div>
+  <div></div>
+  <div class="session-season">SS 2024</div>
+</div>
+
+<!-- SESSION 2 CONTENT -->
+<div class="session2-section">
+
+  <!-- Hero full bleed — 175 -->
+  <div class="filmstrip-row-label" style="margin-bottom:12px;">
+    <span>HRD-SS24 / HERO</span>
+    <span>1 of 1</span>
+  </div>
+
+  <div class="hero-full img-wrap" style="margin-bottom:3px;">
+    <img src="harden-175.jpg" alt="Harden SS24" loading="lazy" style="object-position: center top;">
+    <span class="sku">HRD-SS24-175</span>
+  </div>
+
+  <!-- 172 outdoor + 170 behind seamless -->
+  <div class="two-col" style="margin-bottom: 24px;">
+    <div class="img-wrap">
+      <img src="harden-172.jpg" alt="Harden SS24" loading="lazy">
+      <span class="sku">HRD-SS24-172</span>
+    </div>
+    <div class="img-wrap">
+      <img src="harden-170.jpg" alt="Harden SS24" loading="lazy">
+      <span class="sku">HRD-SS24-170</span>
+    </div>
+  </div>
+
+  <!-- Meta row for male model -->
+  <div style="padding: 0 0 12px; display:flex; justify-content:space-between; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--mid);">
+    <span>HRD-SS24 / MENSWEAR</span>
+    <span>5 of 5</span>
+  </div>
+
+  <!-- Street shots + color bg -->
+  <div class="three-col" style="margin-bottom: 3px;">
+    <div class="img-wrap">
+      <img src="Harden-82.jpg" alt="Harden SS24" loading="lazy">
+      <span class="sku">HRD-SS24-082</span>
+    </div>
+    <div class="img-wrap">
+      <img src="Harden-91.jpg" alt="Harden SS24" loading="lazy">
+      <span class="sku">HRD-SS24-091</span>
+    </div>
+    <div class="img-wrap">
+      <img src="Harden-157.jpg" alt="Harden SS24" loading="lazy">
+      <span class="sku">HRD-SS24-157</span>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="img-wrap">
+      <img src="Harden-152.jpg" alt="Harden SS24" loading="lazy">
+      <span class="sku">HRD-SS24-152</span>
+    </div>
+    <div class="img-wrap">
+      <img src="Harden-153.jpg" alt="Harden SS24" loading="lazy">
+      <span class="sku">HRD-SS24-153</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">© W.A. Jones — All images copyright the photographer. Not for reproduction.</div>
+  <div class="footer-right">skinnybonesjones.biz</div>
+</footer>
+
+</body>
+</html>
