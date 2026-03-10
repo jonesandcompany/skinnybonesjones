@@ -346,12 +346,12 @@
   @media (max-width: 600px) {
     .grid {
       grid-template-columns: 1fr;
-      grid-template-rows: repeat(4, 25vh);
-      height: 100vh;
+      grid-template-rows: repeat(4, 25dvh);
+      height: 100dvh;
       overflow: hidden;
     }
 
-    .cell { min-height: 25vh; }
+    .cell { min-height: 25dvh; }
     .cat-label { font-size: clamp(40px, 12vw, 72px); }
 
     /* Mobile expand: top cells expand downward, bottom cells upward */
@@ -366,10 +366,60 @@
 
     .cell.expanded .cat-label { font-size: 13px; }
 
-    .project-list { padding: 60px 32px; }
-    .project-list a,
-    .project-list span {
-      font-size: clamp(36px, 11vw, 64px);
+    /* On mobile expanded: hide the desktop vertical list */
+    .project-list { display: none; }
+
+    /* Mobile expanded content: category name large + projects as bulleted strip */
+    .mobile-expanded {
+      display: none;
+    }
+
+    .cell.expanded .mobile-expanded {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: absolute;
+      inset: 0;
+      padding: 0 28px;
+      z-index: 3;
+      pointer-events: auto;
+    }
+
+    .mobile-expanded .mob-cat {
+      font-family: 'Erogenous', serif;
+      font-size: clamp(52px, 14vw, 80px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 16px;
+      pointer-events: none;
+    }
+
+    .mobile-expanded .mob-projects {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white);
+      opacity: 0.7;
+      line-height: 1.9;
+      pointer-events: auto;
+    }
+
+    .mobile-expanded .mob-projects a {
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .mobile-expanded .mob-projects a:active {
+      opacity: 0.5;
+    }
+
+    .mobile-expanded .mob-projects .dead {
+      opacity: 0.35;
     }
   }
 </style>
@@ -396,6 +446,12 @@
       <span>Skip Marley</span>
       <a href="elisdream/">Eli's Dream</a>
     </div>
+    <div class="mobile-expanded">
+      <div class="mob-cat">Editorial</div>
+      <div class="mob-projects">
+        <span class="dead">Untitled Magazine</span> · <span class="dead">Roses Mag</span> · <span class="dead">Skip Marley</span> · <a href="elisdream/">Eli's Dream</a>
+      </div>
+    </div>
   </div>
 
   <!-- COMMERCIAL — top right -->
@@ -415,6 +471,12 @@
       <span>Bond Official</span>
       <a href="lealfre/">Le Alfré</a>
       <span>Harden</span>
+    </div>
+    <div class="mobile-expanded">
+      <div class="mob-cat">Commercial</div>
+      <div class="mob-projects">
+        <span class="dead">Belstaff</span> · <span class="dead">Bond Official</span> · <a href="lealfre/">Le Alfré</a> · <span class="dead">Harden</span>
+      </div>
     </div>
   </div>
 
@@ -438,6 +500,12 @@
       <a href="boxers/">Boxers</a>
       <a href="weddings/">Weddings</a>
     </div>
+    <div class="mobile-expanded">
+      <div class="mob-cat">Events</div>
+      <div class="mob-projects">
+        <a href="foratravel/">Fora / Rocco Forte</a> · <span class="dead">Harvard Club</span> · <span class="dead">Pardon Me</span> · <a href="boxers/">Boxers</a> · <a href="weddings/">Weddings</a>
+      </div>
+    </div>
   </div>
 
   <!-- TRAVEL — bottom right -->
@@ -458,6 +526,12 @@
       <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">Hotels</a>
       <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">New York</a>
     </div>
+    <div class="mobile-expanded">
+      <div class="mob-cat">Travel</div>
+      <div class="mob-projects">
+        <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">Europe</a> · <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">California</a> · <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">Hotels</a> · <a href="https://jonesandcompany.github.io/Chelsea-hotel/" target="_blank">New York</a>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -473,26 +547,20 @@
   const nameplate = document.getElementById('nameplate');
   let expanded = null;
 
+  // Store each cell's origin rect so close can animate back without touching the grid
+  const originRects = new Map();
+
   cells.forEach(cell => {
     cell.addEventListener('click', function(e) {
 
-      // If this cell is already expanded
       if (this.classList.contains('expanded')) {
-        const label = this.querySelector('.cat-label');
-        const projectList = this.querySelector('.project-list');
-        const clickedLink = e.target.closest('a');
-        const clickedSpan = e.target.closest('.project-list span');
-
-        // Keep open if clicking an actual link
-        if (clickedLink) return;
-
-        // Close if clicking label, a dead span, or anywhere outside the text items
-        // (i.e. clicking the bg area behind the list)
+        if (e.target.closest('a')) return; // let links through
         closeCell(this);
         return;
       }
 
-      // If another cell is expanded, close it first
+      if (this.classList.contains('closing')) return; // mid-animation, ignore
+
       if (expanded && expanded !== this) {
         closeCell(expanded);
         setTimeout(() => openCell(this), 50);
@@ -504,8 +572,12 @@
   });
 
   function openCell(cell) {
-    // Capture current position before going fixed
+    // Capture and store origin rect NOW, before anything changes
     const rect = cell.getBoundingClientRect();
+    originRects.set(cell, { top: rect.top, left: rect.left, width: rect.width, height: rect.height });
+
+    // Set starting inline position (matching natural position)
+    cell.style.position = 'fixed';
     cell.style.top    = rect.top + 'px';
     cell.style.left   = rect.left + 'px';
     cell.style.width  = rect.width + 'px';
@@ -514,58 +586,52 @@
     // Force reflow
     cell.getBoundingClientRect();
 
-    // Now animate to full screen
+    // Expand to full screen
     cell.classList.add('expanded');
-    cell.style.top    = '0';
-    cell.style.left   = '0';
-    cell.style.width  = '100vw';
-    cell.style.height = '100vh';
-
-    cross.classList.add('hidden');
-    nameplate.classList.add('hidden');
-    expanded = cell;
-
-    // Prevent body scroll on mobile
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeCell(cell) {
-    // Find where this cell naturally lives in the grid
-    // Temporarily remove expanded to get its original rect
-    cell.classList.remove('expanded');
-    const destRect = cell.getBoundingClientRect();
-
-    // Re-apply fixed positioning at current full-screen state to animate from
     cell.style.top    = '0';
     cell.style.left   = '0';
     cell.style.width  = '100vw';
     cell.style.height = '100dvh';
 
-    // Add closing class (same transition, no expanded styles)
+    cross.classList.add('hidden');
+    nameplate.classList.add('hidden');
+    expanded = cell;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCell(cell) {
+    const origin = originRects.get(cell);
+    if (!origin) return;
+
+    // Switch from expanded to closing — cell stays fixed, transition intact
+    cell.classList.remove('expanded');
     cell.classList.add('closing');
 
-    // Force reflow so browser registers the starting position
+    // Force reflow so browser sees current full-screen state as starting point
     cell.getBoundingClientRect();
 
-    // Animate to original position
-    cell.style.top    = destRect.top + 'px';
-    cell.style.left   = destRect.left + 'px';
-    cell.style.width  = destRect.width + 'px';
-    cell.style.height = destRect.height + 'px';
+    // Animate back to stored origin
+    cell.style.top    = origin.top + 'px';
+    cell.style.left   = origin.left + 'px';
+    cell.style.width  = origin.width + 'px';
+    cell.style.height = origin.height + 'px';
 
     cross.classList.remove('hidden');
     nameplate.classList.remove('hidden');
     expanded = null;
-
     document.body.style.overflow = '';
 
-    // Clean up after animation completes
-    cell.addEventListener('transitionend', function cleanup() {
+    // Clean up only after transition fully completes
+    cell.addEventListener('transitionend', function cleanup(e) {
+      // Wait for the width transition specifically to avoid early cleanup
+      if (e.propertyName !== 'width') return;
       cell.classList.remove('closing');
+      cell.style.position = '';
       cell.style.top    = '';
       cell.style.left   = '';
       cell.style.width  = '';
       cell.style.height = '';
+      originRects.delete(cell);
       cell.removeEventListener('transitionend', cleanup);
     });
   }
