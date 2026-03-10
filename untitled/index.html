@@ -11,10 +11,10 @@
     :root {
       --white: #ffffff;
       --ink: #111111;
-      --mid: #888888;
+      --mid: #999999;
       --sky: #5b9fd4;
-      --rule: #d8d8d6;
-      --gap: 4px;
+      --rule: #e0e0de;
+      --pad: 48px;
     }
 
     body {
@@ -38,8 +38,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 18px 40px;
-      background: rgba(255,255,255,0.94);
+      padding: 18px var(--pad);
+      background: rgba(255,255,255,0.95);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--rule);
     }
@@ -61,9 +61,7 @@
     }
 
     .masthead-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 48px 40px 36px;
+      padding: 52px var(--pad) 40px;
     }
 
     .pub-label {
@@ -71,31 +69,30 @@
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--mid);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .untitled-logo {
-      font-size: clamp(52px, 9vw, 108px);
+      font-size: clamp(56px, 10vw, 120px);
       font-weight: 400;
-      letter-spacing: -0.01em;
-      line-height: 0.88;
+      letter-spacing: -0.02em;
+      line-height: 0.86;
       color: var(--ink);
       user-select: none;
     }
 
     .untitled-logo .star {
       color: var(--sky);
-      font-size: 0.52em;
-      vertical-align: 0.12em;
-      letter-spacing: 0;
+      font-size: 0.5em;
+      vertical-align: 0.14em;
     }
 
     .masthead-meta {
-      margin-top: 28px;
+      margin-top: 32px;
       padding-top: 20px;
       border-top: 1px solid var(--rule);
       display: flex;
-      gap: 40px;
+      gap: 48px;
       flex-wrap: wrap;
     }
 
@@ -108,160 +105,107 @@
       color: var(--mid);
     }
 
-    .meta-value { font-size: 13px; letter-spacing: 0.03em; }
+    .meta-value { font-size: 13px; letter-spacing: 0.02em; }
     .meta-value.byline { color: var(--sky); }
 
-    /* ── LAYOUT SECTIONS ── */
-
-    /* Full-bleed wrapper — edge to edge */
-    .bleed {
-      width: 100%;
-      margin-bottom: var(--gap);
+    /* ── BODY ── */
+    .body {
+      padding: 0 var(--pad) 80px;
     }
 
-    /* Contained wrapper — max 1200px, padded */
-    .contained {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 40px;
+    /* Every direct child of .body gets top margin — consistent rhythm */
+    .body > * {
+      margin-top: 4px;
     }
 
-    /* ── 1. ROOFTOP — full width banner across the top ── */
-    .rooftop {
-      width: 100%;
-      margin-bottom: var(--gap);
+    .body > *:first-child {
+      margin-top: 0;
     }
 
-    /* ── 2. HERO + TEXT BLOCK ── */
-    .hero-row {
-      max-width: 1200px;
-      margin: 0 auto var(--gap);
-      padding: 0 40px;
+    /* ── IMAGE WRAPPERS ── */
+    .img-full { width: 100%; }
+
+    /* Portrait centered — gives breathing room on wide screens */
+    .img-center {
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Two-col pair — both images natural height, align top */
+    .img-pair {
       display: flex;
-      gap: 40px;
+      gap: 4px;
       align-items: flex-start;
     }
 
-    .hero-row .hero-img {
-      flex: 1;
-      min-width: 0;
-    }
+    .img-pair > * { flex: 1; min-width: 0; }
 
-    .hero-row .hero-text {
-      flex: 0 0 260px;
-      padding-top: 8px;
+    /* Landscape gets proportionally more width when paired with portrait */
+    .img-pair .wide { flex: 1.6; }
+    .img-pair .tall { flex: 1; }
+
+    /* ── TEXT BLOCKS — spatial, not decorative ── */
+    .text-block {
+      padding: 40px 0;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
       display: flex;
-      flex-direction: column;
-      gap: 20px;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 40px;
+      flex-wrap: wrap;
     }
 
-    .text-kicker {
+    .text-block .t-left {
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: var(--ink);
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .text-block .t-right {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mid);
+      line-height: 2;
+      text-align: right;
+      flex: 0 0 auto;
+    }
+
+    /* Small inline label — sits between images like a caption header */
+    .label {
       font-size: 9px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--mid);
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--rule);
+      padding: 16px 0;
     }
 
-    .text-headline {
-      font-size: 22px;
-      font-weight: 400;
-      line-height: 1.25;
-      letter-spacing: -0.01em;
-      color: var(--ink);
-    }
-
-    .text-body {
-      font-size: 11px;
-      line-height: 1.8;
-      color: var(--mid);
-      font-style: italic;
-    }
-
-    .text-credit {
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--rule);
-      padding-top: 14px;
-      border-top: 1px solid var(--rule);
-    }
-
-    .text-credit span {
-      color: var(--sky);
-    }
-
-    /* ── 3. NEWSSTAND WIDE — large, contained ── */
-    .newsstand-wide {
-      max-width: 1200px;
-      margin: 0 auto var(--gap);
-      padding: 0 40px;
-    }
-
-    /* ── 4. DOORWAY — centered, narrower for intimacy ── */
-    .doorway-wrap {
-      max-width: 780px;
-      margin: 0 auto var(--gap);
-      padding: 0 40px;
-    }
-
-    /* ── 5. PAIR — newsstand facing + street crowd ── */
-    .pair-row {
-      max-width: 1200px;
-      margin: 0 auto var(--gap);
-      padding: 0 40px;
-      display: flex;
-      gap: var(--gap);
-      align-items: flex-start;
-    }
-
-    .pair-row > * { flex: 1; min-width: 0; }
-
-    /* ── 6. CLOSER — white wall woman, full contained width ── */
-    .closer {
-      max-width: 1200px;
-      margin: 0 auto 0;
-      padding: 0 40px;
-    }
-
-    /* ── CAPTION STRIP ── */
-    .caption-strip {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 12px 40px 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .caption-strip span {
+    /* ── SPREAD NOTE ── */
+    .spread-note {
       font-size: 9px;
       letter-spacing: 0.15em;
-      text-transform: uppercase;
       color: var(--mid);
       font-style: italic;
+      padding: 10px 0 0;
     }
 
     /* ── FADE ── */
     .fade-up {
       opacity: 0;
-      transform: translateY(14px);
+      transform: translateY(12px);
       transition: opacity 0.7s ease, transform 0.7s ease;
     }
-
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
 
     /* ── FOOTER ── */
     footer {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px 40px;
+      padding: 24px var(--pad);
       border-top: 1px solid var(--rule);
       display: flex;
       justify-content: space-between;
@@ -281,45 +225,25 @@
     footer a:hover { color: var(--ink); }
 
     /* ── MOBILE ── */
-    @media (max-width: 700px) {
-      nav { padding: 14px 20px; }
-      .masthead-inner { padding: 36px 20px 28px; }
+    @media (max-width: 680px) {
+      :root { --pad: 20px; }
 
-      .hero-row {
-        flex-direction: column;
-        padding: 0 20px;
-        gap: 24px;
-      }
+      .img-pair { flex-direction: column; }
+      .img-pair .wide, .img-pair .tall { flex: unset; width: 100%; }
+      .img-center { max-width: 100%; }
 
-      .hero-row .hero-text {
-        flex: unset;
-        width: 100%;
-      }
-
-      .newsstand-wide,
-      .doorway-wrap,
-      .pair-row,
-      .closer,
-      .caption-strip {
-        padding-left: 20px;
-        padding-right: 20px;
-      }
-
-      .pair-row { flex-direction: column; }
-
-      footer { padding: 20px; }
+      .text-block { flex-direction: column; gap: 16px; }
+      .text-block .t-right { text-align: left; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
   <nav>
     <a href="../">W.A. Jones</a>
     <a href="../">← Index</a>
   </nav>
 
-  <!-- MASTHEAD -->
   <header class="masthead">
     <div class="masthead-inner">
       <p class="pub-label">Editorial</p>
@@ -345,59 +269,53 @@
     </div>
   </header>
 
-  <!-- 1. ROOFTOP TRIPTYCH — full width banner -->
-  <div class="rooftop fade-up">
-    <img src="theuntitledmag-7.jpg" alt="Skip Marley, rooftop, New York City">
-  </div>
+  <div class="body">
 
-  <!-- 2. HERO (dreads) + TEXT -->
-  <div class="hero-row fade-up">
-    <div class="hero-img">
+    <!-- 1. Rooftop — full width, edge to edge, opens the page -->
+    <div class="img-full fade-up">
+      <img src="theuntitledmag-7.jpg" alt="Skip Marley, rooftop, New York City">
+    </div>
+
+    <p class="spread-note fade-up">Printed spread — both pages. Photography by W.A. Jones.</p>
+
+    <!-- 2. Text block — fills the air between rooftop and hero -->
+    <div class="text-block fade-up">
+      <div class="t-left">Skip Marley</div>
+      <div class="t-right">
+        Untitled Magazine<br>
+        The Innovate Issue<br>
+        New York City
+      </div>
+    </div>
+
+    <!-- 3. Hero — dreads flying, large centered portrait -->
+    <div class="img-center fade-up">
       <img src="theuntitledmag-2.jpg" alt="Skip Marley, NYC street">
     </div>
-    <div class="hero-text">
-      <p class="text-kicker">The Innovate Issue</p>
-      <p class="text-headline">Skip Marley</p>
-      <p class="text-body">
-        Photography by W.A. Jones.<br>
-        Text by George Wayne.<br><br>
-        New York City.
-      </p>
-      <p class="text-credit">
-        Published in<br>
-        <span>Untitled Magazine</span>
-      </p>
+
+    <!-- 4. Newsstand wide — landscape, full width, wall of magazines -->
+    <div class="img-full fade-up">
+      <img src="theuntitledmag-4.jpg" alt="Skip Marley at the newsstand">
     </div>
+
+    <!-- 5. Doorway — two subjects, centered, intimate -->
+    <div class="img-center fade-up">
+      <img src="theuntitledmag-3.jpg" alt="Skip Marley, townhouse doorway">
+    </div>
+
+    <!-- 6. Newsstand facing + street crowd — portrait pair -->
+    <div class="img-pair fade-up">
+      <img src="theuntitledmag-5.jpg" alt="Skip Marley at newsstand, facing">
+      <img src="theuntitledmag-6.jpg" alt="Skip Marley, street crowd">
+    </div>
+
+    <!-- 7. White wall woman — full width closer -->
+    <div class="img-full fade-up">
+      <img src="theuntitledmag.jpg" alt="Editorial frame, white wall">
+    </div>
+
   </div>
 
-  <!-- 3. NEWSSTAND WIDE — landscape, large -->
-  <div class="newsstand-wide fade-up">
-    <img src="theuntitledmag-4.jpg" alt="Skip Marley at the newsstand">
-  </div>
-
-  <!-- 4. DOORWAY — two subjects, centered, intimate scale -->
-  <div class="doorway-wrap fade-up">
-    <img src="theuntitledmag-3.jpg" alt="Skip Marley, townhouse doorway, New York City">
-  </div>
-
-  <!-- 5. PAIR — newsstand facing + street crowd -->
-  <div class="pair-row fade-up">
-    <img src="theuntitledmag-5.jpg" alt="Skip Marley at newsstand, facing camera">
-    <img src="theuntitledmag-6.jpg" alt="Skip Marley, street crowd">
-  </div>
-
-  <!-- 6. CLOSER — white wall woman, full width -->
-  <div class="closer fade-up">
-    <img src="theuntitledmag.jpg" alt="Editorial frame">
-  </div>
-
-  <!-- CAPTION STRIP -->
-  <div class="caption-strip fade-up">
-    <span>All photographs: W.A. Jones — New York City</span>
-    <span>© Untitled Magazine</span>
-  </div>
-
-  <!-- FOOTER -->
   <footer>
     <span>© W.A. Jones — All rights reserved</span>
     <a href="../">wajones.co</a>
