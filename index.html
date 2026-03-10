@@ -34,7 +34,7 @@
   .grid {
     display: grid;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     gap: var(--gap);
@@ -76,11 +76,23 @@
       height 0.7s cubic-bezier(0.76, 0, 0.24, 1);
   }
 
+  /* Closing: same curve, stays fixed until animation completes */
+  .cell.closing {
+    position: fixed;
+    z-index: 100;
+    pointer-events: none;
+    transition:
+      top 0.7s cubic-bezier(0.76, 0, 0.24, 1),
+      left 0.7s cubic-bezier(0.76, 0, 0.24, 1),
+      width 0.7s cubic-bezier(0.76, 0, 0.24, 1),
+      height 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
   /* Each cell expands from its own corner */
-  .cell[data-pos="tl"].expanded { top: 0; left: 0; width: 100vw; height: 100vh; }
-  .cell[data-pos="tr"].expanded { top: 0; right: 0; width: 100vw; height: 100vh; left: 0; }
-  .cell[data-pos="bl"].expanded { bottom: 0; left: 0; width: 100vw; height: 100vh; top: 0; }
-  .cell[data-pos="br"].expanded { bottom: 0; right: 0; width: 100vw; height: 100vh; top: 0; left: 0; }
+  .cell[data-pos="tl"].expanded { top: 0; left: 0; width: 100vw; height: 100dvh; }
+  .cell[data-pos="tr"].expanded { top: 0; right: 0; width: 100vw; height: 100dvh; left: 0; }
+  .cell[data-pos="bl"].expanded { bottom: 0; left: 0; width: 100vw; height: 100dvh; top: 0; }
+  .cell[data-pos="br"].expanded { bottom: 0; right: 0; width: 100vw; height: 100dvh; top: 0; left: 0; }
 
   /* ── BG IMAGE ── */
   .bg {
@@ -270,6 +282,7 @@
     z-index: 10;
     pointer-events: none;
     transition: opacity 0.3s ease;
+    white-space: nowrap;
   }
 
   .nameplate-wrap.hidden { opacity: 0; }
@@ -309,6 +322,26 @@
   .cross::before { width: 1px; height: 24px; left: 50%; top: 0; }
   .cross::after  { width: 24px; height: 1px; top: 50%; left: 0; }
 
+  /* ── CLOSE HINT ── */
+  .close-hint {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+    transition: opacity 0.3s ease 0.15s;
+  }
+
+  .cell.expanded .close-hint {
+    opacity: 0.35;
+  }
+
   /* ── MOBILE ── */
   @media (max-width: 600px) {
     .grid {
@@ -324,11 +357,11 @@
     /* Mobile expand: top cells expand downward, bottom cells upward */
     .cell[data-pos="tl"].expanded,
     .cell[data-pos="tr"].expanded {
-      top: 0; left: 0; width: 100vw; height: 100vh;
+      top: 0; left: 0; width: 100vw; height: 100dvh;
     }
     .cell[data-pos="bl"].expanded,
     .cell[data-pos="br"].expanded {
-      top: 0; left: 0; width: 100vw; height: 100vh;
+      top: 0; left: 0; width: 100vw; height: 100dvh;
     }
 
     .cell.expanded .cat-label { font-size: 13px; }
@@ -349,6 +382,7 @@
   <div class="cell" data-pos="tl" data-cat="Editorial">
     <div class="bg" style="background-image: url('images/image_1.jpg'); background-position: center center;"></div>
     <div class="scrim"></div>
+    <div class="close-hint">tap to close</div>
     <div class="cat-label">Editorial</div>
     <div class="sub-list">
       Untitled Magazine<br>
@@ -368,6 +402,7 @@
   <div class="cell" data-pos="tr" data-cat="Commercial">
     <div class="bg" style="background-image: url('images/image_2.jpg'); background-position: center top;"></div>
     <div class="scrim"></div>
+    <div class="close-hint">tap to close</div>
     <div class="cat-label">Commercial</div>
     <div class="sub-list">
       Belstaff<br>
@@ -387,6 +422,7 @@
   <div class="cell" data-pos="bl" data-cat="Events">
     <div class="bg" style="background-image: url('images/image_3.jpg'); background-position: center bottom;"></div>
     <div class="scrim"></div>
+    <div class="close-hint">tap to close</div>
     <div class="cat-label">Events</div>
     <div class="sub-list">
       Fora / Rocco Forte<br>
@@ -408,6 +444,7 @@
   <div class="cell" data-pos="br" data-cat="Travel">
     <div class="bg" style="background-image: url('images/image_4.jpg'); background-position: center center;"></div>
     <div class="scrim"></div>
+    <div class="close-hint">tap to close</div>
     <div class="cat-label">Travel</div>
     <div class="sub-list">
       Europe<br>
@@ -443,15 +480,15 @@
       if (this.classList.contains('expanded')) {
         const label = this.querySelector('.cat-label');
         const projectList = this.querySelector('.project-list');
+        const clickedLink = e.target.closest('a');
+        const clickedSpan = e.target.closest('.project-list span');
 
-        // Close if clicking the label, or clicking outside the project-list
-        if (
-          label.contains(e.target) ||
-          e.target === label ||
-          !projectList.contains(e.target)
-        ) {
-          closeCell(this);
-        }
+        // Keep open if clicking an actual link
+        if (clickedLink) return;
+
+        // Close if clicking label, a dead span, or anywhere outside the text items
+        // (i.e. clicking the bg area behind the list)
+        closeCell(this);
         return;
       }
 
@@ -493,17 +530,44 @@
   }
 
   function closeCell(cell) {
+    // Find where this cell naturally lives in the grid
+    // Temporarily remove expanded to get its original rect
     cell.classList.remove('expanded');
-    cell.style.top    = '';
-    cell.style.left   = '';
-    cell.style.width  = '';
-    cell.style.height = '';
+    const destRect = cell.getBoundingClientRect();
+
+    // Re-apply fixed positioning at current full-screen state to animate from
+    cell.style.top    = '0';
+    cell.style.left   = '0';
+    cell.style.width  = '100vw';
+    cell.style.height = '100dvh';
+
+    // Add closing class (same transition, no expanded styles)
+    cell.classList.add('closing');
+
+    // Force reflow so browser registers the starting position
+    cell.getBoundingClientRect();
+
+    // Animate to original position
+    cell.style.top    = destRect.top + 'px';
+    cell.style.left   = destRect.left + 'px';
+    cell.style.width  = destRect.width + 'px';
+    cell.style.height = destRect.height + 'px';
 
     cross.classList.remove('hidden');
     nameplate.classList.remove('hidden');
     expanded = null;
 
     document.body.style.overflow = '';
+
+    // Clean up after animation completes
+    cell.addEventListener('transitionend', function cleanup() {
+      cell.classList.remove('closing');
+      cell.style.top    = '';
+      cell.style.left   = '';
+      cell.style.width  = '';
+      cell.style.height = '';
+      cell.removeEventListener('transitionend', cleanup);
+    });
   }
 
   // ESC key to close
