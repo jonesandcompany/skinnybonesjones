@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Untitled Magazine — W.A. Jones</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white: #ffffff;
+      --ink: #111111;
+      --mid: #888888;
+      --sky: #5b9fd4;
+      --rule: #d8d8d6;
+      --gap: 3px;
+    }
+
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: 'DM Mono', monospace;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 40px;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    nav a {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    nav a:hover { color: var(--mid); }
+
+    /* ── MASTHEAD ── */
+    .masthead {
+      padding-top: 80px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .masthead-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 40px 36px;
+    }
+
+    .pub-label {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 20px;
+    }
+
+    .untitled-logo {
+      font-size: clamp(52px, 9vw, 108px);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 0.88;
+      color: var(--ink);
+      user-select: none;
+    }
+
+    .untitled-logo .star {
+      color: var(--sky);
+      font-size: 0.52em;
+      vertical-align: 0.12em;
+      letter-spacing: 0;
+    }
+
+    .masthead-meta {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .meta-block { display: flex; flex-direction: column; gap: 5px; }
+
+    .meta-label {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+
+    .meta-value {
+      font-size: 13px;
+      letter-spacing: 0.03em;
+    }
+
+    .meta-value.byline { color: var(--sky); }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px 80px;
+    }
+
+    .section-label {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--mid);
+      padding: 22px 0 14px;
+      border-top: 1px solid var(--rule);
+    }
+
+    /* All images: full width of their container, natural height — zero cropping */
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ── HERO SPREAD ──
+       theuntitledmag-7.jpg = rooftop triptych, landscape (~16:5 very wide)
+       theuntitledmag-2.jpg = dreads street, portrait (~2:3)
+
+       Grid: give the landscape image proportionally more width so both
+       render at a similar perceived height on screen.
+       ~16:5 at flex 1.85 vs ~2:3 at flex 1 ≈ both around 500px tall at 1200px wide.
+    */
+    .hero-spread {
+      display: flex;
+      gap: var(--gap);
+      align-items: flex-start;
+      margin-bottom: var(--gap);
+    }
+
+    .hero-spread .col-landscape { flex: 1.85; }
+    .hero-spread .col-portrait  { flex: 1; }
+
+    .spread-note {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--mid);
+      padding: 10px 0 22px;
+      font-style: italic;
+    }
+
+    /* ── NEWSSTAND ROW ──
+       theuntitledmag-4.jpg = newsstand turning, landscape (~3:2)
+       theuntitledmag-5.jpg = newsstand facing, portrait (~2:3)
+       theuntitledmag-6.jpg = street crowd, portrait (~2:3)
+
+       Flex widths chosen so all three render at matching height.
+       landscape(3:2) at flex 2 vs portrait(2:3) at flex 1 each ≈ same height.
+    */
+    .row-newsstand {
+      display: flex;
+      gap: var(--gap);
+      align-items: flex-start;
+      margin-bottom: var(--gap);
+    }
+
+    .row-newsstand .col-land { flex: 2; }
+    .row-newsstand .col-port { flex: 1; }
+
+    /* ── PORTRAIT PAIR ──
+       theuntitledmag.jpg   = woman white wall, portrait (~2:3)
+       theuntitledmag-3.jpg = doorway two subjects, portrait (~2:3)
+       Both similar ratio — simple 2-col, same width, natural height.
+    */
+    .row-portraits {
+      display: flex;
+      gap: var(--gap);
+      align-items: flex-start;
+    }
+
+    .row-portraits > * { flex: 1; }
+
+    /* ── FADE ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 40px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    footer span, footer a {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+    }
+
+    footer a:hover { color: var(--ink); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 680px) {
+      nav { padding: 14px 20px; }
+      .masthead-inner { padding: 36px 20px 28px; }
+      .content { padding: 0 20px 60px; }
+
+      .hero-spread,
+      .row-newsstand,
+      .row-portraits {
+        flex-direction: column;
+      }
+
+      .hero-spread .col-landscape,
+      .hero-spread .col-portrait,
+      .row-newsstand .col-land,
+      .row-newsstand .col-port,
+      .row-portraits > * {
+        flex: unset;
+        width: 100%;
+      }
+
+      footer { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="../">W.A. Jones</a>
+    <a href="../">← Index</a>
+  </nav>
+
+  <header class="masthead">
+    <div class="masthead-inner">
+      <p class="pub-label">Editorial</p>
+      <div class="untitled-logo">UN<span class="star">★</span>TLED</div>
+      <div class="masthead-meta">
+        <div class="meta-block">
+          <span class="meta-label">Issue</span>
+          <span class="meta-value">The Innovate Issue</span>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">Subject</span>
+          <span class="meta-value">Skip Marley</span>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">Written by</span>
+          <span class="meta-value">George Wayne</span>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">Photography</span>
+          <span class="meta-value byline">W.A. Jones</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <div class="section-label fade-up">Printed spread — both pages</div>
+
+    <div class="hero-spread fade-up">
+      <div class="col-landscape">
+        <img src="theuntitledmag-7.jpg" alt="Skip Marley, rooftop, New York City">
+      </div>
+      <div class="col-portrait">
+        <img src="theuntitledmag-2.jpg" alt="Skip Marley, NYC street">
+      </div>
+    </div>
+
+    <p class="spread-note fade-up">Both pages: photography by W.A. Jones</p>
+
+    <div class="section-label fade-up">Additional frames</div>
+
+    <div class="row-newsstand fade-up">
+      <div class="col-land">
+        <img src="theuntitledmag-4.jpg" alt="Skip Marley at newsstand">
+      </div>
+      <div class="col-port">
+        <img src="theuntitledmag-5.jpg" alt="Skip Marley at newsstand, facing">
+      </div>
+      <div class="col-port">
+        <img src="theuntitledmag-6.jpg" alt="Skip Marley, street crowd">
+      </div>
+    </div>
+
+    <div class="row-portraits fade-up">
+      <img src="theuntitledmag.jpg" alt="Editorial frame, white wall">
+      <img src="theuntitledmag-3.jpg" alt="Skip Marley, townhouse doorway">
+    </div>
+
+  </div>
+
+  <footer>
+    <span>© W.A. Jones — All rights reserved</span>
+    <a href="../">wajones.co</a>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) {
+          el.target.classList.add('visible');
+          observer.unobserve(el.target);
+        }
+      });
+    }, { threshold: 0.06 });
+
+    document.querySelectorAll('.fade-up').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight) {
+        el.classList.add('visible');
+      } else {
+        observer.observe(el);
+      }
+    });
+  </script>
+
+</body>
+</html>
