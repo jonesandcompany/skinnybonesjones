@@ -464,8 +464,12 @@
   const nameplate = document.getElementById('nameplate');
   let expanded = null;
 
-  // Store each cell's origin rect so close can animate back without touching the grid
+  const TRANSITION_MS = 720; // slightly over 700ms to guarantee transition has finished
+
+  // Store each cell's origin rect
   const originRects = new Map();
+  // Track pending cleanup timers so we can cancel them if needed
+  const cleanupTimers = new Map();
 
   cells.forEach(cell => {
     cell.addEventListener('click', function(e) {
@@ -488,19 +492,36 @@
     });
   });
 
+  function clearInlineStyles(cell) {
+    cell.classList.remove('expanded');
+    cell.classList.remove('closing');
+    cell.style.position = '';
+    cell.style.top      = '';
+    cell.style.left     = '';
+    cell.style.width    = '';
+    cell.style.height   = '';
+  }
+
   function openCell(cell) {
-    // Capture and store origin rect NOW, before anything changes
+    // Cancel any pending cleanup for this cell and flush it immediately
+    if (cleanupTimers.has(cell)) {
+      clearTimeout(cleanupTimers.get(cell));
+      cleanupTimers.delete(cell);
+      clearInlineStyles(cell);
+    }
+
+    // Capture fresh origin rect now — grid is in natural state
     const rect = cell.getBoundingClientRect();
     originRects.set(cell, { top: rect.top, left: rect.left, width: rect.width, height: rect.height });
 
-    // Set starting inline position (matching natural position)
+    // Pin to current natural position before expanding
     cell.style.position = 'fixed';
-    cell.style.top    = rect.top + 'px';
-    cell.style.left   = rect.left + 'px';
-    cell.style.width  = rect.width + 'px';
-    cell.style.height = rect.height + 'px';
+    cell.style.top      = rect.top + 'px';
+    cell.style.left     = rect.left + 'px';
+    cell.style.width    = rect.width + 'px';
+    cell.style.height   = rect.height + 'px';
 
-    // Force reflow
+    // Force reflow so browser registers starting position
     cell.getBoundingClientRect();
 
     // Expand to full screen
@@ -520,11 +541,11 @@
     const origin = originRects.get(cell);
     if (!origin) return;
 
-    // Switch from expanded to closing — cell stays fixed, transition intact
+    // Switch to closing state — stays fixed, transition runs
     cell.classList.remove('expanded');
     cell.classList.add('closing');
 
-    // Force reflow so browser sees current full-screen state as starting point
+    // Force reflow
     cell.getBoundingClientRect();
 
     // Animate back to stored origin
@@ -538,19 +559,14 @@
     expanded = null;
     document.body.style.overflow = '';
 
-    // Clean up only after transition fully completes
-    cell.addEventListener('transitionend', function cleanup(e) {
-      // Wait for the width transition specifically to avoid early cleanup
-      if (e.propertyName !== 'width') return;
-      cell.classList.remove('closing');
-      cell.style.position = '';
-      cell.style.top    = '';
-      cell.style.left   = '';
-      cell.style.width  = '';
-      cell.style.height = '';
+    // Deterministic cleanup — no dependency on transitionend firing
+    const timer = setTimeout(() => {
+      clearInlineStyles(cell);
       originRects.delete(cell);
-      cell.removeEventListener('transitionend', cleanup);
-    });
+      cleanupTimers.delete(cell);
+    }, TRANSITION_MS);
+
+    cleanupTimers.set(cell, timer);
   }
 
   // ESC key to close
