@@ -573,6 +573,13 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && expanded) closeCell(expanded);
   });
+
+  // Auto-open a cell if URL hash matches a category (e.g. #events, #editorial)
+  if (location.hash) {
+    const hash = location.hash.slice(1).toLowerCase();
+    const target = [...cells].find(c => c.dataset.cat.toLowerCase() === hash);
+    if (target) setTimeout(() => openCell(target), 150);
+  }
 </script>
 
 </body>
