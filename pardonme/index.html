@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pardon Me — W.A. Jones</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Erogenous';
+    src: url('../fonts/font_1.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f2ee;
+    --dim: rgba(245,242,238,0.32);
+    --gap: 3px;
+  }
+
+  html, body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Erogenous', serif;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0.20;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
+
+  .corner-label {
+    position: fixed;
+    top: 28px;
+    left: 32px;
+    z-index: 500;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.5s ease, transform 0.5s ease, color 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+  .corner-label.visible { opacity: 1; transform: translateY(0); }
+  .corner-label:hover { color: var(--white); }
+
+  .title-block {
+    position: relative;
+    z-index: 10;
+    padding: 18vh 6vw 7vh;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .title-block.hidden { opacity: 0; transform: translateY(-16px); pointer-events: none; }
+
+  .title-main {
+    font-size: clamp(60px, 12.5vw, 140px);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    color: var(--white);
+  }
+
+  .title-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 300;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--dim);
+    padding-top: 6px;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+    position: relative;
+    z-index: 10;
+    padding-bottom: 20vh;
+  }
+
+  .img-block {
+    overflow: hidden;
+    display: block;
+    line-height: 0;
+  }
+  .img-block.landscape { grid-column: span 2; }
+  .img-block.portrait  { grid-column: span 1; }
+
+  .img-block img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .img-block:hover img { transform: scale(1.018); }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .fade-up.in-view { opacity: 1; transform: translateY(0); }
+
+  .back-link {
+    display: block;
+    text-align: center;
+    padding-bottom: 12vh;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dim);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+    z-index: 10;
+  }
+  .back-link:hover { color: var(--white); }
+
+  @media (max-width: 680px) {
+    .gallery { grid-template-columns: 1fr; }
+    .img-block.landscape,
+    .img-block.portrait { grid-column: span 1; }
+  }
+</style>
+</head>
+<body>
+
+<a class="corner-label" href="../" id="cornerLabel">← W.A. Jones</a>
+
+<div class="title-block" id="titleBlock">
+  <h1 class="title-main">Pardon<br>Me</h1>
+  <p class="title-sub">Opening Night</p>
+</div>
+
+<div class="gallery">
+
+  <!-- 1 — Exterior, the door -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-42.jpg" alt="Pardon Me, 162">
+  </div>
+
+  <!-- 2 — Wide room, packed house -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-30.jpg" alt="Pardon Me opening night">
+  </div>
+
+  <!-- 3 — The toast -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-31.jpg" alt="Toast, Pardon Me opening night">
+  </div>
+
+  <!-- 4 — Bar in action -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-21.jpg" alt="Bar, Pardon Me">
+  </div>
+
+  <!-- 5 & 6 — Portrait pair: jacket back / bartender shaking -->
+  <div class="img-block portrait fade-up">
+    <img src="pardonme-17.jpg" alt="Pardon Me">
+  </div>
+  <div class="img-block portrait fade-up">
+    <img src="pardonme-28.jpg" alt="Pardon Me bartender">
+  </div>
+
+  <!-- 7 — Sofa, two women, sunglasses -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-43.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 8 — Couple at wall, orb light -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-9.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 9 & 10 — Portrait pair: white vest visor / woman over shoulder -->
+  <div class="img-block portrait fade-up">
+    <img src="pardonme-29.jpg" alt="Pardon Me">
+  </div>
+  <div class="img-block portrait fade-up">
+    <img src="pardonme-27.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 11 — Handshake -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-32.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 12 — Three women at bar -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-35.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 13 & 14 — Portrait pair: DJ on sofa / three guys at table -->
+  <div class="img-block portrait fade-up">
+    <img src="pardonme-26.jpg" alt="Pardon Me">
+  </div>
+  <div class="img-block portrait fade-up">
+    <img src="pardonme-36.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 15 — Two women at bar -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-2.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 16 — Group, dance floor -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-12.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 17 — Crowd energy -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-11.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 18 — Closer: couple at bar, menu visible -->
+  <div class="img-block landscape fade-up">
+    <img src="pardonme-40.jpg" alt="Pardon Me">
+  </div>
+
+</div>
+
+<a class="back-link" href="../">← W.A. Jones</a>
+
+<script>
+  const fadeEls = document.querySelectorAll('.fade-up');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in-view');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.04 });
+
+  fadeEls.forEach(el => {
+    if (el.getBoundingClientRect().top < window.innerHeight) {
+      el.classList.add('in-view');
+    } else {
+      io.observe(el);
+    }
+  });
+
+  const corner = document.getElementById('cornerLabel');
+  const title  = document.getElementById('titleBlock');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > window.innerHeight * 0.28) {
+      corner.classList.add('visible');
+      title.classList.add('hidden');
+    } else {
+      corner.classList.remove('visible');
+      title.classList.remove('hidden');
+    }
+  });
+</script>
+</body>
+</html>
