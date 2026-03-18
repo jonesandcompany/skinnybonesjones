@@ -68,7 +68,8 @@
   .title-block {
     position: relative;
     z-index: 10;
-    padding: 16vh var(--margin) 8vh;
+    padding: 12vh 0 6vh;
+    overflow: hidden;
     transition: opacity 0.45s ease, transform 0.45s ease;
   }
   .title-block.hidden {
@@ -78,17 +79,19 @@
   }
 
   .title-main {
-    font-size: clamp(72px, 15vw, 160px);
-    line-height: 0.86;
-    letter-spacing: -0.02em;
+    font-size: 30vw;
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    text-align: center;
     color: var(--white);
-    /* flash bloom: text feels slightly overlit */
     text-shadow:
-      0 0 60px rgba(245,242,238,0.12),
-      0 0 120px rgba(245,242,238,0.06);
+      0 0 80px rgba(245,242,238,0.12),
+      0 0 160px rgba(245,242,238,0.06);
   }
 
   .title-meta {
+    padding: 0 var(--margin);
     margin-top: 20px;
     display: flex;
     flex-direction: column;
@@ -186,7 +189,7 @@
 <a class="corner-label" href="../" id="cornerLabel">← W.A. Jones</a>
 
 <div class="title-block" id="titleBlock">
-  <h1 class="title-main">Pardon<br>Me</h1>
+  <h1 class="title-main">Pardon Me</h1>
   <div class="title-meta">
     <span class="title-sub">Opening Night · East Village · New York</span>
   </div>
@@ -199,17 +202,12 @@
     <img src="pardonme-42.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 2 — landscape -->
-  <div class="img-row fade-up">
-    <img src="pardonme-30.jpg" alt="Pardon Me">
-  </div>
-
-  <!-- 3 — landscape: the toast (was #3, keep) -->
+  <!-- 2 — landscape: the toast -->
   <div class="img-row fade-up">
     <img src="pardonme-31.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 4 — landscape: bar in action -->
+  <!-- 3 — landscape: bar in action -->
   <div class="img-row fade-up">
     <img src="pardonme-21.jpg" alt="Pardon Me">
   </div>
@@ -234,10 +232,10 @@
     <img src="pardonme-9.jpg" alt="Pardon Me">
   </div>
 
-  <!-- portrait pair: 26 + 36 -->
+  <!-- portrait pair: 14 + 36 -->
   <div class="img-row pair fade-up">
     <div class="img-wrap">
-      <img src="pardonme-26.jpg" alt="Pardon Me">
+      <img src="pardonme-14.jpg" alt="Pardon Me">
     </div>
     <div class="img-wrap">
       <img src="pardonme-36.jpg" alt="Pardon Me">
@@ -249,7 +247,7 @@
     <img src="pardonme-32.jpg" alt="Pardon Me">
   </div>
 
-  <!-- landscape: three women at bar (was 12, swapped to 13) -->
+  <!-- landscape: three women at bar -->
   <div class="img-row fade-up">
     <img src="pardonme-13.jpg" alt="Pardon Me">
   </div>
@@ -259,14 +257,14 @@
     <img src="pardonme-2.jpg" alt="Pardon Me">
   </div>
 
-  <!-- landscape: 41 (added) -->
+  <!-- landscape: 19 (swapped from 28) -->
   <div class="img-row fade-up">
-    <img src="pardonme-41.jpg" alt="Pardon Me">
+    <img src="pardonme-19.jpg" alt="Pardon Me">
   </div>
 
-  <!-- landscape: 14 (Erin — flag for possible removal) -->
+  <!-- landscape: 41 -->
   <div class="img-row fade-up">
-    <img src="pardonme-14.jpg" alt="Pardon Me">
+    <img src="pardonme-41.jpg" alt="Pardon Me">
   </div>
 
   <!-- landscape: group, dance floor -->
