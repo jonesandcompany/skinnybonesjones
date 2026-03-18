@@ -18,8 +18,9 @@
   :root {
     --black: #0a0a0a;
     --white: #f5f2ee;
-    --dim: rgba(245,242,238,0.32);
-    --gap: 3px;
+    --dim: rgba(245,242,238,0.28);
+    --margin: 5vw;
+    --gap: 4px;
   }
 
   html, body {
@@ -29,104 +30,135 @@
     overflow-x: hidden;
   }
 
+  /* grain overlay */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     z-index: 1000;
     pointer-events: none;
-    opacity: 0.20;
+    opacity: 0.18;
     mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 256px 256px;
   }
 
+  /* ── corner back label ── */
   .corner-label {
     position: fixed;
-    top: 28px;
-    left: 32px;
+    top: 26px;
+    left: 28px;
     z-index: 500;
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     font-weight: 300;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--dim);
     opacity: 0;
-    transform: translateY(-6px);
-    transition: opacity 0.5s ease, transform 0.5s ease, color 0.3s;
+    transition: opacity 0.15s ease, color 0.2s ease;
     cursor: pointer;
     text-decoration: none;
     display: block;
   }
-  .corner-label.visible { opacity: 1; transform: translateY(0); }
+  .corner-label.visible { opacity: 1; }
   .corner-label:hover { color: var(--white); }
 
+  /* ── title block ── */
   .title-block {
     position: relative;
     z-index: 10;
-    padding: 18vh 6vw 7vh;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    transition: opacity 0.55s ease, transform 0.55s ease;
+    padding: 16vh var(--margin) 8vh;
+    transition: opacity 0.45s ease, transform 0.45s ease;
   }
-  .title-block.hidden { opacity: 0; transform: translateY(-16px); pointer-events: none; }
+  .title-block.hidden {
+    opacity: 0;
+    transform: translateY(-12px);
+    pointer-events: none;
+  }
 
   .title-main {
-    font-size: clamp(60px, 12.5vw, 140px);
-    line-height: 0.88;
-    letter-spacing: -0.01em;
+    font-size: clamp(72px, 15vw, 160px);
+    line-height: 0.86;
+    letter-spacing: -0.02em;
     color: var(--white);
+    /* flash bloom: text feels slightly overlit */
+    text-shadow:
+      0 0 60px rgba(245,242,238,0.12),
+      0 0 120px rgba(245,242,238,0.06);
+  }
+
+  .title-meta {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .title-sub {
     font-family: 'DM Mono', monospace;
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 300;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.26em;
     text-transform: uppercase;
     color: var(--dim);
-    padding-top: 6px;
   }
 
+  /* ── gallery ── */
   .gallery {
+    position: relative;
+    z-index: 10;
+    padding: 0 var(--margin) 20vh;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* landscape: full column width */
+  .img-row {
+    width: 100%;
+    line-height: 0;
+  }
+
+  /* portrait pair: two side by side */
+  .img-row.pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--gap);
-    position: relative;
-    z-index: 10;
-    padding-bottom: 20vh;
   }
 
-  .img-block {
-    overflow: hidden;
-    display: block;
-    line-height: 0;
-  }
-  .img-block.landscape { grid-column: span 2; }
-  .img-block.portrait  { grid-column: span 1; }
-
-  .img-block img {
+  .img-row img,
+  .img-row .img-wrap img {
     width: 100%;
     height: auto;
     display: block;
-    transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
-  .img-block:hover img { transform: scale(1.018); }
 
+  .img-row:hover img,
+  .img-wrap:hover img {
+    transform: scale(1.014);
+  }
+
+  .img-wrap {
+    overflow: hidden;
+    line-height: 0;
+  }
+
+  /* ── fade up ── */
   .fade-up {
     opacity: 0;
-    transform: translateY(32px);
-    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateY(22px);
+    transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
+  /* ── back link (bottom) ── */
   .back-link {
     display: block;
     text-align: center;
-    padding-bottom: 12vh;
+    padding-bottom: 10vh;
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     font-weight: 300;
@@ -134,16 +166,18 @@
     text-transform: uppercase;
     color: var(--dim);
     text-decoration: none;
-    transition: color 0.3s;
+    transition: color 0.2s;
     position: relative;
     z-index: 10;
   }
   .back-link:hover { color: var(--white); }
 
+  /* ── mobile ── */
   @media (max-width: 680px) {
-    .gallery { grid-template-columns: 1fr; }
-    .img-block.landscape,
-    .img-block.portrait { grid-column: span 1; }
+    :root { --margin: 4vw; }
+    .img-row.pair {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 </head>
@@ -153,92 +187,95 @@
 
 <div class="title-block" id="titleBlock">
   <h1 class="title-main">Pardon<br>Me</h1>
-  <p class="title-sub">Opening Night</p>
+  <div class="title-meta">
+    <span class="title-sub">Opening Night · East Village · New York</span>
+  </div>
 </div>
 
 <div class="gallery">
 
-  <!-- 1 — Exterior, the door -->
-  <div class="img-block landscape fade-up">
-    <img src="pardonme-42.jpg" alt="Pardon Me, 162">
+  <!-- 1 — landscape -->
+  <div class="img-row fade-up">
+    <img src="pardonme-42.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 2 — Wide room, packed house -->
-  <div class="img-block landscape fade-up">
-    <img src="pardonme-30.jpg" alt="Pardon Me opening night">
+  <!-- 2 — landscape -->
+  <div class="img-row fade-up">
+    <img src="pardonme-30.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 3 — The toast -->
-  <div class="img-block landscape fade-up">
-    <img src="pardonme-31.jpg" alt="Toast, Pardon Me opening night">
+  <!-- 3 — landscape: the toast (was #3, keep) -->
+  <div class="img-row fade-up">
+    <img src="pardonme-31.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 4 — Bar in action -->
-  <div class="img-block landscape fade-up">
-    <img src="pardonme-21.jpg" alt="Bar, Pardon Me">
+  <!-- 4 — landscape: bar in action -->
+  <div class="img-row fade-up">
+    <img src="pardonme-21.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 5 & 6 — Portrait pair: jacket back / bartender shaking -->
-  <div class="img-block portrait fade-up">
-    <img src="pardonme-17.jpg" alt="Pardon Me">
-  </div>
-  <div class="img-block portrait fade-up">
-    <img src="pardonme-28.jpg" alt="Pardon Me bartender">
+  <!-- portrait pair: 17 + 29 -->
+  <div class="img-row pair fade-up">
+    <div class="img-wrap">
+      <img src="pardonme-17.jpg" alt="Pardon Me">
+    </div>
+    <div class="img-wrap">
+      <img src="pardonme-29.jpg" alt="Pardon Me">
+    </div>
   </div>
 
-  <!-- 7 — Sofa, two women, sunglasses -->
-  <div class="img-block landscape fade-up">
+  <!-- landscape: sofa, two women, sunglasses -->
+  <div class="img-row fade-up">
     <img src="pardonme-43.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 8 — Couple at wall, orb light -->
-  <div class="img-block landscape fade-up">
+  <!-- landscape: couple at wall, orb light -->
+  <div class="img-row fade-up">
     <img src="pardonme-9.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 9 & 10 — Portrait pair: white vest visor / woman over shoulder -->
-  <div class="img-block portrait fade-up">
-    <img src="pardonme-29.jpg" alt="Pardon Me">
-  </div>
-  <div class="img-block portrait fade-up">
-    <img src="pardonme-27.jpg" alt="Pardon Me">
+  <!-- portrait pair: 26 + 36 -->
+  <div class="img-row pair fade-up">
+    <div class="img-wrap">
+      <img src="pardonme-26.jpg" alt="Pardon Me">
+    </div>
+    <div class="img-wrap">
+      <img src="pardonme-36.jpg" alt="Pardon Me">
+    </div>
   </div>
 
-  <!-- 11 — Handshake -->
-  <div class="img-block landscape fade-up">
+  <!-- landscape: handshake -->
+  <div class="img-row fade-up">
     <img src="pardonme-32.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 12 — Three women at bar -->
-  <div class="img-block landscape fade-up">
-    <img src="pardonme-35.jpg" alt="Pardon Me">
+  <!-- landscape: three women at bar (was 12, swapped to 13) -->
+  <div class="img-row fade-up">
+    <img src="pardonme-13.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 13 & 14 — Portrait pair: DJ on sofa / three guys at table -->
-  <div class="img-block portrait fade-up">
-    <img src="pardonme-26.jpg" alt="Pardon Me">
-  </div>
-  <div class="img-block portrait fade-up">
-    <img src="pardonme-36.jpg" alt="Pardon Me">
-  </div>
-
-  <!-- 15 — Two women at bar -->
-  <div class="img-block landscape fade-up">
+  <!-- landscape: two women at bar -->
+  <div class="img-row fade-up">
     <img src="pardonme-2.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 16 — Group, dance floor -->
-  <div class="img-block landscape fade-up">
+  <!-- landscape: 41 (added) -->
+  <div class="img-row fade-up">
+    <img src="pardonme-41.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- landscape: 14 (Erin — flag for possible removal) -->
+  <div class="img-row fade-up">
+    <img src="pardonme-14.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- landscape: group, dance floor -->
+  <div class="img-row fade-up">
     <img src="pardonme-12.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 17 — Crowd energy -->
-  <div class="img-block landscape fade-up">
-    <img src="pardonme-11.jpg" alt="Pardon Me">
-  </div>
-
-  <!-- 18 — Closer: couple at bar, menu visible -->
-  <div class="img-block landscape fade-up">
+  <!-- landscape: couple at bar, menu visible -->
+  <div class="img-row fade-up">
     <img src="pardonme-40.jpg" alt="Pardon Me">
   </div>
 
@@ -247,6 +284,7 @@
 <a class="back-link" href="../">← W.A. Jones</a>
 
 <script>
+  // fade-up on scroll
   const fadeEls = document.querySelectorAll('.fade-up');
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -265,18 +303,15 @@
     }
   });
 
+  // corner label: snap in on scroll, no fade delay
   const corner = document.getElementById('cornerLabel');
   const title  = document.getElementById('titleBlock');
 
   window.addEventListener('scroll', () => {
-    if (window.scrollY > window.innerHeight * 0.28) {
-      corner.classList.add('visible');
-      title.classList.add('hidden');
-    } else {
-      corner.classList.remove('visible');
-      title.classList.remove('hidden');
-    }
-  });
+    const past = window.scrollY > window.innerHeight * 0.25;
+    corner.classList.toggle('visible', past);
+    title.classList.toggle('hidden', past);
+  }, { passive: true });
 </script>
 </body>
 </html>
