@@ -69,7 +69,6 @@
     position: relative;
     z-index: 10;
     padding: 12vh 0 6vh;
-    overflow: hidden;
     transition: opacity 0.45s ease, transform 0.45s ease;
   }
   .title-block.hidden {
@@ -79,15 +78,13 @@
   }
 
   .title-main {
-    font-size: 30vw;
-    line-height: 0.88;
-    letter-spacing: -0.01em;
-    white-space: nowrap;
-    text-align: center;
-    color: var(--white);
-    text-shadow:
-      0 0 80px rgba(245,242,238,0.12),
-      0 0 160px rgba(245,242,238,0.06);
+    display: block;
+    width: 100vw;
+    height: auto;
+    filter:
+      drop-shadow(0 0 40px rgba(245,242,238,0.12))
+      drop-shadow(0 0 80px rgba(245,242,238,0.06))
+      invert(1);
   }
 
   .title-meta {
@@ -189,7 +186,7 @@
 <a class="corner-label" href="../" id="cornerLabel">← W.A. Jones</a>
 
 <div class="title-block" id="titleBlock">
-  <h1 class="title-main">Pardon Me</h1>
+  <img class="title-main" src="pardonme.svg" alt="Pardon Me">
   <div class="title-meta">
     <span class="title-sub">Opening Night · East Village · New York</span>
   </div>
@@ -197,12 +194,32 @@
 
 <div class="gallery">
 
-  <!-- 1 — landscape -->
+  <!-- 1 -->
   <div class="img-row fade-up">
-    <img src="pardonme-42.jpg" alt="Pardon Me">
+    <img src="pardonme-1.jpg" alt="Pardon Me">
   </div>
 
-  <!-- 2 — landscape: the toast -->
+  <!-- 5 -->
+  <div class="img-row fade-up">
+    <img src="pardonme-5.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 6 -->
+  <div class="img-row fade-up">
+    <img src="pardonme-6.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 8 -->
+  <div class="img-row fade-up">
+    <img src="pardonme-8.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 18 -->
+  <div class="img-row fade-up">
+    <img src="pardonme-18.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- the toast -->
   <div class="img-row fade-up">
     <img src="pardonme-31.jpg" alt="Pardon Me">
   </div>
@@ -275,6 +292,11 @@
   <!-- landscape: couple at bar, menu visible -->
   <div class="img-row fade-up">
     <img src="pardonme-40.jpg" alt="Pardon Me">
+  </div>
+
+  <!-- 42 — end -->
+  <div class="img-row fade-up">
+    <img src="pardonme-42.jpg" alt="Pardon Me">
   </div>
 
 </div>
