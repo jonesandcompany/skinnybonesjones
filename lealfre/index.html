@@ -53,7 +53,11 @@
     justify-content: space-between;
     align-items: flex-start;
     pointer-events: none;
+    opacity: 1;
+    transition: opacity .6s ease;
   }
+
+  .header.scrolled-away { opacity: 0; }
 
   .title-block h1 {
     font-family: 'Bebas Neue', sans-serif;
@@ -263,14 +267,16 @@
     );
   }
 
-  /* ChatGPT addition — subtle arrow pulse */
+  /* Transit arrow — CSS-drawn to avoid iOS emoji substitution of ▶ (U+25B6) */
   .transit-arrow {
     position: absolute;
     right: 0;
-    color: var(--red);
-    font-size: 10px;
-    line-height: 1;
+    width: 0; height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 8px solid var(--red);
     animation: arrowTick 3s ease-in-out infinite;
+    font-size: 0; /* hide any text content */
   }
 
   @keyframes arrowTick {
@@ -685,6 +691,178 @@
     opacity: .28;
   }
 
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    background: rgba(8, 6, 4, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: background .35s ease;
+  }
+
+  .lightbox.open {
+    background: rgba(8, 6, 4, 0.96);
+    pointer-events: all;
+    cursor: none;
+  }
+
+  .lightbox-img-wrap {
+    position: relative;
+    max-width: 90vw;
+    max-height: 88dvh;
+    opacity: 0;
+    transform: scale(.96);
+    transition: opacity .35s ease, transform .35s ease;
+  }
+
+  .lightbox.open .lightbox-img-wrap {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .lightbox-img-wrap img {
+    display: block;
+    max-width: 90vw;
+    max-height: 82dvh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* Redacted image in lightbox — carries all overlays */
+  .lightbox-img-wrap.is-redacted img {
+    filter: brightness(.55) contrast(1.1) saturate(0.7);
+  }
+
+  .lightbox-img-wrap.is-redacted::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 6, 4, 0.52);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .lightbox-img-wrap.is-redacted::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent, transparent 10px,
+      rgba(255,255,255,.018) 10px,
+      rgba(255,255,255,.018) 11px
+    );
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .lightbox-face-bars {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .lightbox-bar {
+    position: absolute;
+    background: #0d0b09;
+    border-top: 1.5px solid #1e1b18;
+    border-bottom: 1.5px solid #1e1b18;
+  }
+
+  .lightbox-stamp {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%) rotate(-4deg);
+    border: 1.5px solid rgba(193, 39, 45, 0.55);
+    padding: 5px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: rgba(193, 39, 45, 0.55);
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .lightbox-caption {
+    position: absolute;
+    bottom: -28px;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: #3a3a3a;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .lightbox-caption .lb-stop-num { color: var(--red); }
+  .lightbox-caption .lb-stop-name { color: #555; }
+  .lightbox-caption .lb-time { color: #333; }
+
+  /* Prev / next nav */
+  .lightbox-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5100;
+    background: none;
+    border: none;
+    padding: 20px 16px;
+    cursor: none;
+    opacity: 0;
+    transition: opacity .25s ease;
+    pointer-events: none;
+  }
+
+  .lightbox.open .lightbox-nav {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .lightbox-nav:hover .nav-arrow { border-color: var(--red); }
+
+  .lightbox-nav.prev { left: 12px; }
+  .lightbox-nav.next { right: 12px; }
+
+  .nav-arrow {
+    width: 10px; height: 10px;
+    border-top: 1.5px solid #444;
+    border-right: 1.5px solid #444;
+    transition: border-color .2s ease;
+  }
+
+  .lightbox-nav.prev .nav-arrow { transform: rotate(-135deg); }
+  .lightbox-nav.next .nav-arrow { transform: rotate(45deg); }
+
+  /* Close hint */
+  .lightbox-close-hint {
+    position: fixed;
+    top: 20px; right: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: #2a2a2a;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    z-index: 5100;
+    opacity: 0;
+    transition: opacity .3s ease;
+    pointer-events: none;
+  }
+
+  .lightbox.open .lightbox-close-hint { opacity: 1; pointer-events: all; cursor: none; }
+
   /* ── LOAD FADE-IN ── */
   .fade-cover {
     position: fixed;
@@ -702,6 +880,20 @@
 
 <div class="fade-cover" id="fadeCover"></div>
 <div class="cursor" id="cursor"></div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-nav prev" id="lbPrev" aria-label="Previous"><div class="nav-arrow"></div></button>
+  <div class="lightbox-img-wrap" id="lbImgWrap">
+    <img id="lbImg" src="" alt="">
+    <div class="lightbox-caption">
+      <span><span class="lb-stop-num" id="lbNum"></span> &nbsp;<span class="lb-stop-name" id="lbName"></span></span>
+      <span class="lb-time" id="lbTime"></span>
+    </div>
+  </div>
+  <button class="lightbox-nav next" id="lbNext" aria-label="Next"><div class="nav-arrow"></div></button>
+  <div class="lightbox-close-hint" id="lbCloseHint">tap to close</div>
+</div>
 
 <div class="timeline" id="timeline">
   <div class="timeline-rule"></div>
@@ -774,7 +966,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 9:54</span><br>
         <span class="arr">ARR 10:00</span><br>
@@ -805,7 +997,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 10:22</span><br>
         <span class="arr">ARR 11:03</span><br>
@@ -833,7 +1025,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 11:13</span><br>
         <span class="arr">ARR 11:24</span><br>
@@ -854,7 +1046,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 11:25</span><br>
         <span class="arr">ARR 11:27</span><br>
@@ -885,7 +1077,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 11:38</span><br>
         <span class="arr">ARR 11:42</span><br>
@@ -911,7 +1103,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 11:48</span><br>
         <span class="arr">ARR 12:14</span><br>
@@ -933,7 +1125,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 12:21</span><br>
         <span class="arr">ARR 12:44</span><br>
@@ -964,7 +1156,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 1:05</span><br>
         <span class="arr">ARR 1:11</span><br>
@@ -991,7 +1183,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 1:24</span><br>
         <span class="arr">ARR 1:25</span><br>
@@ -1020,7 +1212,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 1:41</span><br>
         <span class="arr">ARR 2:16</span><br>
@@ -1051,7 +1243,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 2:22</span><br>
         <span class="arr">ARR 2:49</span><br>
@@ -1093,7 +1285,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 3:31</span><br>
         <span class="arr">ARR 3:58</span><br>
@@ -1127,7 +1319,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 4:19</span><br>
         <span class="arr">ARR 4:38</span><br>
@@ -1153,7 +1345,7 @@
     </div>
 
     <div class="transit">
-      <div class="transit-line"><div class="transit-arrow">▶</div></div>
+      <div class="transit-line"><div class="transit-arrow"></div></div>
       <div class="transit-data">
         <span class="dep">DEP 4:57</span><br>
         <span class="arr">ARR 5:22</span><br>
@@ -1402,9 +1594,160 @@
 
   // ── KEYBOARD ─────────────────────────────────────────────────────
   document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') scroller.scrollLeft += 300;
-    if (e.key === 'ArrowLeft')  scroller.scrollLeft -= 300;
+    if (e.key === 'ArrowRight' && !lightboxOpen) scroller.scrollLeft += 300;
+    if (e.key === 'ArrowLeft'  && !lightboxOpen) scroller.scrollLeft -= 300;
+    if (e.key === 'ArrowRight' && lightboxOpen)  lbStep(1);
+    if (e.key === 'ArrowLeft'  && lightboxOpen)  lbStep(-1);
+    if (e.key === 'Escape') lbClose();
   });
+
+  // ── HEADER SCROLL FADE ───────────────────────────────────────────
+  const header = document.querySelector('.header');
+  scroller.addEventListener('scroll', () => {
+    if (scroller.scrollLeft > 90) {
+      header.classList.add('scrolled-away');
+    } else {
+      header.classList.remove('scrolled-away');
+    }
+  }, { passive: true });
+
+  // ── LIGHTBOX ─────────────────────────────────────────────────────
+  const lightbox   = document.getElementById('lightbox');
+  const lbImgWrap  = document.getElementById('lbImgWrap');
+  const lbImg      = document.getElementById('lbImg');
+  const lbNum      = document.getElementById('lbNum');
+  const lbName     = document.getElementById('lbName');
+  const lbTime     = document.getElementById('lbTime');
+  const lbPrev     = document.getElementById('lbPrev');
+  const lbNext     = document.getElementById('lbNext');
+
+  // Build index of all lightbox-able photos in DOM order
+  // Each entry: { src, stopNum, stopName, stopTime, isRedacted }
+  const lbIndex = [];
+  let lightboxOpen = false;
+  let lbCurrent = 0;
+
+  function buildLbIndex() {
+    lbIndex.length = 0;
+
+    // Regular stops
+    document.querySelectorAll('.stop[data-stop]').forEach(stopEl => {
+      const num  = stopEl.dataset.stop;
+      const name = stopEl.querySelector('.stop-name')  ? stopEl.querySelector('.stop-name').textContent.trim().replace(/\n/g,' ') : '';
+      const time = stopEl.querySelector('.stop-meta')  ? stopEl.querySelector('.stop-meta').textContent.trim().split('\n')[0].trim() : '';
+      stopEl.querySelectorAll('.photo img').forEach(img => {
+        lbIndex.push({ src: img.src, stopNum: num, stopName: name, stopTime: time, isRedacted: false });
+      });
+      // filmstrip frames
+      stopEl.querySelectorAll('.filmstrip-frame img').forEach(img => {
+        lbIndex.push({ src: img.src, stopNum: num, stopName: name, stopTime: time, isRedacted: false });
+      });
+    });
+
+    // Redacted stop
+    document.querySelectorAll('.redacted-stop[data-stop]').forEach(stopEl => {
+      const num  = stopEl.dataset.stop;
+      const name = 'Client gets a haircut';
+      const time = stopEl.querySelector('.redacted-meta') ? stopEl.querySelector('.redacted-meta').textContent.trim().split('\n')[0].trim() : '';
+      stopEl.querySelectorAll('.redacted-image img').forEach(img => {
+        lbIndex.push({ src: img.src, stopNum: num, stopName: name, stopTime: time, isRedacted: true });
+      });
+    });
+
+    // Sort by DOM order using a position map
+    const allImgs = Array.from(document.querySelectorAll('.photo img, .filmstrip-frame img, .redacted-image img'));
+    lbIndex.sort((a, b) => {
+      const ai = allImgs.findIndex(el => el.src === a.src);
+      const bi = allImgs.findIndex(el => el.src === b.src);
+      return ai - bi;
+    });
+  }
+
+  function lbOpen(imgEl) {
+    buildLbIndex();
+    const idx = lbIndex.findIndex(e => e.src === imgEl.src);
+    if (idx === -1) return;
+    lbCurrent = idx;
+    lbRender();
+    lightbox.classList.add('open');
+    lightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function lbClose() {
+    lightbox.classList.remove('open');
+    lightboxOpen = false;
+    document.body.style.overflow = '';
+    // clear redacted overlays
+    lbImgWrap.classList.remove('is-redacted');
+    const existing = lbImgWrap.querySelector('.lightbox-face-bars');
+    if (existing) existing.remove();
+    const stamp = lbImgWrap.querySelector('.lightbox-stamp');
+    if (stamp) stamp.remove();
+  }
+
+  function lbStep(dir) {
+    lbCurrent = (lbCurrent + dir + lbIndex.length) % lbIndex.length;
+    lbRender();
+  }
+
+  function lbRender() {
+    const entry = lbIndex[lbCurrent];
+
+    // Clear previous redaction overlays
+    lbImgWrap.classList.remove('is-redacted');
+    const oldBars = lbImgWrap.querySelector('.lightbox-face-bars');
+    if (oldBars) oldBars.remove();
+    const oldStamp = lbImgWrap.querySelector('.lightbox-stamp');
+    if (oldStamp) oldStamp.remove();
+
+    lbImg.src = entry.src;
+    lbNum.textContent  = entry.stopNum.padStart(2,'0');
+    lbName.textContent = entry.stopName;
+    lbTime.textContent = entry.stopTime;
+
+    if (entry.isRedacted) {
+      lbImgWrap.classList.add('is-redacted');
+      // Face bars scaled to lightbox image
+      const bars = document.createElement('div');
+      bars.className = 'lightbox-face-bars';
+      bars.innerHTML = `
+        <div class="lightbox-bar" style="top:22%;height:2%;left:18%;right:14%"></div>
+        <div class="lightbox-bar" style="top:9%;height:1.8%;left:44%;width:45%"></div>
+      `;
+      lbImgWrap.appendChild(bars);
+      const stamp = document.createElement('div');
+      stamp.className = 'lightbox-stamp';
+      stamp.textContent = 'Contents withheld';
+      lbImgWrap.appendChild(stamp);
+    }
+  }
+
+  // Attach click to all photo images and redacted image
+  function attachLbListeners() {
+    document.querySelectorAll('.photo img, .filmstrip-frame img, .redacted-image img').forEach(img => {
+      img.style.cursor = 'none';
+      img.addEventListener('click', () => lbOpen(img));
+    });
+  }
+  attachLbListeners();
+
+  // Close on overlay click (not on img / nav)
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox || e.target.id === 'lbCloseHint') lbClose();
+  });
+
+  lbPrev.addEventListener('click', e => { e.stopPropagation(); lbStep(-1); });
+  lbNext.addEventListener('click', e => { e.stopPropagation(); lbStep(1); });
+
+  // Swipe to navigate in lightbox
+  let lbTouchX = 0;
+  lightbox.addEventListener('touchstart', e => { lbTouchX = e.touches[0].clientX; }, { passive: true });
+  lightbox.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - lbTouchX;
+    if (Math.abs(dx) > 40) lbStep(dx < 0 ? 1 : -1);
+    else lbClose();
+  }, { passive: true });
 </script>
 </body>
 </html>
