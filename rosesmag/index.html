@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roses — W.A. Jones</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Mono:wght@300;400&display=swap');
+
+  :root {
+    --pink:    #e8c4bc;
+    --pink-dk: #d4a89e;
+    --pink-lt: #f0d0c8;
+    --ink:     #1a1614;
+    --border:  #2a2220;
+    --muted:   #9a7c76;
+    --paper:   #e2bcb3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--pink);
+    background-image:
+      /* grain layer 1 — coarse */
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)' opacity='0.11'/%3E%3C/svg%3E"),
+      /* grain layer 2 — fine */
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.9' numOctaves='6' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+    min-height: 100dvh;
+    font-family: 'EB Garamond', serif;
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Distressed vignette edges */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 50%, transparent 55%, rgba(160,90,80,0.18) 100%),
+      /* corner burns */
+      radial-gradient(circle at 0% 0%, rgba(120,60,50,0.22) 0%, transparent 40%),
+      radial-gradient(circle at 100% 0%, rgba(120,60,50,0.18) 0%, transparent 38%),
+      radial-gradient(circle at 0% 100%, rgba(120,60,50,0.20) 0%, transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(120,60,50,0.22) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Fold lines / paper texture creases */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 119px,
+        rgba(160,90,80,0.035) 119px,
+        rgba(160,90,80,0.035) 120px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 239px,
+        rgba(160,90,80,0.025) 239px,
+        rgba(160,90,80,0.025) 240px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── FADE COVER ── */
+  .fade-cover {
+    position: fixed;
+    inset: 0;
+    background: var(--pink);
+    z-index: 9000;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity .9s ease;
+  }
+  .fade-cover.gone { opacity: 0; }
+
+  /* ── WRAPPER ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ── HEADER ── */
+  .masthead {
+    padding: 80px 0 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    border-bottom: 1px solid rgba(90,40,34,0.25);
+    margin-bottom: 72px;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .9s ease .1s, transform .9s ease .1s;
+  }
+
+  .masthead.visible { opacity: 1; transform: translateY(0); }
+
+  .zine-title {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(64px, 10vw, 120px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink);
+    line-height: .88;
+    letter-spacing: -.02em;
+    /* slight ink bleed */
+    text-shadow:
+      1px 1px 0 rgba(120,50,44,0.15),
+      -1px 0px 0 rgba(120,50,44,0.08);
+  }
+
+  .masthead-meta {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 8px;
+  }
+
+  .meta-line {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: var(--muted);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    line-height: 1.7;
+  }
+
+  .meta-line strong {
+    color: var(--ink);
+    font-weight: 400;
+  }
+
+  /* ── INTRO TEXT ── */
+  .intro {
+    max-width: 480px;
+    margin: 0 0 80px;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity .8s ease .25s, transform .8s ease .25s;
+  }
+
+  .intro.visible { opacity: 1; transform: translateY(0); }
+
+  .intro p {
+    font-size: clamp(17px, 2.2vw, 21px);
+    font-style: italic;
+    line-height: 1.65;
+    color: var(--ink);
+    opacity: .75;
+  }
+
+  .intro-rule {
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: rgba(90,40,34,0.35);
+    margin-bottom: 20px;
+  }
+
+  /* ── PHOTO GRID ── */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px 36px;
+    margin-bottom: 100px;
+  }
+
+  .grid-item {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity .75s ease, transform .75s ease;
+  }
+
+  .grid-item.visible { opacity: 1; transform: translateY(0); }
+
+  /* Stagger delays */
+  .grid-item:nth-child(1) { transition-delay: .05s; }
+  .grid-item:nth-child(2) { transition-delay: .15s; }
+  .grid-item:nth-child(3) { transition-delay: .08s; }
+  .grid-item:nth-child(4) { transition-delay: .18s; }
+  .grid-item:nth-child(5) { transition-delay: .05s; }
+  .grid-item:nth-child(6) { transition-delay: .20s; }
+  .grid-item:nth-child(7) { transition-delay: .10s; }
+  .grid-item:nth-child(8) { transition-delay: .22s; }
+
+  /* Occasional offset — every third item drops slightly */
+  .grid-item:nth-child(3n+2) { margin-top: 32px; }
+
+  .photo-wrap {
+    position: relative;
+    display: block;
+    /* Dark border — ~88% black */
+    border: 1px solid var(--border);
+    outline: 6px solid var(--border);
+    outline-offset: -1px;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  /* Faint distressed edge inside border */
+  .photo-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 18px rgba(20,10,8,0.18);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Slight halftone grain over photo */
+  .photo-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+    z-index: 2;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+
+  .photo-wrap img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: contrast(1.04) saturate(0.96);
+    transition: filter .4s ease, transform .5s ease;
+  }
+
+  .photo-wrap:hover img {
+    filter: contrast(1.08) saturate(1.02);
+    transform: scale(1.012);
+  }
+
+  /* ── FULL-BLEED SINGLE ── */
+  .grid-full {
+    grid-column: 1 / -1;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  .grid-full .photo-wrap img {
+    max-height: 60vh;
+    width: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+
+  /* ── FOOTER ── */
+  .colophon {
+    border-top: 1px solid rgba(90,40,34,0.2);
+    padding: 40px 0 72px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+
+  .colophon.visible { opacity: 1; transform: translateY(0); }
+
+  .colophon-left {
+    font-family: 'EB Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 2;
+  }
+
+  .colophon-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    color: rgba(90,40,34,0.4);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 2;
+  }
+
+  /* ── HOME BUTTON ── */
+  .home-btn {
+    position: fixed;
+    top: 24px;
+    left: 28px;
+    z-index: 500;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color .2s ease;
+  }
+
+  .home-btn:hover { color: var(--ink); }
+
+  .home-btn::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: currentColor;
+    transition: width .2s ease;
+  }
+
+  .home-btn:hover::before { width: 28px; }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    background: rgba(18,10,8,0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: background .35s ease;
+  }
+
+  .lightbox.open {
+    background: rgba(18,10,8,0.95);
+    pointer-events: all;
+  }
+
+  .lb-wrap {
+    max-width: 88vw;
+    max-height: 88dvh;
+    opacity: 0;
+    transform: scale(.97);
+    transition: opacity .32s ease, transform .32s ease;
+    position: relative;
+  }
+
+  .lightbox.open .lb-wrap { opacity: 1; transform: scale(1); }
+
+  .lb-wrap img {
+    display: block;
+    max-width: 88vw;
+    max-height: 84dvh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid var(--border);
+    outline: 5px solid var(--border);
+    outline-offset: -1px;
+  }
+
+  .lb-caption {
+    margin-top: 16px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: rgba(232,196,188,0.3);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+
+  .lb-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5100;
+    background: none;
+    border: none;
+    padding: 24px 18px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+  }
+
+  .lightbox.open .lb-nav { opacity: 1; pointer-events: all; }
+
+  .lb-nav.prev { left: 16px; }
+  .lb-nav.next { right: 16px; }
+
+  .lb-nav-arrow {
+    width: 11px; height: 11px;
+    border-top: 1.5px solid rgba(232,196,188,0.35);
+    border-right: 1.5px solid rgba(232,196,188,0.35);
+    transition: border-color .2s ease;
+  }
+
+  .lb-nav:hover .lb-nav-arrow { border-color: rgba(232,196,188,0.8); }
+
+  .lb-nav.prev .lb-nav-arrow { transform: rotate(-135deg); }
+  .lb-nav.next .lb-nav-arrow { transform: rotate(45deg); }
+
+  .lb-close {
+    position: fixed;
+    top: 22px; right: 26px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: rgba(232,196,188,0.25);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    z-index: 5100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+    cursor: pointer;
+  }
+
+  .lightbox.open .lb-close { opacity: 1; pointer-events: all; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 600px) {
+    .page { padding: 0 22px; }
+    .masthead { padding: 60px 0 36px; margin-bottom: 48px; grid-template-columns: 1fr; }
+    .masthead-meta { text-align: left; }
+    .grid { gap: 28px 18px; }
+    .grid-item:nth-child(3n+2) { margin-top: 0; }
+    .colophon { flex-direction: column; gap: 24px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="fade-cover" id="fadeCover"></div>
+
+<a href="../index.html" class="home-btn">Back</a>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-nav prev" id="lbPrev"><div class="lb-nav-arrow"></div></button>
+  <div class="lb-wrap" id="lbWrap">
+    <img id="lbImg" src="" alt="">
+    <div class="lb-caption" id="lbCaption"></div>
+  </div>
+  <button class="lb-nav next" id="lbNext"><div class="lb-nav-arrow"></div></button>
+  <div class="lb-close" id="lbClose">close</div>
+</div>
+
+<div class="page">
+
+  <header class="masthead" id="masthead">
+    <h1 class="zine-title">Roses</h1>
+    <div class="masthead-meta">
+      <div class="meta-line"><strong>Zine</strong></div>
+      <div class="meta-line">200 copies</div>
+      <div class="meta-line">W+K / Instrument</div>
+      <div class="meta-line">New York</div>
+    </div>
+  </header>
+
+  <div class="intro" id="intro">
+    <span class="intro-rule"></span>
+    <p>Women of strength, shot with softness. A collaboration between creatives at Wieden+Kennedy and Instrument — printed on pink stock, limited to two hundred copies.</p>
+  </div>
+
+  <div class="grid" id="photoGrid">
+
+    <!-- Row 1 — two-up -->
+    <div class="grid-item">
+      <div class="photo-wrap" data-index="0">
+        <img src="rosesmag/roses.jpg" alt="">
+      </div>
+    </div>
+
+    <div class="grid-item">
+      <div class="photo-wrap" data-index="1">
+        <img src="rosesmag/roses-2.jpg" alt="">
+      </div>
+    </div>
+
+    <!-- Row 2 — two-up, staggered -->
+    <div class="grid-item">
+      <div class="photo-wrap" data-index="2">
+        <img src="rosesmag/roses-3.jpg" alt="">
+      </div>
+    </div>
+
+    <div class="grid-item">
+      <div class="photo-wrap" data-index="3">
+        <img src="rosesmag/roses-4.jpg" alt="">
+      </div>
+    </div>
+
+    <!-- Full bleed -->
+    <div class="grid-item grid-full">
+      <div class="photo-wrap" data-index="4">
+        <img src="rosesmag/roses-5.jpg" alt="">
+      </div>
+    </div>
+
+    <!-- Row 3 -->
+    <div class="grid-item">
+      <div class="photo-wrap" data-index="5">
+        <img src="rosesmag/roses-6.jpg" alt="">
+      </div>
+    </div>
+
+    <div class="grid-item">
+      <div class="photo-wrap" data-index="6">
+        <img src="rosesmag/roses-7.jpg" alt="">
+      </div>
+    </div>
+
+    <!-- Row 4 -->
+    <div class="grid-item">
+      <div class="photo-wrap" data-index="7">
+        <img src="rosesmag/roses-8.jpg" alt="">
+      </div>
+    </div>
+
+    <div class="grid-item">
+      <div class="photo-wrap" data-index="8">
+        <img src="rosesmag/roses-9.jpg" alt="">
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+
+  <footer class="colophon" id="colophon">
+    <div class="colophon-left">
+      Photography by W.A. Jones<br>
+      New York City
+    </div>
+    <div class="colophon-right">
+      © Skinnybones Jones<br>
+      All rights reserved
+    </div>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+  // ── FADE IN ──────────────────────────────────────────────────────
+  setTimeout(() => document.getElementById('fadeCover').classList.add('gone'), 200);
+
+  // ── SCROLL REVEAL ────────────────────────────────────────────────
+  const revealEls = [
+    document.getElementById('masthead'),
+    document.getElementById('intro'),
+    ...document.querySelectorAll('.grid-item'),
+    document.getElementById('colophon'),
+  ];
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  revealEls.forEach(el => { if (el) observer.observe(el); });
+
+  // ── LIGHTBOX ─────────────────────────────────────────────────────
+  const lightbox  = document.getElementById('lightbox');
+  const lbImg     = document.getElementById('lbImg');
+  const lbCaption = document.getElementById('lbCaption');
+  const lbPrev    = document.getElementById('lbPrev');
+  const lbNext    = document.getElementById('lbNext');
+  const lbClose   = document.getElementById('lbClose');
+
+  const photos = Array.from(document.querySelectorAll('.photo-wrap img'));
+  let current = 0;
+  let isOpen  = false;
+
+  function lbOpen(idx) {
+    current = idx;
+    lbRender();
+    lightbox.classList.add('open');
+    isOpen = true;
+  }
+
+  function lbCloseAll() {
+    lightbox.classList.remove('open');
+    isOpen = false;
+  }
+
+  function lbStep(dir) {
+    current = (current + dir + photos.length) % photos.length;
+    lbRender();
+  }
+
+  function lbRender() {
+    lbImg.src = photos[current].src;
+    lbCaption.textContent = `${String(current + 1).padStart(2,'0')} / ${String(photos.length).padStart(2,'0')}`;
+  }
+
+  photos.forEach((img, i) => {
+    img.parentElement.addEventListener('click', () => lbOpen(i));
+  });
+
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox) lbCloseAll();
+  });
+
+  lbClose.addEventListener('click', lbCloseAll);
+  lbPrev.addEventListener('click', e => { e.stopPropagation(); lbStep(-1); });
+  lbNext.addEventListener('click', e => { e.stopPropagation(); lbStep(1); });
+
+  // Swipe
+  let touchX = 0;
+  lightbox.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  lightbox.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 44) lbStep(dx < 0 ? 1 : -1);
+    else lbCloseAll();
+  }, { passive: true });
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (!isOpen) return;
+    if (e.key === 'ArrowRight') lbStep(1);
+    if (e.key === 'ArrowLeft')  lbStep(-1);
+    if (e.key === 'Escape')     lbCloseAll();
+  });
+</script>
+</body>
+</html>
