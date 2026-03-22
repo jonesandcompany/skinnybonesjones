@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bond Official — W.A. Jones</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Teko:wght@600;700&family=DM+Mono:wght@300;400&display=swap');
+
+  /* ─── Abril Fatface for display — thick, high contrast, slightly eccentric ─── */
+  @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=DM+Mono:wght@300;400&display=swap');
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f2f0ed;
+    --border: #f2f0ed;
+    --muted: #5a5a5a;
+    --accent: #c8c0b4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ── FADE ── */
+  .fade-cover {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 9000;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity .8s ease;
+  }
+  .fade-cover.gone { opacity: 0; }
+
+  /* ── HOME ── */
+  .home-btn {
+    position: fixed;
+    top: 24px;
+    left: 28px;
+    z-index: 500;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color .2s ease;
+  }
+  .home-btn:hover { color: var(--white); }
+  .home-btn::before {
+    content: '';
+    display: block;
+    width: 20px; height: 1px;
+    background: currentColor;
+    transition: width .2s ease;
+  }
+  .home-btn:hover::before { width: 28px; }
+
+  /* ── PAGE ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 36px 100px;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    padding: 100px 0 60px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 20px;
+    border-bottom: 1px solid #1e1e1e;
+    margin-bottom: 64px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity .9s ease .1s, transform .9s ease .1s;
+  }
+  .masthead.visible { opacity: 1; transform: translateY(0); }
+
+  .title-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Main title — Abril Fatface, big, slightly rough */
+  .title-main {
+    font-family: 'Abril Fatface', serif;
+    font-size: clamp(72px, 11vw, 140px);
+    font-weight: 400;
+    color: var(--white);
+    line-height: .88;
+    letter-spacing: -.01em;
+    /* slight misregistration shadow — offset print feel */
+    text-shadow:
+      2px 2px 0 rgba(255,255,255,0.06),
+      -1px -1px 0 rgba(0,0,0,0.4);
+  }
+
+  .title-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    color: var(--muted);
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    margin-top: 16px;
+  }
+
+  .masthead-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-bottom: 4px;
+  }
+
+  .meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: var(--muted);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+
+  /* ── PHOTO BLOCKS ── */
+
+  /* Bordered photo — all photos get white border */
+  .photo {
+    position: relative;
+    display: block;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.35);
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity .4s ease;
+  }
+
+  .photo:hover::after { opacity: .5; }
+
+  .photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: contrast(1.06) brightness(.97);
+    transition: transform .6s ease, filter .4s ease;
+  }
+
+  .photo:hover img {
+    transform: scale(1.025);
+    filter: contrast(1.1) brightness(1);
+  }
+
+  /* Reveal animation */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    color: #2a2a2a;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0;
+    transition: opacity .6s ease;
+  }
+  .section-label.visible { opacity: 1; }
+
+  /* ── LAYOUT BLOCKS ── */
+
+  .block {
+    margin-bottom: 10px;
+  }
+
+  /* Two tall photos side by side */
+  .duo-tall {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .duo-tall .photo {
+    aspect-ratio: 2/3;
+  }
+
+  /* Three wides stacked */
+  .trio-wide {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .trio-wide .photo {
+    width: 100%;
+    aspect-ratio: 3/2;
+  }
+
+  /* Solo wide */
+  .solo-wide .photo {
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+
+  /* Three talls — narrow flankers, wide center */
+  .trio-tall {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 10px;
+  }
+
+  .trio-tall .photo {
+    aspect-ratio: 2/3;
+  }
+
+  /* Wide below trio */
+  .solo-wide-sm .photo {
+    width: 100%;
+    aspect-ratio: 3/2;
+  }
+
+  /* Final tall — centered, narrower */
+  .closer {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+  }
+
+  .closer .photo {
+    width: 46%;
+    aspect-ratio: 2/3;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: #181818;
+    margin: 56px 0;
+  }
+
+  /* ── COLOPHON ── */
+  .colophon {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid #181818;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .colophon.visible { opacity: 1; transform: translateY(0); }
+
+  .colophon-left {
+    font-family: 'Abril Fatface', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    color: #1a1a1a;
+    line-height: 1;
+    letter-spacing: -.01em;
+    user-select: none;
+  }
+
+  .colophon-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    color: #282828;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 2;
+  }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    background: rgba(6,5,4,0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: background .3s ease;
+  }
+  .lightbox.open {
+    background: rgba(6,5,4,0.97);
+    pointer-events: all;
+  }
+
+  .lb-wrap {
+    max-width: 88vw;
+    max-height: 88dvh;
+    position: relative;
+    opacity: 0;
+    transform: scale(.97);
+    transition: opacity .3s ease, transform .3s ease;
+  }
+  .lightbox.open .lb-wrap { opacity: 1; transform: scale(1); }
+
+  .lb-wrap img {
+    display: block;
+    max-width: 88vw;
+    max-height: 84dvh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid var(--border);
+  }
+
+  .lb-caption {
+    margin-top: 14px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: #2a2a2a;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+
+  .lb-nav {
+    position: fixed;
+    top: 50%; transform: translateY(-50%);
+    z-index: 5100;
+    background: none; border: none;
+    padding: 24px 18px;
+    cursor: pointer;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s ease;
+  }
+  .lightbox.open .lb-nav { opacity: 1; pointer-events: all; }
+  .lb-nav.prev { left: 16px; }
+  .lb-nav.next { right: 16px; }
+
+  .lb-arrow {
+    width: 11px; height: 11px;
+    border-top: 1.5px solid #333;
+    border-right: 1.5px solid #333;
+    transition: border-color .2s ease;
+  }
+  .lb-nav:hover .lb-arrow { border-color: var(--white); }
+  .lb-nav.prev .lb-arrow { transform: rotate(-135deg); }
+  .lb-nav.next .lb-arrow { transform: rotate(45deg); }
+
+  .lb-close {
+    position: fixed;
+    top: 22px; right: 26px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: #2a2a2a;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    z-index: 5100;
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s ease, color .2s ease;
+    cursor: pointer;
+  }
+  .lightbox.open .lb-close { opacity: 1; pointer-events: all; }
+  .lb-close:hover { color: var(--white); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 600px) {
+    .page { padding: 0 18px 80px; }
+    .masthead { padding: 72px 0 40px; grid-template-columns: 1fr; }
+    .masthead-right { text-align: left; }
+    .trio-tall { grid-template-columns: 1fr 1fr; }
+    .trio-tall .photo:last-child { display: none; }
+    .closer .photo { width: 70%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="fade-cover" id="fadeCover"></div>
+<a href="../index.html" class="home-btn">Back</a>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-nav prev" id="lbPrev"><div class="lb-arrow"></div></button>
+  <div class="lb-wrap" id="lbWrap">
+    <img id="lbImg" src="" alt="">
+    <div class="lb-caption" id="lbCaption"></div>
+  </div>
+  <button class="lb-nav next" id="lbNext"><div class="lb-arrow"></div></button>
+  <div class="lb-close" id="lbClose">close</div>
+</div>
+
+<div class="page">
+
+  <!-- MASTHEAD -->
+  <header class="masthead reveal" id="masthead">
+    <div class="title-stack">
+      <div class="title-main">Bond<br>Official</div>
+      <div class="title-sub">Cult of Individuality — Editorial</div>
+    </div>
+    <div class="masthead-right">
+      <div class="meta">Photography</div>
+      <div class="meta">W.A. Jones</div>
+      <div class="meta" style="margin-top:8px">Available light</div>
+      <div class="meta">No crew</div>
+    </div>
+  </header>
+
+  <!-- 8 + 9 — opening tall pair -->
+  <div class="block duo-tall reveal">
+    <div class="photo" data-src="bondofficial/Bondofficial-8.jpg">
+      <img src="bondofficial/Bondofficial-8.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo" data-src="bondofficial/Bondofficial-9.jpg">
+      <img src="bondofficial/Bondofficial-9.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 10, 11, 12 — wides -->
+  <div class="block trio-wide reveal">
+    <div class="photo" data-src="bondofficial/Bondofficial-10.jpg">
+      <img src="bondofficial/Bondofficial-10.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo" data-src="bondofficial/Bondofficial-11.jpg">
+      <img src="bondofficial/Bondofficial-11.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo" data-src="bondofficial/Bondofficial-12.jpg">
+      <img src="bondofficial/Bondofficial-12.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 14 — solo wide -->
+  <div class="block solo-wide reveal">
+    <div class="photo" data-src="bondofficial/Bondofficial-14.jpg">
+      <img src="bondofficial/Bondofficial-14.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 2, 6, 4 — three talls (6 center, wider) -->
+  <div class="block trio-tall reveal">
+    <div class="photo" data-src="bondofficial/Bondofficial-2.jpg">
+      <img src="bondofficial/Bondofficial-2.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo" data-src="bondofficial/Bondofficial-6.jpg">
+      <img src="bondofficial/Bondofficial-6.jpg" alt="" loading="lazy">
+    </div>
+    <div class="photo" data-src="bondofficial/Bondofficial-4.jpg">
+      <img src="bondofficial/Bondofficial-4.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+
+  <!-- 5 — wide beneath -->
+  <div class="block solo-wide-sm reveal" style="margin-top:10px">
+    <div class="photo" data-src="bondofficial/Bondofficial-5.jpg">
+      <img src="bondofficial/Bondofficial-5.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 21 — closing tall, centered -->
+  <div class="closer reveal">
+    <div class="photo" data-src="bondofficial/Bondofficial-21.jpg">
+      <img src="bondofficial/Bondofficial-21.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+
+  <!-- COLOPHON -->
+  <footer class="colophon reveal">
+    <div class="colophon-left">COI</div>
+    <div class="colophon-right">
+      © W.A. Jones<br>
+      Skinnybones Jones
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  setTimeout(() => document.getElementById('fadeCover').classList.add('gone'), 200);
+
+  // ── SCROLL REVEAL ────────────────────────────────────────────────
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.06 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── LIGHTBOX ─────────────────────────────────────────────────────
+  const lightbox  = document.getElementById('lightbox');
+  const lbImg     = document.getElementById('lbImg');
+  const lbCaption = document.getElementById('lbCaption');
+  const lbPrev    = document.getElementById('lbPrev');
+  const lbNext    = document.getElementById('lbNext');
+  const lbClose   = document.getElementById('lbClose');
+
+  const photos = Array.from(document.querySelectorAll('.photo'));
+  let current = 0;
+  let isOpen  = false;
+
+  function lbOpen(idx) {
+    current = idx;
+    lbRender();
+    lightbox.classList.add('open');
+    isOpen = true;
+  }
+
+  function lbCloseAll() {
+    lightbox.classList.remove('open');
+    isOpen = false;
+  }
+
+  function lbStep(dir) {
+    current = (current + dir + photos.length) % photos.length;
+    lbRender();
+  }
+
+  function lbRender() {
+    const src = photos[current].dataset.src;
+    lbImg.src = src;
+    lbCaption.textContent = `${String(current + 1).padStart(2,'0')} / ${String(photos.length).padStart(2,'0')}`;
+  }
+
+  photos.forEach((p, i) => p.addEventListener('click', () => lbOpen(i)));
+
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) lbCloseAll(); });
+  lbClose.addEventListener('click', lbCloseAll);
+  lbPrev.addEventListener('click', e => { e.stopPropagation(); lbStep(-1); });
+  lbNext.addEventListener('click', e => { e.stopPropagation(); lbStep(1); });
+
+  let touchX = 0;
+  lightbox.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  lightbox.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 44) lbStep(dx < 0 ? 1 : -1);
+    else lbCloseAll();
+  }, { passive: true });
+
+  document.addEventListener('keydown', e => {
+    if (!isOpen) return;
+    if (e.key === 'ArrowRight') lbStep(1);
+    if (e.key === 'ArrowLeft')  lbStep(-1);
+    if (e.key === 'Escape')     lbCloseAll();
+  });
+</script>
+</body>
+</html>
