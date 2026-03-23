@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portraits — W.A. Jones</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Erogenous';
+    src: url('../../fonts/Erogenous-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0d0d;
+    --ink: #e8e4dc;
+    --dim: #5a5650;
+    --rule: #222;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 1.4rem 2rem 1rem;
+    background: linear-gradient(to bottom, var(--bg) 60%, transparent);
+    pointer-events: none;
+  }
+
+  .site-name {
+    font-family: 'Erogenous', serif;
+    font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    pointer-events: all;
+    text-decoration: none;
+  }
+
+  .page-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    pointer-events: all;
+  }
+
+  /* ── GRID ── */
+  .grid {
+    padding: 7rem 1.5rem 4rem;
+    columns: 2;
+    column-gap: 0.75rem;
+  }
+
+  @media (min-width: 900px) {
+    .grid {
+      columns: 3;
+      column-gap: 1rem;
+      padding: 7rem 2.5rem 5rem;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .grid {
+      columns: 4;
+    }
+  }
+
+  .item {
+    break-inside: avoid;
+    margin-bottom: 0.75rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+
+  .item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .item img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* hover overlay */
+  .item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0);
+    transition: background 0.3s ease;
+  }
+
+  .item:hover::after {
+    background: rgba(0,0,0,0.18);
+  }
+
+  /* ── LIGHTBOX ── */
+  #lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(10,10,10,0.96);
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+  }
+
+  #lightbox.open {
+    display: flex;
+  }
+
+  #lightbox img {
+    max-width: 92vw;
+    max-height: 92dvh;
+    object-fit: contain;
+    user-select: none;
+    cursor: default;
+  }
+
+  #lb-close {
+    position: fixed;
+    top: 1.5rem; right: 2rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'DM Mono', monospace;
+    transition: color 0.2s;
+  }
+
+  #lb-close:hover { color: var(--ink); }
+
+  #lb-nav {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  #lb-nav button {
+    background: none;
+    border: none;
+    color: var(--dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  #lb-nav button:hover { color: var(--ink); }
+
+  #lb-count {
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2rem 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--rule);
+    margin-top: 2rem;
+  }
+
+  footer a {
+    color: var(--dim);
+    text-decoration: none;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  footer a:hover { color: var(--ink); }
+
+  footer span {
+    font-size: 0.58rem;
+    color: var(--rule);
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="site-name" href="../../index.html">W.A. Jones</a>
+  <span class="page-label">Portraits</span>
+</header>
+
+<div class="grid" id="grid">
+  <!-- sequence curated: open strong, vary rhythm, close strong -->
+  <!-- 3: Skip Marley street -->
+  <div class="item" data-index="0"><img src="portraits-3.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 6: bookshelf woman, color -->
+  <div class="item" data-index="1"><img src="portraits-6.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 16: hands over face -->
+  <div class="item" data-index="2"><img src="portraits-16.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 1: b&w studio, long hair -->
+  <div class="item" data-index="3"><img src="portraits-1.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 13: dramatic sidelight -->
+  <div class="item" data-index="4"><img src="portraits-13.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 19: flamingo wall -->
+  <div class="item" data-index="5"><img src="portraits-19.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 15: arc'teryx upward gaze -->
+  <div class="item" data-index="6"><img src="portraits-15.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 10: direct stare, b&w -->
+  <div class="item" data-index="7"><img src="portraits-10.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 12: color, profile, windswept -->
+  <div class="item" data-index="8"><img src="portraits-12.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 17: low angle, dreads, sky -->
+  <div class="item" data-index="9"><img src="portraits-17.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 14: two figures, one obscured -->
+  <div class="item" data-index="10"><img src="portraits-14.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 5: red curtain -->
+  <div class="item" data-index="11"><img src="portraits-5.jpg" alt="Portrait" loading="lazy"></div>
+  <!-- 2: taxi, NYC -->
+  <div class="item" data-index="12"><img src="portraits-2.jpg" alt="Portrait" loading="lazy"></div>
+</div>
+
+<footer>
+  <a href="../../index.html">← Back</a>
+  <span>W.A. Jones</span>
+  <span>Portraits</span>
+</footer>
+
+<!-- Lightbox -->
+<div id="lightbox">
+  <button id="lb-close">Close</button>
+  <img id="lb-img" src="" alt="">
+  <div id="lb-nav">
+    <button id="lb-prev">← Prev</button>
+    <span id="lb-count"></span>
+    <button id="lb-next">Next →</button>
+  </div>
+</div>
+
+<script>
+  // ── Staggered reveal on load ──
+  const items = Array.from(document.querySelectorAll('.item'));
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          // small stagger based on column position
+          const idx = items.indexOf(e.target);
+          e.target.style.transitionDelay = (idx % 4) * 60 + 'ms';
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    items.forEach(el => io.observe(el));
+  } else {
+    items.forEach(el => el.classList.add('visible'));
+  }
+
+  // ── Lightbox ──
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  const lbCount = document.getElementById('lb-count');
+  let current = 0;
+
+  const srcs = items.map(el => el.querySelector('img').src);
+
+  function openLB(idx) {
+    current = idx;
+    lbImg.src = srcs[current];
+    lbCount.textContent = (current + 1) + ' / ' + srcs.length;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLB() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function step(dir) {
+    current = (current + dir + srcs.length) % srcs.length;
+    lbImg.src = srcs[current];
+    lbCount.textContent = (current + 1) + ' / ' + srcs.length;
+  }
+
+  items.forEach((el, i) => el.addEventListener('click', () => openLB(i)));
+
+  document.getElementById('lb-close').addEventListener('click', closeLB);
+  document.getElementById('lb-prev').addEventListener('click', e => { e.stopPropagation(); step(-1); });
+  document.getElementById('lb-next').addEventListener('click', e => { e.stopPropagation(); step(1); });
+
+  lb.addEventListener('click', e => {
+    if (e.target === lb) closeLB();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLB();
+    if (e.key === 'ArrowLeft') step(-1);
+    if (e.key === 'ArrowRight') step(1);
+  });
+</script>
+</body>
+</html>
