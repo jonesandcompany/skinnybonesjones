@@ -201,25 +201,8 @@
     filter: saturate(1.06);
   }
 
-  /* enforce aspect ratios per slot */
-  .gi-hero         { aspect-ratio: 3/4; }
-  .gi-wall         { aspect-ratio: 2/3; }
-  .gi-car1         { aspect-ratio: 16/9; }
-  .gi-bags         { aspect-ratio: 4/3; }
-  .gi-coffee       { aspect-ratio: 4/3; }
-  .gi-porsche-blur { aspect-ratio: 4/3; }
-  .gi-porsche-plant{ aspect-ratio: 3/4; }
-  .gi-exterior     { aspect-ratio: 2/3; }
-  .gi-team         { aspect-ratio: 4/3; }
-  .gi-audience     { aspect-ratio: 16/10; }
-  .gi-crowd        { aspect-ratio: 3/2; }
-  .gi-tshirt       { aspect-ratio: 3/4; }
-  .gi-sofas        { aspect-ratio: 4/3; }
-  .rf-flowers1     { aspect-ratio: 3/4; }
-  .rf-flowers2     { aspect-ratio: 3/4; }
-  .rf-cart         { aspect-ratio: 3/4; }
-  .rf-bar          { aspect-ratio: 3/4; }
-  .rf-window       { aspect-ratio: 16/7; }
+  /* Desktop: no aspect-ratio constraints — grid column/row spans
+     define the geometry; object-fit: cover fills each slot cleanly */
 
   /* ─── CAPTION OVERLAY on hover ────────────────────── */
   .fora-grid-brand figure figcaption,
@@ -385,7 +368,7 @@
   <!-- PORSCHE HERO: full-bleed -->
   <div class="fora-hero-wrap">
     <figure data-hero-idx="0">
-      <img src="foratravel-9.jpg" alt="Red Porsche 911 in motion — Fora brand event, NYC">
+      <img src="foratravel-3.jpg" alt="Red Porsche 911, tropical plant — Fora brand event, NYC">
       <figcaption>Fora brand event, NYC</figcaption>
     </figure>
   </div>
@@ -419,7 +402,7 @@
     </figure>
 
     <figure class="gi-porsche-blur" data-idx="6">
-      <img src="foratravel-3.jpg" alt="Porsche close, tropical plant, Fora signage">
+      <img src="foratravel-9.jpg" alt="Red Porsche 911 in motion, Fora signage">
       <figcaption></figcaption>
     </figure>
 
