@@ -304,18 +304,53 @@
 
   /* ─── MOBILE ──────────────────────────────────────── */
   @media (max-width: 768px) {
-    .fora-header, .fora-credential, .fora-register-label { padding-left: 20px; padding-right: 20px; }
-    .fora-grid-brand, .fora-grid-rf { padding: 0 20px; gap: 4px; }
+    .fora-section { padding: 48px 0 64px; }
 
-    .fora-grid-brand { grid-template-columns: 1fr 1fr; }
-    .fora-grid-brand figure, .fora-grid-rf figure { grid-column: auto !important; grid-row: auto !important; }
+    .fora-header { padding: 0 20px 32px; flex-wrap: wrap; gap: 10px; }
+    .fora-credential { margin: 0 20px 36px; }
+    .fora-register-label { padding-left: 20px; padding-right: 20px; }
+
+    /* Hero: taller crop on mobile, still cinematic */
+    .fora-hero-wrap { padding: 0 20px; }
+    .fora-hero-wrap figure { aspect-ratio: 4/3; }
+
+    /* Both grids collapse to single column, natural proportions */
+    .fora-grid-brand,
+    .fora-grid-rf {
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px;
+      gap: 4px;
+    }
+
+    /* Reset all grid placement — flex handles flow */
+    .fora-grid-brand figure,
+    .fora-grid-rf figure {
+      width: 100%;
+    }
+
+    /* Natural proportions: remove forced aspect-ratios, let height be auto */
+    .fora-grid-brand figure img,
+    .fora-grid-rf figure img {
+      width: 100%;
+      height: auto;
+      object-fit: unset;
+    }
+
+    /* Override aspect-ratio on all named slots */
     .gi-hero, .gi-wall, .gi-car1, .gi-bags, .gi-coffee,
     .gi-porsche-blur, .gi-porsche-plant, .gi-exterior, .gi-team,
-    .gi-audience, .gi-crowd, .gi-tshirt, .gi-sofas { aspect-ratio: 1; }
+    .gi-audience, .gi-crowd, .gi-tshirt, .gi-sofas,
+    .rf-flowers1, .rf-flowers2, .rf-cart, .rf-bar, .rf-window {
+      aspect-ratio: unset;
+    }
 
-    .fora-grid-rf { grid-template-columns: 1fr 1fr; }
-    .rf-flowers1, .rf-flowers2, .rf-cart, .rf-bar,
-    .rf-window, .rf-bartender, .rf-magcover { aspect-ratio: 1; grid-column: auto !important; }
+    /* Captions always visible on mobile (no hover) */
+    .fora-grid-brand figure figcaption,
+    .fora-grid-rf figure figcaption {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>
 </head>
@@ -323,7 +358,10 @@
 
 <nav style="display:flex;justify-content:space-between;align-items:center;padding:18px 48px;border-bottom:1px solid rgba(26,24,20,.10);">
   <a href="../" style="font-family:'DM Mono',monospace;font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:#8a8278;text-decoration:none;">W.A. Jones</a>
-  <a href="../#events" style="font-family:'DM Mono',monospace;font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:#8a8278;text-decoration:none;">← Back</a>
+  <div style="display:flex;gap:28px;align-items:center;">
+    <a href="../" style="font-family:'DM Mono',monospace;font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:#8a8278;text-decoration:none;">Home</a>
+    <a href="../#commercial" style="font-family:'DM Mono',monospace;font-size:10px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:#8a8278;text-decoration:none;">← Back</a>
+  </div>
 </nav>
 
 <!-- ═══════════════════════════════════════════════════
