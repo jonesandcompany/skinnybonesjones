@@ -165,7 +165,7 @@
       text-transform:uppercase;color:rgba(240,236,224,0.35);">
       <span>Hush &amp; The Q</span>
       <span>—</span>
-      <span>25 photographs</span>
+      <span>25 selected photographs</span>
       <span>—</span>
       <span>2023–2024</span>
     </div>
@@ -178,14 +178,15 @@
      SPREAD 1 — FULL BLEED OPENER
 ══════════════════════════ -->
 <section style="position:relative;">
-  <div class="photo ph-crowd" style="width:100%;height:100vh;background-image:url('boxers-23.jpg');background-size:cover;background-position:center;">
-    <div style="position:absolute;bottom:48px;left:44px;z-index:10;">
-      <div class="marker" style="font-size:clamp(72px,18vw,180px);line-height:0.88;
-        color:var(--neon-yellow);
-        text-shadow:3px 3px 0 var(--neon-pink), 0 0 80px rgba(245,230,66,0.2);
+  <div class="photo ph-crowd" style="width:100%;height:100vh;background-image:url('boxers-23.jpg');background-size:cover;background-position:center 20%;">
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;">
+      <div class="marker" style="font-size:clamp(72px,18vw,200px);line-height:0.88;
+        color:transparent;
+        -webkit-text-stroke:2px var(--neon-yellow);
+        text-shadow:5px 5px 0 rgba(255,20,100,0.5), 0 0 80px rgba(245,230,66,0.1);
         letter-spacing:-0.02em;">BOXERS</div>
       <div class="mono" style="font-size:11px;letter-spacing:0.4em;
-        color:rgba(245,230,66,0.45);margin-top:16px;text-transform:uppercase;">
+        color:rgba(245,230,66,0.45);margin-top:20px;text-transform:uppercase;text-align:center;">
         Hell's Kitchen &nbsp;·&nbsp; New York City &nbsp;·&nbsp; 2023–2024
       </div>
     </div>
@@ -217,8 +218,8 @@
     </h2>
 
     <p class="elite" style="font-size:15px;line-height:1.75;color:rgba(240,236,224,0.72);margin-bottom:18px;">
-      Boxers is a gay sports bar on 8th Avenue that stopped
-      being a sports bar somewhere around midnight. Most of these
+      Boxers is a sports bar on 8th Avenue that stops
+      being a sports bar around midnight and becomes something more magical. Most of these
       photographs were made at Hush and The Q — two venues,
       same ownership — across many
       nights that became one long night.
@@ -442,6 +443,117 @@
       color:rgba(245,230,66,0.18);letter-spacing:0.3em;">THE END ♛</div>
   </div>
 </section>
+
+
+<style>
+  /* ── BOXING GLOVE CURSOR ── */
+  html, body, * {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg transform='rotate(20,20,20)'%3E%3C!-- wrist band --%3E%3Crect x='11' y='27' width='16' height='9' rx='3' fill='%23fff'/%3E%3Crect x='11' y='27' width='16' height='9' rx='3' fill='none' stroke='%23222' stroke-width='1.5'/%3E%3Crect x='12' y='29' width='14' height='2' rx='1' fill='%23e63030' opacity='0.7'/%3E%3C!-- main glove body --%3E%3Cellipse cx='19' cy='17' rx='11' ry='12' fill='%23e63030'/%3E%3Cellipse cx='19' cy='17' rx='11' ry='12' fill='none' stroke='%23900' stroke-width='2'/%3E%3C!-- thumb --%3E%3Cellipse cx='30' cy='19' rx='4.5' ry='3' transform='rotate(-20,30,19)' fill='%23e63030'/%3E%3Cellipse cx='30' cy='19' rx='4.5' ry='3' transform='rotate(-20,30,19)' fill='none' stroke='%23900' stroke-width='1.5'/%3E%3C!-- knuckle highlight --%3E%3Cellipse cx='17' cy='11' rx='7' ry='3' fill='%23ff7070' opacity='0.5'/%3E%3C!-- finger division lines --%3E%3Cline x1='14' y1='8' x2='13' y2='17' stroke='%23900' stroke-width='1' opacity='0.5'/%3E%3Cline x1='19' y1='7' x2='19' y2='17' stroke='%23900' stroke-width='1' opacity='0.5'/%3E%3Cline x1='24' y1='8' x2='25' y2='17' stroke='%23900' stroke-width='1' opacity='0.5'/%3E%3C/g%3E%3C/svg%3E") 14 6, pointer !important;
+  }
+</style>
+
+<script>
+  // ── 6 POW VARIANTS — rotating through site palette, different shapes & skews ──
+  const pows = [
+    // 1 — classic spiky burst, yellow fill, pink text, tilted left
+    {
+      bg: '%23f5e642', stroke: '%23111', textFill: '%23ff2d78', textStroke: '%23111',
+      skew: '-14deg',
+      shape: 'polygon points="70,2 88,36 128,12 106,50 140,56 110,74 132,108 94,90 86,120 70,90 54,120 46,90 8,108 30,74 0,56 34,50 12,12 52,36"',
+      word: 'POW!'
+    },
+    // 2 — rounded jagged, orange fill, white text, tilted right
+    {
+      bg: '%23ff6b00', stroke: '%23111', textFill: '%23f0ece0', textStroke: '%23111',
+      skew: '11deg',
+      shape: 'polygon points="70,5 82,32 108,18 98,46 130,44 112,65 128,92 98,82 92,112 70,95 48,112 42,82 12,92 28,65 10,44 42,46 32,18 58,32"',
+      word: 'POW!'
+    },
+    // 3 — wide flat burst, neon green fill, black text, heavy tilt left
+    {
+      bg: '%2339ff14', stroke: '%23111', textFill: '%23111', textStroke: '%23333',
+      skew: '-20deg',
+      shape: 'polygon points="10,45 38,35 30,8 58,28 70,2 82,28 110,8 102,35 130,45 102,55 118,82 88,72 82,100 70,78 58,100 52,72 22,82 38,55"',
+      word: 'BAM!'
+    },
+    // 4 — asymmetric jagged, electric blue fill, yellow text, right tilt
+    {
+      bg: '%2300cfff', stroke: '%23111', textFill: '%23f5e642', textStroke: '%23111',
+      skew: '16deg',
+      shape: 'polygon points="70,0 90,30 135,10 108,48 140,60 105,70 125,108 88,85 80,118 70,92 60,118 52,85 15,108 35,70 0,60 32,48 5,10 50,30"',
+      word: 'POW!'
+    },
+    // 5 — tall narrow burst, pink fill, yellow text, slight tilt
+    {
+      bg: '%23ff2d78', stroke: '%23111', textFill: '%23f5e642', textStroke: '%23111',
+      skew: '-8deg',
+      shape: 'polygon points="70,0 80,38 112,20 100,52 132,50 112,68 130,100 96,86 88,118 70,96 52,118 44,86 10,100 28,68 8,50 40,52 28,20 60,38"',
+      word: 'WHAM!'
+    },
+    // 6 — squat wide shape, yellow fill, orange text, strong right skew
+    {
+      bg: '%23f5e642', stroke: '%23111', textFill: '%23ff6b00', textStroke: '%23111',
+      skew: '22deg',
+      shape: 'polygon points="5,50 32,38 20,12 52,30 70,5 88,30 120,12 108,38 135,50 108,62 120,88 88,70 70,95 52,70 20,88 32,62"',
+      word: 'ZAP!'
+    }
+  ];
+
+  let powIndex = 0;
+
+  document.addEventListener('click', function(e) {
+    const v = pows[powIndex % pows.length];
+    powIndex++;
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 120">
+      <${v.shape} fill="${decodeURIComponent(v.bg)}" stroke="${decodeURIComponent(v.stroke)}" stroke-width="3.5" stroke-linejoin="round"/>
+      <text x="70" y="70" text-anchor="middle"
+        font-family="'Permanent Marker', Impact, sans-serif"
+        font-size="${v.word.length > 4 ? '26' : '32'}"
+        font-weight="900"
+        fill="${decodeURIComponent(v.textFill)}"
+        stroke="${decodeURIComponent(v.textStroke)}"
+        stroke-width="3"
+        paint-order="stroke"
+        transform="skewX(${v.skew.replace('deg','')})"
+        letter-spacing="-1">${v.word}</text>
+    </svg>`;
+
+    const blob = new Blob([svg], {type: 'image/svg+xml'});
+    const url = URL.createObjectURL(blob);
+
+    const el = document.createElement('img');
+    el.src = url;
+    const rot = (Math.random() * 24 - 12).toFixed(1);
+    el.style.cssText = `
+      position: fixed;
+      left: ${e.clientX - 70}px;
+      top: ${e.clientY - 60}px;
+      width: 140px;
+      height: 120px;
+      pointer-events: none;
+      z-index: 9999;
+      transform: scale(0.3) rotate(${rot}deg);
+      opacity: 0;
+      transition: transform 130ms cubic-bezier(0.15,0,0,1.7), opacity 80ms ease;
+    `;
+    document.body.appendChild(el);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.style.transform = `scale(1) rotate(${rot}deg)`;
+        el.style.opacity = '1';
+      });
+    });
+
+    setTimeout(() => {
+      el.style.transition = 'opacity 180ms ease, transform 180ms ease';
+      el.style.opacity = '0';
+      el.style.transform = `scale(1.2) rotate(${rot}deg)`;
+      setTimeout(() => { el.remove(); URL.revokeObjectURL(url); }, 200);
+    }, 300);
+  });
+</script>
 
 </body>
 </html>
