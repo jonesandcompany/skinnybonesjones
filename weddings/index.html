@@ -130,6 +130,13 @@
       object-fit: unset;
     }
 
+    /* controlled horizontal crop — fixed height, centered */
+    .h-crop {
+      height: 52vh;
+      object-fit: cover;
+      object-position: center center;
+    }
+
     /* ── INTERLUDE ── */
     .interlude {
       padding: 5rem 2.5rem;
@@ -255,21 +262,20 @@
   <div class="interlude"><p>Palm Springs</p></div>
 
   <!-- BLOCK 2: DD wedding — garden dinner party -->
-  <!-- Hero: long dinner table, wide crop — ddwedding-16 promoted -->
+  <!-- Hero: dinner table wide, controlled horizontal crop -->
   <div class="img-row row-1">
-    <img class="h-wide" src="../weddings/ddwedding-16.jpg" alt="Long outdoor dinner table, string lights, guests mid-conversation, wide" loading="lazy">
+    <img class="h-crop" src="../weddings/ddwedding-16.jpg" alt="Long outdoor dinner table, string lights, guests mid-conversation" loading="lazy">
   </div>
 
-  <!-- Three details: cocktails / bougainvillea couple / ddwedding-2 natural proportions -->
-  <div class="img-row row-3">
+  <!-- Three details: cocktails / bougainvillea couple -->
+  <div class="img-row row-2">
     <img class="h-short" src="../weddings/ddwedding-10.jpg" alt="Bartender pouring cocktails into a row of coupes" loading="lazy">
     <img class="h-short" src="../weddings/ddwedding-12.jpg" alt="Couple laughing together in front of bougainvillea" loading="lazy">
-    <img class="natural" src="../weddings/ddwedding-2.jpg" alt="Guest in vibrant colorful outfit, holding a drink" loading="lazy">
   </div>
 
-  <!-- Long table dinner detail / boutonniere — ddwedding-15 now paired with ddwedding-18 -->
+  <!-- ddwedding-17 + ddwedding-18 — matched height, no tall singles -->
   <div class="img-row row-wide-r">
-    <img class="h-mid" src="../weddings/ddwedding-15.jpg" alt="Boutonniere pinning detail, hands close together" loading="lazy">
+    <img class="h-mid" src="../weddings/ddwedding-17.jpg" alt="DD wedding detail" loading="lazy">
     <img class="h-mid" src="../weddings/ddwedding-18.jpg" alt="Full room view, outdoor dinner reception in full swing, bougainvillea walls" loading="lazy">
   </div>
 
@@ -283,13 +289,18 @@
   <div class="interlude"><p>Late Night</p></div>
 
   <!-- BLOCK 3: DD late night dancing -->
+  <!-- ddwedding-2 opens late night — colorful outfit, natural proportions -->
+  <div class="img-row row-1">
+    <img class="natural" src="../weddings/ddwedding-2.jpg" alt="Guest in vibrant colorful outfit, holding a drink" loading="lazy">
+  </div>
+
   <!-- Women on the couch — chaos -->
   <div class="img-row row-wide-l">
     <img class="h-mid" src="../weddings/ddwedding-27.jpg" alt="Women piled on a couch, laughing and collapsing, pure chaos" loading="lazy">
     <img class="h-mid" src="../weddings/ddwedding-29.jpg" alt="Woman in floral dress dancing alone, warm glow" loading="lazy">
   </div>
 
-  <!-- ddwedding-25: wide shot, full natural proportions — breath before dance floor -->
+  <!-- ddwedding-25: wide shot, natural proportions -->
   <div class="img-row row-1">
     <img class="h-wide" src="../weddings/ddwedding-25.jpg" alt="Wide shot, late night" loading="lazy">
   </div>
@@ -305,33 +316,24 @@
   <!-- BLOCK 4: Philly weddings series -->
   <!-- Rooftop ceremony wide -->
   <div class="img-row row-1">
-    <img class="h-tall" src="../weddings/weddings-10.jpg" alt="Rooftop ceremony, wide shot, city skyline backdrop" loading="lazy">
+    <img class="h-mid" src="../weddings/weddings-10.jpg" alt="Rooftop ceremony, wide shot, city skyline backdrop" loading="lazy">
   </div>
 
-  <!-- Three: wedding-14 / wedding-7 / weddings-16 replacing weddings-4 and weddings-8 -->
+  <!-- Three: reordered — weddings-7 / weddings-16 / weddings-14 -->
   <div class="img-row row-3">
-    <img class="h-mid" src="../weddings/weddings-14.jpg" alt="Wedding guest, candid" loading="lazy">
     <img class="h-mid" src="../weddings/weddings-7.jpg" alt="Wedding portrait" loading="lazy">
     <img class="h-mid" src="../weddings/weddings-16.jpg" alt="Wedding moment" loading="lazy">
+    <img class="h-mid" src="../weddings/weddings-14.jpg" alt="Wedding guest, candid" loading="lazy">
   </div>
 
-  <!-- Three: shoes detail / dance floor / B&W groomsmen -->
+  <!-- Three: shoes detail / weddings-19 / B&W groomsmen — weddings-13 out -->
   <div class="img-row row-3">
     <img class="h-short" src="../weddings/weddings-12.jpg" alt="Star-studded dress shoes detail on patterned carpet" loading="lazy">
-    <img class="h-short" src="../weddings/weddings-13.jpg" alt="Dance floor, guests mid-motion, someone raising a hand" loading="lazy">
+    <img class="h-short" src="../weddings/weddings-19.jpg" alt="Wedding moment, Philadelphia" loading="lazy">
     <img class="h-short" src="../weddings/weddings-11.jpg" alt="Two groomsmen, black and white, suits and beers" loading="lazy">
   </div>
 
   <!-- CONTACT -->
   <div class="contact-strip">
     <p>If this is what you're looking for</p>
-    <a href="mailto:alex@wajones.co">alex@wajones.co</a>
-  </div>
-
-  <footer>
-    <span>W.A. Jones</span>
-    <a href="../#events">← Back</a>
-  </footer>
-
-</body>
-</html>
+    <a href="/cdn-cgi/l/email-protection#53323f362b132432393c3d36207d303c"><span class="__cf_email__" data-cfemail="741518110c3403151e1b1a11075a171b">[email&#160;protected]<
