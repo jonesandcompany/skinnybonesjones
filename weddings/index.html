@@ -112,10 +112,23 @@
       object-fit: cover;
     }
 
+    /* ddwedding-2 renders at natural proportions — no forced crop */
+    .img-row img.natural {
+      height: auto !important;
+      object-fit: unset;
+    }
+
     .h-hero  { height: 85vh; }
     .h-tall  { height: 68vh; }
     .h-mid   { height: 55vh; }
     .h-short { height: 42vh; }
+
+    /* wide shots that must never be cropped */
+    .h-wide {
+      width: 100%;
+      height: auto;
+      object-fit: unset;
+    }
 
     /* ── INTERLUDE ── */
     .interlude {
@@ -142,18 +155,17 @@
 
     .contact-strip p {
       font-size: 0.72rem;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--mid);
     }
 
     .contact-strip a {
-      font-size: clamp(1.4rem, 3vw, 2.2rem);
-      font-style: italic;
-      font-weight: 300;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       color: var(--ink);
       text-decoration: none;
-      letter-spacing: 0.02em;
       transition: color 0.2s;
     }
 
@@ -161,58 +173,42 @@
 
     /* ── FOOTER ── */
     footer {
-      padding: 2rem 2.5rem;
-      border-top: 1px solid var(--rule);
+      padding: 2rem 2.5rem 4rem;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
     }
 
     footer span {
-      font-size: 0.7rem;
-      letter-spacing: 0.16em;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--mid);
     }
 
     footer a {
-      font-size: 0.7rem;
-      letter-spacing: 0.16em;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      text-decoration: none;
       color: var(--mid);
+      text-decoration: none;
       transition: color 0.2s;
     }
 
     footer a:hover { color: var(--ink); }
 
     /* ── MOBILE ── */
-    @media (max-width: 700px) {
-      nav { padding: 1rem 1.25rem; }
-      nav ul { display: none; }
-
-      .statement { padding: 4rem 1.25rem 3rem; }
-
-      .row-2, .row-3,
-      .row-wide-l, .row-wide-r,
-      .row-narrow-l, .row-narrow-r {
+    @media (max-width: 680px) {
+      .row-2, .row-3, .row-wide-l, .row-wide-r, .row-narrow-l, .row-narrow-r {
         grid-template-columns: 1fr;
       }
-
-      .h-hero  { height: 75vw; }
-      .h-tall  { height: 68vw; }
-      .h-mid   { height: 60vw; }
-      .h-short { height: 55vw; }
-
-      .interlude { padding: 3rem 1.25rem; }
-
-      .contact-strip {
-        flex-direction: column;
-        gap: 1.5rem;
-        padding: 3rem 1.25rem;
-      }
-
-      footer { padding: 1.5rem 1.25rem; }
+      .h-hero  { height: 60dvh; }
+      .h-tall  { height: 50dvh; }
+      .h-mid   { height: 42dvh; }
+      .h-short { height: 32dvh; }
+      nav { padding: 1rem 1.2rem; }
+      .statement { padding: 5rem 1.2rem 3rem; }
+      .contact-strip { flex-direction: column; gap: 1rem; }
     }
   </style>
 </head>
@@ -220,7 +216,9 @@
 
   <nav>
     <a class="wordmark" href="../">W.A. Jones</a>
-    <a href="../#events" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;">← Back</a>
+    <ul>
+      <li><a href="../#events" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;">← Back</a></li>
+    </ul>
   </nav>
 
   <!-- OPENING STATEMENT -->
@@ -230,7 +228,7 @@
   </div>
 
   <!-- BLOCK 1: CC wedding — desert ceremony opener -->
-  <!-- Wide: groom waiting, bride approaching — the moment before -->
+  <!-- Wide hero: groom waiting, bride approaching -->
   <div class="img-row row-1">
     <img class="h-hero" src="../weddings/ccwedding-2.jpg" alt="Groom waiting, bride walking toward him through the garden" loading="eager">
   </div>
@@ -241,36 +239,38 @@
     <img class="h-mid" src="../weddings/ccwedding-8.jpg" alt="Couple kissing in front of tall cacti, warm afternoon light" loading="lazy">
   </div>
 
-  <!-- Detail: rings on tattooed hands -->
+  <!-- Detail: rings on tattooed hands / couple portrait -->
   <div class="img-row row-narrow-l">
     <img class="h-mid" src="../weddings/ccwedding-9.jpg" alt="Rings on tattooed hands, close detail" loading="lazy">
     <img class="h-mid" src="../weddings/ccwedding-4.jpg" alt="Couple portrait, tattoos, intimacy" loading="lazy">
   </div>
 
+  <!-- Three additions: ccwedding / ccwedding-6 / ccwedding-12 -->
+  <div class="img-row row-3">
+    <img class="h-short" src="../weddings/ccwedding.jpg" alt="CC wedding, ceremony" loading="lazy">
+    <img class="h-short" src="../weddings/ccwedding-6.jpg" alt="CC wedding" loading="lazy">
+    <img class="h-short" src="../weddings/ccwedding-12.jpg" alt="CC wedding" loading="lazy">
+  </div>
+
   <div class="interlude"><p>Palm Springs</p></div>
 
   <!-- BLOCK 2: DD wedding — garden dinner party -->
-  <!-- Wide establishing: guests on lawn, moody sky, palms -->
+  <!-- Hero: long dinner table, wide crop — ddwedding-16 promoted -->
   <div class="img-row row-1">
-    <img class="h-tall" src="../weddings/ddwedding.jpg" alt="Wide shot, guests gathered on lawn at dusk, palm trees, moody sky" loading="lazy">
+    <img class="h-wide" src="../weddings/ddwedding-16.jpg" alt="Long outdoor dinner table, string lights, guests mid-conversation, wide" loading="lazy">
   </div>
 
-  <!-- Three details: cocktails being poured / couple in bougainvillea / woman in colorful outfit -->
+  <!-- Three details: cocktails / bougainvillea couple / ddwedding-2 natural proportions -->
   <div class="img-row row-3">
     <img class="h-short" src="../weddings/ddwedding-10.jpg" alt="Bartender pouring cocktails into a row of coupes" loading="lazy">
     <img class="h-short" src="../weddings/ddwedding-12.jpg" alt="Couple laughing together in front of bougainvillea" loading="lazy">
-    <img class="h-short" src="../weddings/ddwedding-2.jpg" alt="Guest in vibrant colorful outfit, holding a drink" loading="lazy">
+    <img class="natural" src="../weddings/ddwedding-2.jpg" alt="Guest in vibrant colorful outfit, holding a drink" loading="lazy">
   </div>
 
-  <!-- Long table dinner, string lights -->
+  <!-- Long table dinner detail / boutonniere — ddwedding-15 now paired with ddwedding-18 -->
   <div class="img-row row-wide-r">
     <img class="h-mid" src="../weddings/ddwedding-15.jpg" alt="Boutonniere pinning detail, hands close together" loading="lazy">
-    <img class="h-mid" src="../weddings/ddwedding-16.jpg" alt="Long outdoor dinner table, string lights, guests mid-conversation" loading="lazy">
-  </div>
-
-  <!-- Full bleed: full room dinner in swing -->
-  <div class="img-row row-1">
-    <img class="h-tall" src="../weddings/ddwedding-18.jpg" alt="Full room view, outdoor dinner reception in full swing, bougainvillea walls" loading="lazy">
+    <img class="h-mid" src="../weddings/ddwedding-18.jpg" alt="Full room view, outdoor dinner reception in full swing, bougainvillea walls" loading="lazy">
   </div>
 
   <!-- Three: women laughing / cake / group photo chaos -->
@@ -283,10 +283,15 @@
   <div class="interlude"><p>Late Night</p></div>
 
   <!-- BLOCK 3: DD late night dancing -->
-  <!-- Women on the couch — total chaos, best shot in the set -->
+  <!-- Women on the couch — chaos -->
   <div class="img-row row-wide-l">
     <img class="h-mid" src="../weddings/ddwedding-27.jpg" alt="Women piled on a couch, laughing and collapsing, pure chaos" loading="lazy">
     <img class="h-mid" src="../weddings/ddwedding-29.jpg" alt="Woman in floral dress dancing alone, warm glow" loading="lazy">
+  </div>
+
+  <!-- ddwedding-25: wide shot, full natural proportions — breath before dance floor -->
+  <div class="img-row row-1">
+    <img class="h-wide" src="../weddings/ddwedding-25.jpg" alt="Wide shot, late night" loading="lazy">
   </div>
 
   <!-- Dance floor energy -->
@@ -295,18 +300,19 @@
     <img class="h-mid" src="../weddings/ddwedding-32.jpg" alt="Couple embracing and laughing on dance floor" loading="lazy">
   </div>
 
-  <div class="interlude"><p>New York</p></div>
+  <div class="interlude"><p>Philadelphia</p></div>
 
-  <!-- BLOCK 4: NYC weddings series -->
-  <!-- Couple rooftop wide -->
+  <!-- BLOCK 4: Philly weddings series -->
+  <!-- Rooftop ceremony wide -->
   <div class="img-row row-1">
-    <img class="h-tall" src="../weddings/weddings-10.jpg" alt="Rooftop ceremony, wide shot, Manhattan skyline backdrop" loading="lazy">
+    <img class="h-tall" src="../weddings/weddings-10.jpg" alt="Rooftop ceremony, wide shot, city skyline backdrop" loading="lazy">
   </div>
 
-  <!-- Two: couple portrait / two friends laughing -->
-  <div class="img-row row-narrow-r">
-    <img class="h-mid" src="../weddings/weddings-4.jpg" alt="Two guests, laughing warmly, candid moment" loading="lazy">
-    <img class="h-mid" src="../weddings/weddings-8.jpg" alt="Couple in tuxedo and gown, Manhattan rooftop, daytime" loading="lazy">
+  <!-- Three: wedding-14 / wedding-7 / weddings-16 replacing weddings-4 and weddings-8 -->
+  <div class="img-row row-3">
+    <img class="h-mid" src="../weddings/weddings-14.jpg" alt="Wedding guest, candid" loading="lazy">
+    <img class="h-mid" src="../weddings/weddings-7.jpg" alt="Wedding portrait" loading="lazy">
+    <img class="h-mid" src="../weddings/weddings-16.jpg" alt="Wedding moment" loading="lazy">
   </div>
 
   <!-- Three: shoes detail / dance floor / B&W groomsmen -->
