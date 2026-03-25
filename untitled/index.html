@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Untitled Magazine — W.A. Jones</title>
+  <!-- v6: logo image, dark mode -->
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -73,14 +74,33 @@
     }
 
     .untitled-logo {
-      font-size: clamp(56px, 10vw, 120px);
-      font-weight: 400;
-      letter-spacing: -0.02em;
-      line-height: 0.86;
-      color: var(--ink);
-      user-select: none;
+      max-width: 520px;
     }
 
+    .untitled-logo img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ── DARK MODE ── */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --white: #0a0a0a;
+        --ink: #f0f0f0;
+        --mid: #666666;
+        --rule: #222222;
+        --sky: #7ebcf0;
+      }
+
+      nav {
+        background: rgba(10, 10, 10, 0.92);
+      }
+
+      .untitled-logo img {
+        filter: invert(1);
+      }
+    }
 
     .masthead-meta {
       margin-top: 32px;
@@ -242,7 +262,9 @@
   <header class="masthead">
     <div class="masthead-inner">
       <p class="pub-label">Editorial</p>
-      <div class="untitled-logo">The Untitled Magazine</div>
+      <div class="untitled-logo">
+        <img src="untitled-logo.png" alt="The Untitled Magazine">
+      </div>
       <div class="masthead-meta">
         <div class="meta-block">
           <span class="meta-label">Issue</span>
