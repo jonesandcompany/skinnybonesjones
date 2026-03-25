@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skip Marley — W.A. Jones</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;1,300&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0d0b;
+    --fg: #e8e4dc;
+    --muted: #6b6860;
+    --accent: #c8b89a;
+    --rule: rgba(200,184,154,0.15);
+  }
+
+  html { background: var(--bg); color: var(--fg); }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    min-height: 100dvh;
+  }
+
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 22px 32px 18px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+  }
+
+  .wordmark {
+    font-family: 'EB Garamond', serif;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  .header-meta {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  .intro {
+    padding: 120px 32px 48px;
+    max-width: 560px;
+  }
+
+  .intro-label {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .intro h1 {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.1;
+    color: var(--fg);
+    margin-bottom: 20px;
+  }
+
+  .intro-sub {
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 400px;
+  }
+
+  .intro-sub a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200,184,154,0.3);
+  }
+
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 0 32px;
+  }
+
+  .grid {
+    padding: 48px 32px;
+    columns: 2;
+    column-gap: 12px;
+  }
+
+  @media (min-width: 900px) {
+    .grid { columns: 3; column-gap: 14px; }
+  }
+
+  @media (max-width: 540px) {
+    .grid { columns: 1; padding: 32px 16px; }
+    header { padding: 18px 16px 14px; }
+    .intro { padding: 100px 16px 36px; }
+    hr.rule { margin: 0 16px; }
+    footer { padding: 36px 16px 32px; }
+  }
+
+  .photo-item {
+    break-inside: avoid;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .photo-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .photo-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .photo-item:hover img {
+    transform: scale(1.03);
+  }
+
+  .photo-caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 28px 12px 10px;
+    background: linear-gradient(transparent, rgba(13,13,11,0.85));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+  }
+
+  .photo-item:hover .photo-caption {
+    opacity: 1;
+  }
+
+  .photo-num {
+    display: block;
+    color: var(--muted);
+    font-size: 8px;
+    margin-bottom: 2px;
+    letter-spacing: 0.1em;
+  }
+
+  /* LIGHTBOX */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(13,13,11,0.97);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox.open { display: flex; }
+
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 88dvh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 24px; right: 32px;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+  }
+
+  .lightbox-close:hover { color: var(--fg); }
+
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 20px;
+    user-select: none;
+    transition: color 0.2s;
+  }
+
+  .lightbox-nav:hover { color: var(--fg); }
+  .lightbox-prev { left: 8px; }
+  .lightbox-next { right: 8px; }
+
+  .lightbox-counter {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  footer {
+    padding: 48px 32px 40px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-contact {
+    line-height: 2;
+    color: var(--muted);
+  }
+
+  .footer-contact a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200,184,154,0.3);
+  }
+
+  .footer-note {
+    color: var(--muted);
+    text-align: right;
+    line-height: 2;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="wordmark">W.A. Jones</a>
+  <div class="header-meta">
+    Skip Marley<br>
+    New York City
+  </div>
+</header>
+
+<div class="intro">
+  <div class="intro-label">Editorial Archive</div>
+  <h1>Skip Marley</h1>
+  <p class="intro-sub">
+    Selected frames from an extended shoot across Lower Manhattan — street, newsstand, rooftop, and stage. Shot in conjunction with <em>The Untitled Magazine</em> Innovate Issue.<br><br>
+    Licensing inquiries: <a href="mailto:alex@skinnybonesjones.biz">alex@skinnybonesjones.biz</a>
+  </p>
+</div>
+
+<hr class="rule">
+
+<div class="grid" id="grid">
+
+  <div class="photo-item" data-index="0">
+    <img src="skip_for_untitled_8.jpg" alt="Skip Marley — Lower East Side portrait">
+    <div class="photo-caption"><span class="photo-num">01</span>Lower East Side — direct</div>
+  </div>
+
+  <div class="photo-item" data-index="1">
+    <img src="skip_for_untitled_3.jpg" alt="Skip Marley — hair toss">
+    <div class="photo-caption"><span class="photo-num">02</span>Lower East Side — hair toss</div>
+  </div>
+
+  <div class="photo-item" data-index="2">
+    <img src="skip_for_untitled_17.jpg" alt="Skip Marley — concert">
+    <div class="photo-caption"><span class="photo-num">03</span>Stage — arm raised</div>
+  </div>
+
+  <div class="photo-item" data-index="3">
+    <img src="skip_for_untitled_2.jpg" alt="Skip Marley — chin in hand">
+    <div class="photo-caption"><span class="photo-num">04</span>Lower East Side — contemplative</div>
+  </div>
+
+  <div class="photo-item" data-index="4">
+    <img src="skip_for_untitled_12.jpg" alt="Skip Marley — newsstand ATM">
+    <div class="photo-caption"><span class="photo-num">05</span>Newsstand — ATM</div>
+  </div>
+
+  <div class="photo-item" data-index="5">
+    <img src="skip_for_untitled_18.jpg" alt="Skip Marley — backstage">
+    <div class="photo-caption"><span class="photo-num">06</span>Backstage — corridor</div>
+  </div>
+
+  <div class="photo-item" data-index="6">
+    <img src="skip_for_untitled_21.jpg" alt="Skip Marley — brownstone solo">
+    <div class="photo-caption"><span class="photo-num">07</span>Brownstone — solo</div>
+  </div>
+
+  <div class="photo-item" data-index="7">
+    <img src="skip_for_untitled_10.jpg" alt="Skip Marley — profile LES">
+    <div class="photo-caption"><span class="photo-num">08</span>Lower East Side — profile</div>
+  </div>
+
+  <div class="photo-item" data-index="8">
+    <img src="skip_for_untitled_11.jpg" alt="Skip Marley — rooftop hat toss">
+    <div class="photo-caption"><span class="photo-num">09</span>Rooftop — hat toss</div>
+  </div>
+
+  <div class="photo-item" data-index="9">
+    <img src="skip_for_untitled_16.jpg" alt="Skip Marley — brownstone two subjects">
+    <div class="photo-caption"><span class="photo-num">10</span>190 — two subjects</div>
+  </div>
+
+  <div class="photo-item" data-index="10">
+    <img src="skip_for_untitled_13.jpg" alt="Skip Marley — newsstand facing camera">
+    <div class="photo-caption"><span class="photo-num">11</span>Newsstand — facing camera</div>
+  </div>
+
+  <div class="photo-item" data-index="11">
+    <img src="skip_for_untitled_15.jpg" alt="Skip Marley — brownstone two subjects serious">
+    <div class="photo-caption"><span class="photo-num">12</span>190 — two subjects</div>
+  </div>
+
+  <div class="photo-item" data-index="12">
+    <img src="skip_for_untitled_4.jpg" alt="Skip Marley — brownstone wider">
+    <div class="photo-caption"><span class="photo-num">13</span>190 — wide</div>
+  </div>
+
+  <div class="photo-item" data-index="13">
+    <img src="skip_for_untitled_7.jpg" alt="Skip Marley — mask street">
+    <div class="photo-caption"><span class="photo-num">14</span>Street — mask</div>
+  </div>
+
+  <div class="photo-item" data-index="14">
+    <img src="skip_for_untitled_9.jpg" alt="Skip Marley — wide street looking up">
+    <div class="photo-caption"><span class="photo-num">15</span>Street — looking up</div>
+  </div>
+
+  <div class="photo-item" data-index="15">
+    <img src="skip_for_untitled_6.jpg" alt="Skip Marley — newsstand facing away">
+    <div class="photo-caption"><span class="photo-num">16</span>Newsstand — interior</div>
+  </div>
+
+  <div class="photo-item" data-index="16">
+    <img src="skip_for_untitled_20.jpg" alt="Skip Marley — brownstone solo alternate">
+    <div class="photo-caption"><span class="photo-num">17</span>Brownstone — solo alternate</div>
+  </div>
+
+  <div class="photo-item" data-index="17">
+    <img src="skip_for_untitled_14.jpg" alt="Skip Marley — newsstand browsing">
+    <div class="photo-caption"><span class="photo-num">18</span>Newsstand — browsing</div>
+  </div>
+
+  <div class="photo-item" data-index="18">
+    <img src="skip_for_untitled_19.jpg" alt="Skip Marley — rooftop triptych">
+    <div class="photo-caption"><span class="photo-num">19</span>Rooftop — triptych</div>
+  </div>
+
+  <div class="photo-item" data-index="19">
+    <img src="skip_for_untitled_5.jpg" alt="Skip Marley — newsstand dark">
+    <div class="photo-caption"><span class="photo-num">20</span>Newsstand — dark interior</div>
+  </div>
+
+  <div class="photo-item" data-index="20">
+    <img src="skip_for_untitled_1.jpg" alt="Skip Marley — tunnel">
+    <div class="photo-caption"><span class="photo-num">21</span>Tunnel</div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-contact">
+    W.A. Jones — Alex Jones<br>
+    <a href="mailto:alex@skinnybonesjones.biz">alex@skinnybonesjones.biz</a><br>
+    New York City
+  </div>
+  <div class="footer-note">
+    All images © W.A. Jones<br>
+    Available for licensing
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <span class="lightbox-close" id="lb-close">CLOSE ✕</span>
+  <span class="lightbox-nav lightbox-prev" id="lb-prev">‹</span>
+  <img id="lb-img" src="" alt="">
+  <span class="lightbox-nav lightbox-next" id="lb-next">›</span>
+  <span class="lightbox-counter" id="lb-counter"></span>
+</div>
+
+<script>
+  const items = document.querySelectorAll('.photo-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const i = parseInt(entry.target.dataset.index);
+        setTimeout(() => entry.target.classList.add('visible'), (i % 6) * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  items.forEach(item => observer.observe(item));
+
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  const lbCounter = document.getElementById('lb-counter');
+  let current = 0;
+  const images = [...items].map(item => item.querySelector('img').src);
+  const total = images.length;
+
+  function open(i) {
+    current = i;
+    lbImg.src = images[i];
+    lbCounter.textContent = (i + 1) + ' / ' + total;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function prev() { current = (current - 1 + total) % total; lbImg.src = images[current]; lbCounter.textContent = (current + 1) + ' / ' + total; }
+  function next() { current = (current + 1) % total; lbImg.src = images[current]; lbCounter.textContent = (current + 1) + ' / ' + total; }
+
+  items.forEach((item, i) => item.addEventListener('click', () => open(i)));
+  document.getElementById('lb-close').addEventListener('click', (e) => { e.stopPropagation(); close(); });
+  document.getElementById('lb-prev').addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+  document.getElementById('lb-next').addEventListener('click', (e) => { e.stopPropagation(); next(); });
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') prev();
+    if (e.key === 'ArrowRight') next();
+  });
+</script>
+
+</body>
+</html>
