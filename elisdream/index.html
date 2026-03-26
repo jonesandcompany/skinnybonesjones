@@ -141,13 +141,36 @@
     .pair .wide, .pair .narrow { flex: 1; width: 100%; }
     .text-col { padding: 36px 28px; }
   }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 28px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--ink-ghost);
+  }
+
+  nav a {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  nav a:hover { color: var(--warm-mid); }
 </style>
 </head>
 <body>
 
-<nav style="position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:18px 28px;background:rgba(240,235,224,0.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(28,26,21,0.07);">
-  <a href="../" style="font-family:'Didact Gothic',sans-serif;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(28,26,21,0.5);text-decoration:none;">W.A. Jones</a>
-  <a href="../#editorial" style="font-family:'Didact Gothic',sans-serif;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(28,26,21,0.5);text-decoration:none;">← Back</a>
+<nav>
+  <a href="../">W.A. Jones</a>
+  <a href="../#editorial">← Back</a>
 </nav>
 
 <!-- ══════════════════

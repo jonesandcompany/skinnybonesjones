@@ -31,41 +31,23 @@
       top: 0; left: 0; right: 0;
       z-index: 100;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 1.2rem 2.5rem;
-      background: rgba(250,249,247,0.93);
-      backdrop-filter: blur(10px);
+      align-items: center;
+      padding: 18px 28px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--rule);
     }
 
-    nav .wordmark {
-      font-size: 0.78rem;
-      font-weight: 400;
-      letter-spacing: 0.2em;
+    nav a {
+      font-size: 11px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       text-decoration: none;
       color: var(--ink);
     }
 
-    nav ul {
-      display: flex;
-      gap: 2.5rem;
-      list-style: none;
-    }
-
-    nav ul a {
-      font-size: 0.72rem;
-      font-weight: 400;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: var(--mid);
-      transition: color 0.2s;
-    }
-
-    nav ul a:hover,
-    nav ul a.active { color: var(--ink); }
+    nav a:hover { color: var(--mid); }
 
     /* ── HEADER STATEMENT ── */
     .statement {
@@ -213,7 +195,7 @@
       .h-tall  { height: 50dvh; }
       .h-mid   { height: 42dvh; }
       .h-short { height: 32dvh; }
-      nav { padding: 1rem 1.2rem; }
+      nav { padding: 14px 18px; }
       .statement { padding: 5rem 1.2rem 3rem; }
       .contact-strip { flex-direction: column; gap: 1rem; }
     }
@@ -222,10 +204,8 @@
 <body>
 
   <nav>
-    <a class="wordmark" href="../">W.A. Jones</a>
-    <ul>
-      <li><a href="../#events" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;">← Back</a></li>
-    </ul>
+    <a href="../">W.A. Jones</a>
+    <a href="../#events">← Back</a>
   </nav>
 
   <!-- OPENING STATEMENT -->

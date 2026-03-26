@@ -27,37 +27,33 @@
     min-height: 100vh;
   }
 
-  /* ── HEADER ── */
-  header {
-    padding: 40px 48px 0;
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
     display: flex;
-    align-items: baseline;
     justify-content: space-between;
+    align-items: center;
+    padding: 18px 28px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--rule);
-    padding-bottom: 16px;
   }
 
-  .back {
-    text-decoration: none;
-    color: var(--mid);
-    font-size: 10px;
+  nav a {
+    font-size: 11px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
   }
 
-  .back:hover { color: var(--ink); }
-
-  .doc-meta {
-    text-align: right;
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    color: var(--mid);
-    line-height: 1.8;
-  }
+  nav a:hover { color: var(--mid); }
 
   /* ── TITLE BLOCK ── */
   .title-block {
-    padding: 32px 48px 28px;
+    padding: 57px 48px 28px;
     border-bottom: 1px solid var(--rule);
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -297,7 +293,8 @@
 
   /* ── MOBILE ── */
   @media (max-width: 768px) {
-    header, .title-block, .session-header,
+    nav { padding: 14px 20px; }
+    .title-block, .session-header,
     .filmstrip-section, .session2-section,
     .meta-row, footer {
       padding-left: 20px;
@@ -340,18 +337,10 @@
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
-  <a href="../" class="back">W.A. Jones</a>
-  <div style="display:flex;gap:32px;align-items:baseline;">
-    <div class="doc-meta">
-      PHOTOGRAPHY / LOOKBOOK &amp; LINE SHEET<br>
-      CLIENT: HARDEN, LOS ANGELES<br>
-      DOC NO. LB-2023–2024
-    </div>
-    <a href="../#commercial" class="back">← Back</a>
-  </div>
-</header>
+<nav>
+  <a href="../">W.A. Jones</a>
+  <a href="../#commercial">← Back</a>
+</nav>
 
 <!-- TITLE BLOCK -->
 <div class="title-block">

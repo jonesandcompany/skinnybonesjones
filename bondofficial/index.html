@@ -53,31 +53,28 @@
   .fade-cover.gone { opacity: 0; }
 
   /* ── HOME ── */
-  .home-btn {
+  nav {
     position: fixed;
-    top: 24px;
-    left: 28px;
-    z-index: 500;
-    font-family: 'DM Mono', monospace;
-    font-size: 8px;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
-    transition: color .2s ease;
+    padding: 18px 28px;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(242,240,237,0.1);
   }
-  .home-btn:hover { color: var(--white); }
-  .home-btn::before {
-    content: '';
-    display: block;
-    width: 20px; height: 1px;
-    background: currentColor;
-    transition: width .2s ease;
+
+  nav a {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--white);
   }
-  .home-btn:hover::before { width: 28px; }
+
+  nav a:hover { color: var(--muted); }
 
   /* ── PAGE ── */
   .page {
@@ -414,7 +411,10 @@
 <body>
 
 <div class="fade-cover" id="fadeCover"></div>
-<a href="../index.html" class="home-btn">Back</a>
+<nav>
+  <a href="../">W.A. Jones</a>
+  <a href="../#commercial">← Back</a>
+</nav>
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">

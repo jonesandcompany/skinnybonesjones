@@ -29,24 +29,25 @@
 
   /* ─── NAV ─────────────────────────────────────────── */
   nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 48px;
+    padding: 18px 28px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(26,24,20,.10);
   }
   nav a {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    font-weight: 300;
-    letter-spacing: .14em;
+    font-size: 11px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--muted);
     text-decoration: none;
-    transition: color .2s;
+    color: var(--ink);
   }
-  nav a:hover { color: var(--ink); }
-  .nav-right { display: flex; gap: 28px; }
+  nav a:hover { color: var(--muted); }
 
   /* ─── HERO: FULL-BLEED PORSCHE ────────────────────── */
   .hero {
@@ -55,6 +56,7 @@
     overflow: hidden;
     position: relative;
     cursor: pointer;
+    margin-top: 57px;
   }
   .hero img {
     width: 100%;
@@ -351,10 +353,7 @@
 
 <nav>
   <a href="../">W.A. Jones</a>
-  <div class="nav-right">
-    <a href="../">Home</a>
-    <a href="../#commercial">← Back</a>
-  </div>
+  <a href="../#events">← Back</a>
 </nav>
 
 <!-- HERO: full-bleed Porsche -->

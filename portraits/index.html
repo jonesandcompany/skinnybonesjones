@@ -32,34 +32,28 @@
   }
 
   /* ── HEADER ── */
-  header {
+  nav {
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    padding: 1.4rem 2rem 1rem;
-    background: linear-gradient(to bottom, var(--bg) 60%, transparent);
-    pointer-events: none;
+    align-items: center;
+    padding: 18px 28px;
+    background: rgba(13,13,13,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
   }
 
-  .site-name {
-    font-family: 'Erogenous', serif;
-    font-size: clamp(0.95rem, 1.5vw, 1.15rem);
-    letter-spacing: 0.04em;
-    color: var(--ink);
-    pointer-events: all;
-    text-decoration: none;
-  }
-
-  .page-label {
-    font-size: 0.62rem;
-    letter-spacing: 0.2em;
+  nav a {
+    font-size: 11px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--dim);
-    pointer-events: all;
+    text-decoration: none;
+    color: var(--ink);
   }
+
+  nav a:hover { color: var(--dim); }
 
   /* ── GRID ── */
   .grid {
@@ -217,10 +211,10 @@
 </head>
 <body>
 
-<header>
-  <a class="site-name" href="../../index.html">W.A. Jones</a>
-  <span class="page-label">Portraits</span>
-</header>
+<nav>
+  <a href="../">W.A. Jones</a>
+  <a href="../">← Back</a>
+</nav>
 
 <div class="grid" id="grid">
   <!-- sequence curated: open strong, vary rhythm, close strong -->
