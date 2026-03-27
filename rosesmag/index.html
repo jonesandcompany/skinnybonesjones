@@ -249,6 +249,48 @@
     transform: scale(1.012);
   }
 
+  /* ── THREE-UP FLAVOR ROW ── */
+  .grid-three {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 8px;
+  }
+
+  .grid-three .photo-wrap img {
+    filter: contrast(1.04) saturate(0.9);
+  }
+
+  /* ── GIF CODA ── */
+  .gif-coda {
+    margin: 0 0 80px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity .9s ease, transform .9s ease;
+  }
+
+  .gif-coda.visible { opacity: 1; transform: translateY(0); }
+
+  .gif-coda img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    outline: 6px solid var(--border);
+    outline-offset: -1px;
+  }
+
+  .gif-label {
+    margin-top: 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    color: var(--muted);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    opacity: .6;
+  }
+
   /* ── FULL-BLEED SINGLE ── */
   .grid-full {
     grid-column: 1 / -1;
@@ -472,66 +514,85 @@
 
   <div class="grid" id="photoGrid">
 
+    <!-- Flavor row — zine object photos, small three-up -->
+    <div class="grid-item grid-three">
+      <div class="photo-wrap" data-index="0">
+        <img src="Number3.jpg" alt="">
+      </div>
+      <div class="photo-wrap" data-index="1">
+        <img src="number6.jpg" alt="">
+      </div>
+      <div class="photo-wrap" data-index="2">
+        <img src="number8.jpg" alt="">
+      </div>
+    </div>
+
     <!-- Row 1 — two-up -->
     <div class="grid-item">
-      <div class="photo-wrap" data-index="0">
+      <div class="photo-wrap" data-index="3">
         <img src="roses.jpg" alt="">
       </div>
     </div>
 
     <div class="grid-item">
-      <div class="photo-wrap" data-index="1">
+      <div class="photo-wrap" data-index="4">
         <img src="roses-2.jpg" alt="">
       </div>
     </div>
 
     <!-- Row 2 — two-up, staggered -->
     <div class="grid-item">
-      <div class="photo-wrap" data-index="2">
+      <div class="photo-wrap" data-index="5">
         <img src="roses-3.jpg" alt="">
       </div>
     </div>
 
     <div class="grid-item">
-      <div class="photo-wrap" data-index="3">
+      <div class="photo-wrap" data-index="6">
         <img src="roses-4.jpg" alt="">
       </div>
     </div>
 
     <!-- Full bleed -->
     <div class="grid-item grid-full">
-      <div class="photo-wrap" data-index="4">
+      <div class="photo-wrap" data-index="7">
         <img src="roses-5.jpg" alt="">
       </div>
     </div>
 
     <!-- Row 3 -->
     <div class="grid-item">
-      <div class="photo-wrap" data-index="5">
+      <div class="photo-wrap" data-index="8">
         <img src="roses-6.jpg" alt="">
       </div>
     </div>
 
     <div class="grid-item">
-      <div class="photo-wrap" data-index="6">
+      <div class="photo-wrap" data-index="9">
         <img src="roses-7.jpg" alt="">
       </div>
     </div>
 
     <!-- Row 4 -->
     <div class="grid-item">
-      <div class="photo-wrap" data-index="7">
+      <div class="photo-wrap" data-index="10">
         <img src="roses-8.jpg" alt="">
       </div>
     </div>
 
     <div class="grid-item">
-      <div class="photo-wrap" data-index="8">
+      <div class="photo-wrap" data-index="11">
         <img src="roses-9.jpg" alt="">
       </div>
     </div>
 
   </div><!-- /grid -->
+
+  <!-- GIF coda — after all stills -->
+  <div class="gif-coda" id="gifCoda">
+    <img src="roses_final.gif" alt="Roses — selected frames">
+    <div class="gif-label">Selected frames</div>
+  </div>
 
   <footer class="colophon" id="colophon">
     <div class="colophon-left">
@@ -555,6 +616,7 @@
     document.getElementById('masthead'),
     document.getElementById('intro'),
     ...document.querySelectorAll('.grid-item'),
+    document.getElementById('gifCoda'),
     document.getElementById('colophon'),
   ];
 
