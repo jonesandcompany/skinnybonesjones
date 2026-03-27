@@ -44,6 +44,26 @@
 
   .cursor.hover { width: 28px; height: 28px; }
 
+  /* ── FIXED BACK LABEL ── */
+  .back-label {
+    position: fixed;
+    top: 22px;
+    right: 36px;
+    z-index: 200;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(240,235,226,0.28);
+    text-decoration: none;
+    pointer-events: auto;
+    transition: color 0.25s ease;
+  }
+
+  .back-label:hover {
+    color: rgba(240,235,226,0.75);
+  }
+
   .header {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -880,6 +900,7 @@
 
 <div class="fade-cover" id="fadeCover"></div>
 <div class="cursor" id="cursor"></div>
+<a class="back-label" href="../">← Back</a>
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
