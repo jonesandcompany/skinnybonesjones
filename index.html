@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>W.A. Jones</title>
 <meta property="og:image" content="https://skinnybonesjones.biz/images/parker3.jpg">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&display=swap&font-display=swap" rel="stylesheet">
 <style>
   @font-face {
     font-family: 'Erogenous';
     src: url('fonts/font_1.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -106,8 +107,20 @@
     filter: saturate(1) brightness(1);
   }
 
-  .cell:hover:not(.expanded) .bg {
-    transform: scale(1.03);
+  @media (hover: hover) {
+    .cell:hover:not(.expanded) .bg {
+      transform: scale(1.03);
+    }
+
+    .cell:hover:not(.expanded) .scrim {
+      background: rgba(0,0,0,0.22);
+    }
+
+    .cell:hover:not(.expanded) .cat-label {
+      mix-blend-mode: normal;
+    }
+
+    .cell:hover:not(.expanded) .sub-list { opacity: 0.7; }
   }
 
   .cell.expanded .bg {
@@ -122,10 +135,6 @@
     background: rgba(0,0,0,0.42);
     transition: background 0.7s ease;
     z-index: 1;
-  }
-
-  .cell:hover:not(.expanded) .scrim {
-    background: rgba(0,0,0,0.22);
   }
 
   .cell.expanded .scrim {
@@ -179,10 +188,6 @@
     z-index: 3;
   }
 
-  .cell:hover:not(.expanded) .cat-label {
-    mix-blend-mode: normal;
-  }
-
   /* Expanded: label shrinks to corner, becomes close button */
   .cell.expanded .cat-label {
     inset: auto;
@@ -228,7 +233,6 @@
     white-space: normal;
   }
 
-  .cell:hover:not(.expanded) .sub-list { opacity: 0.7; }
   .cell.expanded .sub-list { opacity: 0; pointer-events: none; }
 
   /* ── EXPANDED PROJECT LIST ── */
@@ -537,6 +541,10 @@
     nameplate.classList.add('hidden');
     expanded = cell;
     document.body.style.overflow = 'hidden';
+
+    // Push URL state so browser back button works
+    const cat = cell.dataset.cat.toLowerCase();
+    history.pushState({ cat }, '', '#' + cat);
   }
 
   function closeCell(cell) {
@@ -561,6 +569,9 @@
     expanded = null;
     document.body.style.overflow = '';
 
+    // Clear hash without triggering popstate
+    history.pushState(null, '', location.pathname);
+
     // Deterministic cleanup — no dependency on transitionend firing
     const timer = setTimeout(() => {
       clearInlineStyles(cell);
@@ -574,6 +585,11 @@
   // ESC key to close
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && expanded) closeCell(expanded);
+  });
+
+  // Browser back button — close the expanded cell
+  window.addEventListener('popstate', () => {
+    if (expanded) closeCell(expanded);
   });
 
   // Auto-open a cell if URL hash matches a category (e.g. #events, #editorial)
