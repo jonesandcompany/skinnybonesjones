@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>W.A. Jones</title>
+<meta property="og:image" content="https://skinnybonesjones.biz/images/parker3.jpg">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
   @font-face {
@@ -201,8 +202,8 @@
 
   /* Corner positions for each cell's label when expanded */
   .cell[data-pos="tl"].expanded .cat-label { top: 22px; left: 24px; }
-  .cell[data-pos="tr"].expanded .cat-label { top: 22px; right: 24px; left: auto; text-align: right; }
-  .cell[data-pos="bl"].expanded .cat-label { bottom: 22px; left: 24px; top: auto; }
+  .cell[data-pos="tr"].expanded .cat-label { top: 22px; left: 24px; right: auto; text-align: left; }
+  .cell[data-pos="bl"].expanded .cat-label { top: 22px; left: 24px; bottom: auto; }
   .cell[data-pos="br"].expanded .cat-label { bottom: 22px; right: 24px; top: auto; left: auto; text-align: right; }
 
   /* ── COLLAPSED SUB-LIST ── */
@@ -391,13 +392,13 @@
     <div class="close-hint">tap to close</div>
     <div class="cat-label">Editorial</div>
     <div class="sub-list">
-      Untitled Magazine · Roses Magazine · Portraits · Eli's Dream
+      Untitled Magazine · Eli's Dream · Portraits · Roses Magazine
     </div>
     <div class="project-list">
       <a href="untitled/">Untitled Magazine</a>
-      <a href="rosesmag/">Roses Magazine</a>
-      <a href="portraits/">Portraits</a>
       <a href="elisdream/">Eli's Dream</a>
+      <a href="portraits/">Portraits</a>
+      <a href="rosesmag/">Roses Magazine</a>
     </div>
   </div>
 
@@ -408,13 +409,12 @@
     <div class="close-hint">tap to close</div>
     <div class="cat-label">Commercial</div>
     <div class="sub-list">
-      Belstaff · Bond Official · Le Alfré · Harden
+      Le Alfré · Harden · hvman
     </div>
     <div class="project-list">
-      <span>Belstaff</span>
-      <a href="bondofficial/">Bond Official</a>
       <a href="lealfre/">Le Alfré</a>
       <a href="harden/">Harden</a>
+      <a href="bondofficial/">hvman</a>
     </div>
   </div>
 
@@ -425,20 +425,20 @@
     <div class="close-hint">tap to close</div>
     <div class="cat-label">Events</div>
     <div class="sub-list">
-      Fora / Rocco Forte · Harvard Club · Pardon Me · Boxers · Weddings
+      Fora / Rocco Forte · Pardon Me · Boxers · Weddings · Harvard Club
     </div>
     <div class="project-list">
       <a href="foratravel/">Fora / Rocco Forte</a>
-      <a href="harvardclub/">Harvard Club</a>
       <a href="pardonme/">Pardon Me</a>
       <a href="boxers/">Boxers</a>
       <a href="weddings/">Weddings</a>
+      <a href="harvardclub/">Harvard Club</a>
     </div>
   </div>
 
   <!-- TRAVEL — bottom right -->
   <div class="cell" data-pos="br" data-cat="Travel">
-    <div class="bg" style="background-image: url('images/image_4.jpg'); background-position: center center;"></div>
+    <div class="bg" style="background-image: url('images/parker3.jpg'); background-position: center center;"></div>
     <div class="scrim"></div>
     <div class="close-hint">tap to close</div>
     <div class="cat-label">Travel</div>
