@@ -50,6 +50,13 @@
     border-bottom: 3px solid var(--ink);
   }
 
+  .marquee-bar.outline-bar {
+    background: var(--paper);
+    color: transparent;
+    border-bottom: 3px solid var(--ink);
+    border-top: none;
+  }
+
   .marquee-inner {
     display: inline-block;
     animation: marquee 22s linear infinite;
@@ -59,9 +66,26 @@
     text-transform: uppercase;
   }
 
+  .marquee-inner.outline-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 0.1em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--ink);
+    text-stroke: 1.5px var(--ink);
+    animation: marquee-reverse 18s linear infinite;
+    line-height: 1;
+    padding: 6px 0;
+  }
+
   @keyframes marquee {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
+  }
+
+  @keyframes marquee-reverse {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
   }
 
   /* ── HERO ── */
@@ -114,11 +138,20 @@
     letter-spacing: -0.02em;
     color: var(--ink);
     mix-blend-mode: multiply;
+    position: relative;
   }
 
   .hero-title span {
     display: block;
-    color: var(--amber);
+    color: transparent;
+    -webkit-text-stroke: 3px var(--amber);
+    text-stroke: 3px var(--amber);
+    animation: stroke-breathe 4s ease-in-out infinite;
+  }
+
+  @keyframes stroke-breathe {
+    0%, 100% { -webkit-text-stroke-width: 3px; letter-spacing: -0.02em; }
+    50% { -webkit-text-stroke-width: 4px; letter-spacing: 0.01em; }
   }
 
   .hero-subtitle {
@@ -360,6 +393,13 @@
     color: var(--ink);
   }
 
+  .wide-strip-text h3 .outline-word {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 2.5px var(--ink);
+    text-stroke: 2.5px var(--ink);
+  }
+
   .wide-strip-text p {
     font-size: 0.85rem;
     line-height: 1.8;
@@ -409,8 +449,76 @@
   }
 
   .full-bleed-title em {
-    color: var(--amber);
+    color: transparent;
+    -webkit-text-stroke: 2px var(--amber);
+    text-stroke: 2px var(--amber);
     font-style: normal;
+    display: block;
+    animation: outline-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes outline-pulse {
+    0%, 100% { -webkit-text-stroke-color: var(--amber); opacity: 1; }
+    50% { -webkit-text-stroke-color: var(--cream); opacity: 0.7; }
+  }
+
+  /* ── FLOATING GHOST TEXT ── */
+  .ghost-strip {
+    background: var(--dark);
+    overflow: hidden;
+    padding: 50px 0;
+    position: relative;
+    border-bottom: 4px solid var(--ink);
+    border-top: 4px solid var(--ink);
+  }
+
+  .ghost-strip::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--dark) 0%, transparent 15%, transparent 85%, var(--dark) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .ghost-row {
+    display: flex;
+    gap: 60px;
+    white-space: nowrap;
+    margin-bottom: 16px;
+  }
+
+  .ghost-row:last-child { margin-bottom: 0; }
+
+  .ghost-word {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(250,246,235,0.25);
+    text-stroke: 1px rgba(250,246,235,0.25);
+    line-height: 1;
+    flex-shrink: 0;
+    transition: -webkit-text-stroke-color 0.3s;
+    cursor: default;
+    user-select: none;
+  }
+
+  .ghost-word:hover {
+    -webkit-text-stroke-color: var(--amber);
+    -webkit-text-stroke-width: 2px;
+  }
+
+  .ghost-row-1 { animation: ghost-left 30s linear infinite; }
+  .ghost-row-2 { animation: ghost-right 25s linear infinite; }
+
+  @keyframes ghost-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes ghost-right {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
   }
 
   .full-bleed-note {
@@ -541,6 +649,11 @@
     &nbsp;&nbsp;☞ PHOTOGRAPHS BY W.A. JONES &nbsp;&nbsp;✦&nbsp;&nbsp; A PRIVATE COLLECTION &nbsp;&nbsp;✦&nbsp;&nbsp; NEW YORK CITY &nbsp;&nbsp;✦&nbsp;&nbsp; DOCUMENTS OF AN INTERIOR LIFE &nbsp;&nbsp;✦&nbsp;&nbsp; BOOKS RECORDS EPHEMERA &nbsp;&nbsp;✦&nbsp;&nbsp; PHOTOGRAPHS BY W.A. JONES &nbsp;&nbsp;✦&nbsp;&nbsp; A PRIVATE COLLECTION &nbsp;&nbsp;✦&nbsp;&nbsp; NEW YORK CITY &nbsp;&nbsp;✦&nbsp;&nbsp; DOCUMENTS OF AN INTERIOR LIFE &nbsp;&nbsp;✦&nbsp;&nbsp; BOOKS RECORDS EPHEMERA &nbsp;&nbsp;✦&nbsp;&nbsp;
   </span>
 </div>
+<div class="marquee-bar outline-bar">
+  <span class="marquee-inner outline-text">
+    &nbsp;&nbsp;YUKO&nbsp;&nbsp;—&nbsp;&nbsp;APARTMENTO&nbsp;&nbsp;—&nbsp;&nbsp;W.A.JONES&nbsp;&nbsp;—&nbsp;&nbsp;NEW YORK&nbsp;&nbsp;—&nbsp;&nbsp;YUKO&nbsp;&nbsp;—&nbsp;&nbsp;APARTMENTO&nbsp;&nbsp;—&nbsp;&nbsp;W.A.JONES&nbsp;&nbsp;—&nbsp;&nbsp;NEW YORK&nbsp;&nbsp;—&nbsp;&nbsp;YUKO&nbsp;&nbsp;—&nbsp;&nbsp;APARTMENTO&nbsp;&nbsp;—&nbsp;&nbsp;W.A.JONES&nbsp;&nbsp;—&nbsp;&nbsp;NEW YORK&nbsp;&nbsp;—&nbsp;&nbsp;YUKO&nbsp;&nbsp;—&nbsp;&nbsp;APARTMENTO&nbsp;&nbsp;—&nbsp;&nbsp;W.A.JONES&nbsp;&nbsp;—&nbsp;&nbsp;NEW YORK&nbsp;&nbsp;—&nbsp;&nbsp;
+  </span>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -628,7 +741,7 @@
     <img src="yuko-4.jpg" alt="Yuko at the door">
   </div>
   <div class="wide-strip-text">
-    <h3>THE DOOR<br>BETWEEN<br>WORLDS</h3>
+    <h3>THE DOOR<br><span class="outline-word">BETWEEN</span><br>WORLDS</h3>
     <p>
       Between the brushes and the hanging garments, between the notebooks stacked floor to ceiling — she stands at a threshold she has clearly crossed ten thousand times, and still pauses.
     </p>
@@ -660,6 +773,46 @@
   </div>
   <div class="three-cell">
     <img src="yuko-4.jpg" alt="Yuko 4" style="object-position: right center;">
+  </div>
+</div>
+
+<!-- GHOST TEXT STRIP -->
+<div class="ghost-strip">
+  <div class="ghost-row ghost-row-1">
+    <span class="ghost-word">BOOKS</span>
+    <span class="ghost-word">RECORDS</span>
+    <span class="ghost-word">MEMORY</span>
+    <span class="ghost-word">ARCHIVE</span>
+    <span class="ghost-word">STACKS</span>
+    <span class="ghost-word">KEROUAC</span>
+    <span class="ghost-word">POUND</span>
+    <span class="ghost-word">VINYL</span>
+    <span class="ghost-word">BOOKS</span>
+    <span class="ghost-word">RECORDS</span>
+    <span class="ghost-word">MEMORY</span>
+    <span class="ghost-word">ARCHIVE</span>
+    <span class="ghost-word">STACKS</span>
+    <span class="ghost-word">KEROUAC</span>
+    <span class="ghost-word">POUND</span>
+    <span class="ghost-word">VINYL</span>
+  </div>
+  <div class="ghost-row ghost-row-2">
+    <span class="ghost-word">YUKO</span>
+    <span class="ghost-word">NEW YORK</span>
+    <span class="ghost-word">INTERIOR</span>
+    <span class="ghost-word">KEEPER</span>
+    <span class="ghost-word">COLLECTOR</span>
+    <span class="ghost-word">WITNESS</span>
+    <span class="ghost-word">APARTMENTO</span>
+    <span class="ghost-word">W.A.JONES</span>
+    <span class="ghost-word">YUKO</span>
+    <span class="ghost-word">NEW YORK</span>
+    <span class="ghost-word">INTERIOR</span>
+    <span class="ghost-word">KEEPER</span>
+    <span class="ghost-word">COLLECTOR</span>
+    <span class="ghost-word">WITNESS</span>
+    <span class="ghost-word">APARTMENTO</span>
+    <span class="ghost-word">W.A.JONES</span>
   </div>
 </div>
 
