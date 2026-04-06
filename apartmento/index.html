@@ -3,1296 +3,1149 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YUKO — 夕食の宴</title>
+<title>YUKO — Dinner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Serif+JP:wght@300;400;700&family=Zen+Antique+Soft&family=BIZ+UDMincho&family=Stick&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
-  :root {
-    --ink: #0a0a0f;
-    --paper: #f5f0e8;
-    --vermillion: #c0392b;
-    --vermillion-dark: #8b1a1a;
-    --gold: #c9a84c;
-    --gold-light: #e8d5a3;
-    --muted: #6b6560;
-    --cream: #faf7f2;
-    --indigo: #1a1a3e;
-    --sakura: #f2a7b8;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'BIZ UDMincho', 'Noto Serif JP', serif;
-    overflow-x: hidden;
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23c0392b' opacity='0.8'/%3E%3C/svg%3E"), auto;
-  }
-
-  /* ── GRAIN OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.4;
-  }
-
-  /* ── HERO ── */
-  .hero {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-image {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: sepia(20%) contrast(1.1);
-    mix-blend-mode: multiply;
-  }
-
-  .hero-image::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(192,57,43,0.15) 0%, rgba(10,10,15,0.4) 100%);
-  }
-
-  .hero-text {
-    background: var(--indigo);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 80px 60px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-text::before {
-    content: '食';
-    position: absolute;
-    font-family: 'Zen Antique Soft', serif;
-    font-size: 40vw;
-    color: rgba(255,255,255,0.02);
-    top: -10%;
-    right: -20%;
-    line-height: 1;
-    pointer-events: none;
-  }
-
-  .hero-eyebrow {
-    font-family: 'DotGothic16', monospace;
-    font-size: 11px;
-    letter-spacing: 0.4em;
-    color: var(--vermillion);
-    text-transform: uppercase;
-    margin-bottom: 24px;
-    animation: fadeUp 1s ease both;
-  }
-
-  .hero-name {
-    font-family: 'Zen Antique Soft', serif;
-    font-size: clamp(72px, 10vw, 140px);
-    color: var(--paper);
-    line-height: 0.9;
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
-    animation: fadeUp 1s 0.15s ease both;
-  }
-
-  .hero-kanji {
-    font-family: 'Noto Serif JP', serif;
-    font-size: clamp(24px, 4vw, 48px);
-    color: var(--gold);
-    font-weight: 300;
-    margin-bottom: 40px;
-    animation: fadeUp 1s 0.25s ease both;
-  }
-
-  .hero-tagline {
-    font-family: 'BIZ UDMincho', serif;
-    font-size: 16px;
-    color: rgba(245,240,232,0.6);
-    line-height: 1.8;
-    max-width: 320px;
-    margin-bottom: 60px;
-    animation: fadeUp 1s 0.35s ease both;
-  }
-
-  .hero-scroll {
-    font-family: 'DotGothic16', monospace;
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    animation: fadeUp 1s 0.5s ease both;
-    transition: opacity 0.3s;
-  }
-
-  .hero-scroll:hover { opacity: 0.6; }
-
-  .hero-scroll::after {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 1px;
-    background: var(--gold);
-    animation: lineGrow 1.5s 1s ease both;
-  }
-
-  /* vertical japanese text stripe */
-  .hero-vertical {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 40px;
-    background: var(--vermillion);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    writing-mode: vertical-rl;
-    font-family: 'Noto Serif JP', serif;
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    color: var(--paper);
-    font-weight: 300;
-  }
-
-  /* ── SECTION DIVIDER ── */
-  .divider {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    margin: 16px 0 48px;
-  }
-
-  .divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  }
-
-  .divider-mark {
-    font-family: 'Zen Antique Soft', serif;
-    color: var(--vermillion);
-    font-size: 20px;
-  }
-
-  /* ── UPCOMING EVENTS ── */
-  #events {
-    padding: 120px 80px;
-    background: var(--cream);
-    position: relative;
-  }
-
-  #events::before {
-    content: '宴';
-    position: absolute;
-    font-family: 'Zen Antique Soft', serif;
-    font-size: 500px;
-    color: rgba(0,0,0,0.025);
-    bottom: -80px;
-    left: -40px;
-    pointer-events: none;
-    line-height: 1;
-  }
-
-  .section-label {
-    font-family: 'DotGothic16', monospace;
-    font-size: 10px;
-    letter-spacing: 0.5em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .section-title {
-    font-family: 'Zen Antique Soft', serif;
-    font-size: clamp(40px, 6vw, 80px);
-    line-height: 1;
-    color: var(--indigo);
-  }
-
-  .section-title span {
-    color: var(--vermillion);
-  }
-
-  .events-grid {
-    margin-top: 80px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 2px;
-  }
-
-  .event-card {
-    background: var(--indigo);
-    padding: 48px 40px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.4s ease;
-    cursor: pointer;
-  }
-
-  .event-card:hover { transform: translateY(-4px); }
-
-  .event-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--vermillion);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s ease;
-  }
-
-  .event-card:hover::before { transform: scaleX(1); }
-
-  .event-card::after {
-    content: attr(data-kanji);
-    position: absolute;
-    font-family: 'Zen Antique Soft', serif;
-    font-size: 120px;
-    color: rgba(255,255,255,0.04);
-    bottom: -20px;
-    right: 10px;
-    line-height: 1;
-    pointer-events: none;
-  }
-
-  .event-number {
-    font-family: 'DotGothic16', monospace;
-    font-size: 10px;
-    letter-spacing: 0.4em;
-    color: var(--vermillion);
-    margin-bottom: 24px;
-  }
-
-  .event-date {
-    font-family: 'Stick', sans-serif;
-    font-size: 42px;
-    color: var(--gold);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .event-date-kanji {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 13px;
-    color: rgba(245,240,232,0.4);
-    letter-spacing: 0.2em;
-    margin-bottom: 32px;
-    font-weight: 300;
-  }
-
-  .event-title {
-    font-family: 'Zen Antique Soft', serif;
-    font-size: 26px;
-    color: var(--paper);
-    margin-bottom: 12px;
-    line-height: 1.3;
-  }
-
-  .event-subtitle {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 13px;
-    color: rgba(245,240,232,0.5);
-    font-weight: 300;
-    margin-bottom: 32px;
-    line-height: 1.6;
-  }
-
-  .event-meta {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
-    margin-bottom: 40px;
-  }
-
-  .event-meta-item {
-    font-family: 'DotGothic16', monospace;
-    font-size: 10px;
-    color: rgba(245,240,232,0.4);
-    letter-spacing: 0.2em;
-  }
-
-  .event-meta-item strong {
-    display: block;
-    font-family: 'DotGothic16', monospace;
-    color: var(--gold-light);
-    font-size: 13px;
-    letter-spacing: 0;
-    margin-bottom: 2px;
-    font-weight: 400;
-  }
-
-  .event-seats {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 40px;
-  }
-
-  .seat-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--vermillion);
-    opacity: 0.3;
-    transition: opacity 0.2s;
-  }
-
-  .seat-dot.taken { opacity: 1; background: var(--gold); }
-
-  .btn-rsvp {
-    display: inline-block;
-    font-family: 'DotGothic16', monospace;
-    font-size: 11px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--paper);
-    border: 1px solid var(--vermillion);
-    padding: 14px 28px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    background: transparent;
-    cursor: pointer;
-  }
-
-  .btn-rsvp:hover {
-    background: var(--vermillion);
-    color: var(--paper);
-  }
-
-  /* SOLD OUT state */
-  .event-card.sold-out .btn-rsvp {
-    border-color: var(--muted);
-    color: var(--muted);
-    cursor: not-allowed;
-  }
-
-  .event-card.sold-out .btn-rsvp:hover {
-    background: transparent;
-    color: var(--muted);
-  }
-
-  /* ── PHILOSOPHY ── */
-  #about {
-    padding: 120px 80px;
-    background: var(--indigo);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 100px;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  #about::after {
-    content: '味';
-    position: absolute;
-    font-family: 'Zen Antique Soft', serif;
-    font-size: 600px;
-    color: rgba(255,255,255,0.015);
-    bottom: -100px;
-    right: -80px;
-    line-height: 1;
-    pointer-events: none;
-  }
-
-  .about-images {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
-    position: relative;
-  }
-
-  .about-img-wrap {
-    overflow: hidden;
-    aspect-ratio: 3/4;
-  }
-
-  .about-img-wrap:first-child {
-    grid-column: 1 / -1;
-    aspect-ratio: 4/3;
-  }
-
-  .about-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: sepia(15%) contrast(1.05);
-    transition: transform 0.6s ease;
-  }
-
-  .about-img-wrap:hover img { transform: scale(1.03); }
-
-  .about-content .section-label { color: rgba(245,240,232,0.4); }
-  .about-content .section-title { color: var(--paper); }
-
-  .about-text {
-    font-family: 'BIZ UDMincho', serif;
-    font-size: 16px;
-    line-height: 2;
-    color: rgba(245,240,232,0.7);
-    margin-top: 32px;
-  }
-
-  .about-text p + p { margin-top: 20px; }
-
-  .about-quote {
-    font-family: 'Zen Antique Soft', serif;
-    font-size: 28px;
-    color: var(--gold);
-    line-height: 1.5;
-    margin-top: 48px;
-    padding-left: 24px;
-    border-left: 2px solid var(--vermillion);
-  }
-
-  .about-quote-ja {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 13px;
-    color: rgba(245,240,232,0.3);
-    letter-spacing: 0.2em;
-    margin-top: 8px;
-    padding-left: 26px;
-    font-weight: 300;
-  }
-
-  /* ── RSVP MODAL ── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(10,10,15,0.92);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    backdrop-filter: blur(4px);
-  }
-
-  .modal-overlay.open {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .modal {
-    background: var(--paper);
-    max-width: 560px;
-    width: 90%;
-    padding: 60px;
-    position: relative;
-    transform: translateY(20px);
-    transition: transform 0.4s ease;
-  }
-
-  .modal-overlay.open .modal { transform: translateY(0); }
-
-  .modal::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--vermillion), var(--gold));
-  }
-
-  .modal-close {
-    position: absolute;
-    top: 20px; right: 20px;
-    font-family: 'DotGothic16', monospace;
-    font-size: 18px;
-    cursor: pointer;
-    color: var(--muted);
-    background: none;
-    border: none;
-    transition: color 0.2s;
-  }
-
-  .modal-close:hover { color: var(--vermillion); }
-
-  .modal-event-label {
-    font-family: 'DotGothic16', monospace;
-    font-size: 10px;
-    letter-spacing: 0.4em;
-    color: var(--vermillion);
-    margin-bottom: 8px;
-    text-transform: uppercase;
-  }
-
-  .modal-title {
-    font-family: 'Zen Antique Soft', serif;
-    font-size: 32px;
-    color: var(--indigo);
-    margin-bottom: 8px;
-  }
-
-  .modal-subtitle {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 40px;
-    font-weight: 300;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-
-  .form-group {
-    margin-bottom: 20px;
-  }
-
-  .form-group label {
-    display: block;
-    font-family: 'DotGothic16', monospace;
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(10,10,15,0.2);
-    padding: 10px 0;
-    font-family: 'BIZ UDMincho', serif;
-    font-size: 15px;
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.3s;
-    -webkit-appearance: none;
-    appearance: none;
-    border-radius: 0;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-    border-bottom-color: var(--vermillion);
-  }
-
-  .form-group textarea { resize: none; height: 80px; }
-
-  .dietary-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 4px;
-  }
-
-  .dietary-pill {
-    font-family: 'DotGothic16', monospace;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    border: 1px solid rgba(10,10,15,0.2);
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    user-select: none;
-    text-transform: uppercase;
-  }
-
-  .dietary-pill.active {
-    background: var(--vermillion);
-    border-color: var(--vermillion);
-    color: var(--paper);
-  }
-
-  .btn-submit {
-    width: 100%;
-    background: var(--indigo);
-    color: var(--paper);
-    border: none;
-    padding: 18px;
-    font-family: 'DotGothic16', monospace;
-    font-size: 12px;
-    letter-spacing: 0.5em;
-    text-transform: uppercase;
-    cursor: pointer;
-    margin-top: 32px;
-    transition: background 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-submit:hover { background: var(--vermillion); }
-
-  .btn-submit::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.5s;
-  }
-
-  .btn-submit:hover::before { transform: translateX(100%); }
-
-  /* success state */
-  .modal-success {
-    text-align: center;
-    display: none;
-    padding: 40px 0;
-  }
-
-  .modal-success.visible { display: block; }
-  .modal-form.hidden { display: none; }
-
-  .success-kanji {
-    font-family: 'Zen Antique Soft', serif;
-    font-size: 80px;
-    color: var(--vermillion);
-    margin-bottom: 16px;
-    animation: popIn 0.5s ease both;
-  }
-
-  .success-text {
-    font-family: 'BIZ UDMincho', serif;
-    font-size: 16px;
-    color: var(--muted);
-    line-height: 1.8;
-  }
-
-  /* ── GALLERY STRIP ── */
-  #gallery {
-    height: 360px;
-    display: flex;
-    overflow: hidden;
-  }
-
-  .gallery-img {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-    transition: flex 0.5s ease;
-  }
-
-  .gallery-img:hover { flex: 2.5; }
-
-  .gallery-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: sepia(20%) contrast(1.1);
-    transition: filter 0.5s;
-  }
-
-  .gallery-img:hover img { filter: sepia(0%) contrast(1.05); }
-
-  .gallery-img-label {
-    position: absolute;
-    bottom: 16px;
-    left: 16px;
-    font-family: 'DotGothic16', monospace;
-    font-size: 9px;
-    letter-spacing: 0.3em;
-    color: var(--paper);
-    opacity: 0;
-    transition: opacity 0.3s;
-    text-transform: uppercase;
-  }
-
-  .gallery-img:hover .gallery-img-label { opacity: 0.8; }
-
-  /* ── FOOTER ── */
-  footer {
-    background: var(--ink);
-    padding: 80px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 60px;
-    align-items: start;
-    position: relative;
-    overflow: hidden;
-  }
-
-  footer::before {
-    content: '由';
-    position: absolute;
-    font-family: 'Zen Antique Soft', serif;
-    font-size: 400px;
-    color: rgba(255,255,255,0.015);
-    bottom: -80px;
-    left: -40px;
-    pointer-events: none;
-    line-height: 1;
-  }
-
-  .footer-brand {
-    font-family: 'Zen Antique Soft', serif;
-    font-size: 48px;
-    color: var(--paper);
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .footer-brand-ja {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 13px;
-    color: var(--gold);
-    letter-spacing: 0.3em;
-    font-weight: 300;
-  }
-
-  .footer-tagline {
-    font-family: 'BIZ UDMincho', serif;
-    font-size: 13px;
-    color: rgba(245,240,232,0.4);
-    line-height: 1.8;
-    margin-top: 24px;
-  }
-
-  .footer-col-title {
-    font-family: 'DotGothic16', monospace;
-    font-size: 10px;
-    letter-spacing: 0.4em;
-    color: var(--vermillion);
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-
-  .footer-links {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .footer-links a {
-    font-family: 'BIZ UDMincho', serif;
-    font-size: 14px;
-    color: rgba(245,240,232,0.5);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .footer-links a:hover { color: var(--gold); }
-
-  .footer-contact-item {
-    font-family: 'BIZ UDMincho', serif;
-    font-size: 13px;
-    color: rgba(245,240,232,0.5);
-    line-height: 1.8;
-    margin-bottom: 8px;
-  }
-
-  .footer-contact-item a {
-    color: rgba(245,240,232,0.5);
-    text-decoration: none;
-  }
-
-  .footer-contact-item a:hover { color: var(--gold); }
-
-  .footer-bottom {
-    background: var(--ink);
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding: 24px 80px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .footer-copy {
-    font-family: 'DotGothic16', monospace;
-    font-size: 9px;
-    letter-spacing: 0.3em;
-    color: rgba(245,240,232,0.25);
-    text-transform: uppercase;
-  }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes lineGrow {
-    from { transform: scaleX(0); }
-    to   { transform: scaleX(1); }
-  }
-
-  @keyframes popIn {
-    from { opacity: 0; transform: scale(0.6); }
-    to   { opacity: 1; transform: scale(1); }
-  }
-
-  /* scroll-reveal */
-  .reveal {
-    opacity: 0;
-    transform: translateY(32px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 24px 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(10,10,15,0);
-    transition: background 0.4s, backdrop-filter 0.4s;
-  }
-
-  nav.scrolled {
-    background: rgba(10,10,15,0.92);
-    backdrop-filter: blur(12px);
-  }
-
-  .nav-logo {
-    font-family: 'Zen Antique Soft', serif;
-    font-size: 28px;
-    color: var(--paper);
-    text-decoration: none;
-  }
-
-  .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 40px;
-    align-items: center;
-  }
-
-  .nav-links a {
-    font-family: 'DotGothic16', monospace;
-    font-size: 10px;
-    letter-spacing: 0.35em;
-    color: rgba(245,240,232,0.6);
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--gold); }
-
-  .nav-cta {
-    font-family: 'DotGothic16', monospace;
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--paper) !important;
-    border: 1px solid var(--vermillion);
-    padding: 10px 20px;
-    text-decoration: none;
-    transition: background 0.3s !important;
-  }
-
-  .nav-cta:hover { background: var(--vermillion) !important; color: var(--paper) !important; }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; }
-    .hero-image { height: 50vh; }
-    .hero-text { padding: 60px 40px; }
-    #about { grid-template-columns: 1fr; gap: 60px; padding: 80px 40px; }
-    #events { padding: 80px 40px; }
-    footer { grid-template-columns: 1fr; padding: 60px 40px; gap: 40px; }
-    .footer-bottom { padding: 24px 40px; flex-direction: column; gap: 12px; text-align: center; }
-    nav { padding: 20px 32px; }
-    .nav-links { gap: 24px; }
-    .hero-text::before { font-size: 60vw; }
-    .modal { padding: 40px 32px; }
-    .form-row { grid-template-columns: 1fr; }
-    #gallery { height: 200px; }
-  }
+:root {
+  --sand:   #f0ebe0;
+  --linen:  #e8e1d3;
+  --dust:   #d4c9b4;
+  --ink:    #1a1714;
+  --brown:  #5c4a32;
+  --rust:   #a0522d;
+  --rust2:  #7a3d20;
+  --bone:   #f7f3ec;
+  --muted:  #8c7d6a;
+  --snake1: #c8b990;
+  --snake2: #9e8b6a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bone);
+  color: var(--ink);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  overflow-x: hidden;
+}
+
+/* ─── SNAKESKIN PATTERN ─── */
+.snake-border {
+  height: 18px;
+  width: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='18'%3E%3Cellipse cx='10' cy='9' rx='9' ry='7' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.7'/%3E%3Cellipse cx='30' cy='9' rx='9' ry='7' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.7'/%3E%3Cellipse cx='50' cy='9' rx='9' ry='7' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.7'/%3E%3Cellipse cx='20' cy='9' rx='9' ry='7' fill='none' stroke='%239e8b6a' stroke-width='0.5' opacity='0.4'/%3E%3Cellipse cx='40' cy='9' rx='9' ry='7' fill='none' stroke='%239e8b6a' stroke-width='0.5' opacity='0.4'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: center;
+  opacity: 0.8;
+  animation: snakeSlide 12s linear infinite;
+}
+
+.snake-border-v {
+  width: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='60'%3E%3Cellipse cx='9' cy='10' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.6'/%3E%3Cellipse cx='9' cy='30' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.6'/%3E%3Cellipse cx='9' cy='50' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.6'/%3E%3C/svg%3E");
+  background-repeat: repeat-y;
+  flex-shrink: 0;
+}
+
+@keyframes snakeSlide {
+  from { background-position: 0 center; }
+  to   { background-position: 60px center; }
+}
+
+/* ─── MARQUEE ─── */
+.marquee-wrap {
+  background: var(--ink);
+  overflow: hidden;
+  padding: 11px 0;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.marquee-track span {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.25em;
+  color: var(--dust);
+  padding: 0 40px;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.marquee-track span.dot {
+  color: var(--rust);
+  padding: 0 12px;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  padding: 0 48px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.4s, box-shadow 0.4s;
+}
+
+nav.scrolled {
+  background: rgba(247,243,236,0.95);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 var(--dust);
+}
+
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.nav-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--brown);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-link:hover { color: var(--rust); }
+
+.nav-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bone);
+  background: var(--ink);
+  border: none;
+  padding: 10px 20px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.nav-btn:hover { background: var(--rust2); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-top: 64px;
+}
+
+.hero-left {
+  padding: 80px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 28px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(68px, 9vw, 124px);
+  font-weight: 400;
+  line-height: 0.92;
+  color: var(--ink);
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--rust);
+}
+
+.hero-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--brown);
+  margin: 20px 0 56px;
+  line-height: 1.6;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+
+.btn-primary {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--bone);
+  background: var(--ink);
+  border: none;
+  padding: 16px 32px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s;
+  display: inline-block;
+}
+
+.btn-primary:hover { background: var(--rust2); }
+
+.btn-ghost {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--brown);
+  background: transparent;
+  border: 1px solid var(--dust);
+  padding: 15px 28px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.3s, color 0.3s;
+  display: inline-block;
+}
+
+.btn-ghost:hover { border-color: var(--rust); color: var(--rust); }
+
+.hero-img-wrap {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+}
+
+.hero-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+  transition: transform 0.9s ease;
+}
+
+.hero-img-wrap:hover img { transform: scale(1.025); }
+
+/* ─── STATS ─── */
+.stats-bar {
+  background: var(--linen);
+  border-top: 1px solid var(--dust);
+  border-bottom: 1px solid var(--dust);
+  padding: 36px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-style: italic;
+  color: var(--rust);
+  line-height: 1;
+  display: block;
+}
+
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-top: 6px;
+}
+
+.stats-divider {
+  width: 1px;
+  height: 48px;
+  background: var(--dust);
+}
+
+/* ─── EVENTS ─── */
+#events {
+  padding: 100px 80px;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 64px;
+}
+
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.05;
+}
+
+.section-title em { font-style: italic; color: var(--rust); }
+
+.section-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--brown);
+  text-decoration: none;
+  border-bottom: 1px solid var(--dust);
+  padding-bottom: 2px;
+  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+  align-self: flex-end;
+  margin-bottom: 4px;
+}
+
+.section-link:hover { color: var(--rust); border-color: var(--rust); }
+
+.event-list { display: flex; flex-direction: column; }
+
+.event-row {
+  display: grid;
+  grid-template-columns: 110px 1fr auto auto;
+  align-items: center;
+  gap: 40px;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--dust);
+  cursor: pointer;
+  position: relative;
+}
+
+.event-row:first-child { border-top: 1px solid var(--dust); }
+
+.event-row::before {
+  content: '';
+  position: absolute;
+  left: -80px; right: -80px; top: 0; bottom: 0;
+  background: var(--linen);
+  opacity: 0;
+  transition: opacity 0.25s;
+  z-index: -1;
+}
+
+.event-row:hover::before { opacity: 1; }
+.event-row.past { opacity: 0.4; cursor: default; pointer-events: none; }
+
+.event-date-col { line-height: 1.4; }
+
+.event-date-big {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-style: italic;
+  color: var(--rust);
+  line-height: 1;
+  display: block;
+}
+
+.event-date-small {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-top: 4px;
+  display: block;
+}
+
+.event-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  color: var(--ink);
+  margin-bottom: 6px;
+  transition: color 0.2s;
+}
+
+.event-row:hover .event-name { color: var(--rust2); }
+
+.event-detail {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.event-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--brown);
+  border: 1px solid var(--dust);
+  padding: 4px 10px;
+  transition: all 0.2s;
+}
+
+.event-row:hover .tag { border-color: var(--snake2); color: var(--rust2); }
+
+.event-seats-col { text-align: right; }
+
+.seats-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.seats-dots { display: flex; gap: 4px; justify-content: flex-end; }
+
+.seat-pip {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--dust);
+}
+
+.seat-pip.taken { background: var(--rust); }
+
+.event-action { min-width: 100px; text-align: right; }
+.event-action .btn-primary { font-size: 10px; padding: 12px 20px; }
+
+.sold-out-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--dust);
+  padding: 8px 12px;
+  display: inline-block;
+}
+
+/* ─── ABOUT ─── */
+#about {
+  background: var(--ink);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 80vh;
+}
+
+.about-image-col {
+  overflow: hidden;
+  position: relative;
+  min-height: 600px;
+}
+
+.about-image-col img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.05) sepia(8%);
+  transition: transform 0.8s ease;
+}
+
+.about-image-col:hover img { transform: scale(1.02); }
+
+.about-snake-edge {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='60'%3E%3Cellipse cx='9' cy='10' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.5'/%3E%3Cellipse cx='9' cy='30' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.5'/%3E%3Cellipse cx='9' cy='50' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.5'/%3E%3C/svg%3E");
+  background-repeat: repeat-y;
+  animation: snakeSlideV 14s linear infinite;
+}
+
+@keyframes snakeSlideV {
+  from { background-position: center 0; }
+  to   { background-position: center 60px; }
+}
+
+.about-text-col {
+  padding: 100px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.about-text-col .section-label { color: rgba(200,185,144,0.55); }
+.about-text-col .section-title { color: var(--bone); }
+.about-text-col .section-title em { color: var(--snake1); }
+
+.about-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: rgba(240,235,224,0.65);
+  margin-top: 32px;
+}
+
+.about-body p + p { margin-top: 20px; }
+
+.about-rule {
+  width: 48px; height: 1px;
+  background: var(--rust);
+  margin: 40px 0;
+}
+
+.about-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--snake1);
+  line-height: 1.6;
+}
+
+/* ─── FEED ─── */
+#feed {
+  padding: 100px 80px;
+}
+
+.feed-grid {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.feed-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  position: relative;
+  background: var(--linen);
+}
+
+.feed-item.tall { grid-row: span 2; aspect-ratio: unset; }
+
+.feed-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: sepia(12%);
+  transition: transform 0.5s ease, filter 0.4s;
+}
+
+.feed-item:hover img { transform: scale(1.05); filter: sepia(0%); }
+
+.feed-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26,23,20,0);
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+  transition: background 0.3s;
+}
+
+.feed-item:hover .feed-overlay { background: rgba(26,23,20,0.32); }
+
+.feed-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--bone);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.feed-item:hover .feed-label { opacity: 1; }
+
+/* ─── RSVP ─── */
+#rsvp {
+  background: var(--linen);
+  padding: 80px;
+}
+
+.rsvp-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.rsvp-inner .section-label { margin-bottom: 10px; }
+
+.rsvp-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--brown);
+  margin: 20px 0 52px;
+  line-height: 1.7;
+}
+
+.rsvp-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  text-align: left;
+}
+
+.rsvp-form .full { grid-column: 1 / -1; }
+
+.field-wrap { display: flex; flex-direction: column; gap: 8px; }
+
+.field-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field-input, .field-select, .field-textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--dust);
+  padding: 10px 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  color: var(--ink);
+  outline: none;
+  width: 100%;
+  transition: border-color 0.3s;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+.field-input::placeholder { color: var(--dust); }
+.field-input:focus, .field-select:focus, .field-textarea:focus { border-bottom-color: var(--rust); }
+.field-select { cursor: pointer; }
+.field-textarea { resize: none; height: 72px; }
+
+.rsvp-submit-row { grid-column: 1/-1; margin-top: 12px; }
+.rsvp-submit-row .btn-primary { width: 100%; font-size: 12px; letter-spacing: 0.35em; padding: 18px; }
+
+.form-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+  grid-column: 1/-1;
+  text-align: center;
+}
+
+.form-success { display: none; padding: 60px 0; }
+.form-success.visible { display: block; }
+.rsvp-form.hidden { display: none; }
+
+.success-mark {
+  font-family: 'Playfair Display', serif;
+  font-size: 72px;
+  font-style: italic;
+  color: var(--rust);
+  display: block;
+  margin-bottom: 16px;
+  animation: popIn 0.5s ease both;
+}
+
+.success-msg {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--brown);
+  line-height: 1.7;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink);
+  padding: 64px 80px 40px;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 48px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 32px;
+}
+
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-style: italic;
+  color: var(--bone);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.footer-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(240,235,224,0.38);
+  line-height: 1.6;
+}
+
+.footer-nav { display: flex; gap: 48px; align-items: center; }
+
+.footer-nav a {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(240,235,224,0.4);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-nav a:hover { color: var(--snake1); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-copy {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(240,235,224,0.18);
+}
+
+.footer-social { display: flex; gap: 24px; }
+
+.footer-social a {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(240,235,224,0.28);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-social a:hover { color: var(--rust); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 960px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-img-wrap { height: 55vw; }
+  .hero-left { padding: 60px 40px; }
+  #events, #feed, #rsvp { padding: 80px 40px; }
+  .stats-bar { padding: 32px 40px; flex-wrap: wrap; gap: 24px; justify-content: center; }
+  .stats-divider { display: none; }
+  #about { grid-template-columns: 1fr; }
+  .about-image-col { min-height: 60vw; }
+  .about-text-col { padding: 60px 40px; }
+  .event-row { grid-template-columns: 80px 1fr; gap: 16px; }
+  .event-seats-col, .event-action { display: none; }
+  .feed-grid { grid-template-columns: 1fr 1fr; }
+  .feed-item.tall { grid-row: span 1; }
+  .rsvp-form { grid-template-columns: 1fr; }
+  footer { padding: 48px 40px 32px; }
+  .footer-top { flex-direction: column; gap: 32px; }
+  .footer-nav { gap: 24px; flex-wrap: wrap; }
+  nav { padding: 0 28px; }
+  .nav-link { display: none; }
+}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav id="main-nav">
-  <a href="#" class="nav-logo">由子</a>
-  <ul class="nav-links">
-    <li><a href="#events">Events</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#events" class="nav-cta">Reserve</a></li>
-  </ul>
+  <a href="#" class="nav-logo">Yuko</a>
+  <div class="nav-right">
+    <a href="#events" class="nav-link">Events</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#rsvp" class="nav-btn">Join the Table</a>
+  </div>
 </nav>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" style="margin-top:64px;">
+  <div class="marquee-track">
+    <span>Dinner Series — New York City</span><span class="dot">◆</span>
+    <span>Seasonal Table</span><span class="dot">◆</span>
+    <span>Eight Seats Only</span><span class="dot">◆</span>
+    <span>Spring 2026</span><span class="dot">◆</span>
+    <span>No phones at dinner</span><span class="dot">◆</span>
+    <span>Dinner Series — New York City</span><span class="dot">◆</span>
+    <span>Seasonal Table</span><span class="dot">◆</span>
+    <span>Eight Seats Only</span><span class="dot">◆</span>
+    <span>Spring 2026</span><span class="dot">◆</span>
+    <span>No phones at dinner</span><span class="dot">◆</span>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-image">
-    <img src="yuko-3.jpg" alt="Yuko at home">
-  </div>
-  <div class="hero-text">
-    <div class="hero-eyebrow">— Dinner Party Series —</div>
-    <div class="hero-name">YUKO</div>
-    <div class="hero-kanji">由子の夕食</div>
-    <div class="hero-tagline">
-      A table set among ten thousand books.<br>
-      Food that tastes like a late night<br>
-      someone else remembers for you.
+  <div class="hero-left">
+    <div class="hero-eyebrow">Est. Lower Manhattan · Since 2024</div>
+    <div class="hero-title">Dinner<br>at <em>Yuko's</em></div>
+    <div class="hero-sub">Eight seats. One table.<br>Food that tastes like somewhere.</div>
+    <div class="hero-cta-row">
+      <a href="#events" class="btn-primary">See Events</a>
+      <a href="#about" class="btn-ghost">Our Table</a>
     </div>
-    <a href="#events" class="hero-scroll">Upcoming Events</a>
-    <div class="hero-vertical">由子の食卓 — ニューヨーク</div>
+  </div>
+  <div class="hero-img-wrap">
+    <div class="hero-snake-accent snake-border-v"></div>
+    <img src="yuko-3.jpg" alt="Yuko">
   </div>
 </section>
 
-<!-- GALLERY STRIP -->
-<div id="gallery">
-  <div class="gallery-img">
-    <img src="yuko-4.jpg" alt="The room">
-    <span class="gallery-img-label">The Library</span>
+<!-- SNAKE BORDER -->
+<div class="snake-border"></div>
+
+<!-- STATS -->
+<div class="stats-bar reveal">
+  <div class="stat">
+    <span class="stat-number">47</span>
+    <span class="stat-label">Dinners Hosted</span>
   </div>
-  <div class="gallery-img">
-    <img src="yuko-5.jpg" alt="The shelves">
-    <span class="gallery-img-label">The Archive</span>
+  <div class="stats-divider"></div>
+  <div class="stat">
+    <span class="stat-number">8</span>
+    <span class="stat-label">Seats Per Night</span>
   </div>
-  <div class="gallery-img">
-    <img src="yuko-6.jpg" alt="Looking up">
-    <span class="gallery-img-label">Yuko</span>
+  <div class="stats-divider"></div>
+  <div class="stat">
+    <span class="stat-number">7</span>
+    <span class="stat-label">Courses</span>
   </div>
-  <div class="gallery-img">
-    <img src="yuko-7.jpg" alt="The corridor">
-    <span class="gallery-img-label">The Corridor</span>
-  </div>
-  <div class="gallery-img">
-    <img src="yuko-8.jpg" alt="The records">
-    <span class="gallery-img-label">The Collection</span>
+  <div class="stats-divider"></div>
+  <div class="stat">
+    <span class="stat-number">0</span>
+    <span class="stat-label">Menus Repeated</span>
   </div>
 </div>
 
 <!-- EVENTS -->
 <section id="events">
-  <div class="reveal">
-    <div class="section-label">Upcoming</div>
-    <div class="section-title">Dinner <span>Events</span></div>
-    <div class="divider"><span class="divider-mark">◆</span></div>
+  <div class="section-head reveal">
+    <div>
+      <div class="section-label">What's Coming</div>
+      <div class="section-title">Upcoming <em>Tables</em></div>
+    </div>
+    <a href="#rsvp" class="section-link">Request an invite →</a>
   </div>
 
-  <div class="events-grid" id="events-grid">
+  <div class="event-list reveal">
 
-    <div class="event-card reveal" data-kanji="春" onclick="openRSVP(this)">
-      <div class="event-number">Event No. 001</div>
-      <div class="event-date">APR 26</div>
-      <div class="event-date-kanji">二〇二六年四月二十六日　土曜日</div>
-      <div class="event-title">Spring Omen Table</div>
-      <div class="event-subtitle">A seven-course kaiseki-influenced dinner.<br>Seasonal vegetables, dashi, fermented things.</div>
-      <div class="event-meta">
-        <div class="event-meta-item">
-          <strong>7:00 PM</strong>
-          Doors open
-        </div>
-        <div class="event-meta-item">
-          <strong>East Village</strong>
-          Address on confirm
-        </div>
-        <div class="event-meta-item">
-          <strong>¥120 / seat</strong>
-          Wine included
+    <div class="event-row" onclick="scrollToRSVP('Spring Omen Table', 'April 26')">
+      <div class="event-date-col">
+        <span class="event-date-big">26</span>
+        <span class="event-date-small">APR / 2026</span>
+      </div>
+      <div class="event-info">
+        <div class="event-name">Spring Omen Table</div>
+        <div class="event-detail">Seven courses — seasonal vegetables, dashi, fermented things. 7:00 PM, East Village.</div>
+        <div class="event-tags">
+          <span class="tag">Vegetarian-forward</span>
+          <span class="tag">Wine</span>
+          <span class="tag">4 seats left</span>
         </div>
       </div>
-      <div class="event-seats">
-        <div class="seat-dot taken"></div><div class="seat-dot taken"></div>
-        <div class="seat-dot taken"></div><div class="seat-dot taken"></div>
-        <div class="seat-dot taken"></div><div class="seat-dot taken"></div>
-        <div class="seat-dot"></div><div class="seat-dot"></div>
-        <div class="seat-dot"></div><div class="seat-dot"></div>
-        <div class="seat-dot"></div><div class="seat-dot"></div>
+      <div class="event-seats-col">
+        <span class="seats-text">Seats</span>
+        <div class="seats-dots">
+          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
+          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
+          <div class="seat-pip"></div><div class="seat-pip"></div>
+          <div class="seat-pip"></div><div class="seat-pip"></div>
+        </div>
       </div>
-      <button class="btn-rsvp">Reserve a Seat →</button>
+      <div class="event-action">
+        <button class="btn-primary" onclick="scrollToRSVP('Spring Omen Table','April 26');event.stopPropagation()">RSVP</button>
+      </div>
     </div>
 
-    <div class="event-card reveal" data-kanji="夜" onclick="openRSVP(this)">
-      <div class="event-number">Event No. 002</div>
-      <div class="event-date">MAY 10</div>
-      <div class="event-date-kanji">二〇二六年五月十日　日曜日</div>
-      <div class="event-title">Night Kitchen</div>
-      <div class="event-subtitle">Late dinner, midnight market ingredients.<br>Izakaya spirit. Improvised menu.</div>
-      <div class="event-meta">
-        <div class="event-meta-item">
-          <strong>9:00 PM</strong>
-          Starts late
-        </div>
-        <div class="event-meta-item">
-          <strong>Lower East Side</strong>
-          Address on confirm
-        </div>
-        <div class="event-meta-item">
-          <strong>¥95 / seat</strong>
-          BYOB welcome
+    <div class="event-row" onclick="scrollToRSVP('Night Kitchen','May 10')">
+      <div class="event-date-col">
+        <span class="event-date-big">10</span>
+        <span class="event-date-small">MAY / 2026</span>
+      </div>
+      <div class="event-info">
+        <div class="event-name">Night Kitchen</div>
+        <div class="event-detail">Late dinner, midnight market. Izakaya spirit, improvised menu. 9:00 PM, Lower East Side.</div>
+        <div class="event-tags">
+          <span class="tag">Late Night</span>
+          <span class="tag">BYOB</span>
+          <span class="tag">7 seats left</span>
         </div>
       </div>
-      <div class="event-seats">
-        <div class="seat-dot taken"></div><div class="seat-dot taken"></div>
-        <div class="seat-dot taken"></div>
-        <div class="seat-dot"></div><div class="seat-dot"></div>
-        <div class="seat-dot"></div><div class="seat-dot"></div>
-        <div class="seat-dot"></div><div class="seat-dot"></div>
-        <div class="seat-dot"></div><div class="seat-dot"></div>
-        <div class="seat-dot"></div>
+      <div class="event-seats-col">
+        <span class="seats-text">Seats</span>
+        <div class="seats-dots">
+          <div class="seat-pip taken"></div>
+          <div class="seat-pip"></div><div class="seat-pip"></div>
+          <div class="seat-pip"></div><div class="seat-pip"></div>
+          <div class="seat-pip"></div><div class="seat-pip"></div>
+          <div class="seat-pip"></div>
+        </div>
       </div>
-      <button class="btn-rsvp">Reserve a Seat →</button>
+      <div class="event-action">
+        <button class="btn-primary" onclick="scrollToRSVP('Night Kitchen','May 10');event.stopPropagation()">RSVP</button>
+      </div>
     </div>
 
-    <div class="event-card reveal sold-out" data-kanji="冬">
-      <div class="event-number">Event No. 000</div>
-      <div class="event-date">MAR 15</div>
-      <div class="event-date-kanji">二〇二六年三月十五日　日曜日</div>
-      <div class="event-title">The Last Winter Table</div>
-      <div class="event-subtitle">Root vegetables, bone broth, slow heat.<br>A dinner for the last cold night.</div>
-      <div class="event-meta">
-        <div class="event-meta-item">
-          <strong>6:30 PM</strong>
-          Doors open
-        </div>
-        <div class="event-meta-item">
-          <strong>Chinatown</strong>
-          Address on confirm
-        </div>
-        <div class="event-meta-item">
-          <strong>¥100 / seat</strong>
-          Sake included
+    <div class="event-row past">
+      <div class="event-date-col">
+        <span class="event-date-big">15</span>
+        <span class="event-date-small">MAR / 2026</span>
+      </div>
+      <div class="event-info">
+        <div class="event-name">The Last Winter Table</div>
+        <div class="event-detail">Root vegetables, bone broth, slow heat. A dinner for the last cold night.</div>
+        <div class="event-tags"><span class="tag">Passed</span></div>
+      </div>
+      <div class="event-seats-col">
+        <span class="seats-text">Sold Out</span>
+        <div class="seats-dots">
+          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
+          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
+          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
+          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
         </div>
       </div>
-      <div class="event-seats">
-        <div class="seat-dot taken"></div><div class="seat-dot taken"></div>
-        <div class="seat-dot taken"></div><div class="seat-dot taken"></div>
-        <div class="seat-dot taken"></div><div class="seat-dot taken"></div>
-        <div class="seat-dot taken"></div><div class="seat-dot taken"></div>
-        <div class="seat-dot taken"></div><div class="seat-dot taken"></div>
-        <div class="seat-dot taken"></div><div class="seat-dot taken"></div>
-      </div>
-      <button class="btn-rsvp" disabled>Sold Out</button>
+      <div class="event-action"><span class="sold-out-badge">Past</span></div>
     </div>
 
   </div>
 </section>
 
+<!-- SNAKE BORDER -->
+<div class="snake-border"></div>
+
 <!-- ABOUT -->
 <section id="about">
-  <div class="about-images reveal">
-    <div class="about-img-wrap">
-      <img src="yuko-3.jpg" alt="Yuko">
-    </div>
-    <div class="about-img-wrap">
-      <img src="yuko-6.jpg" alt="The books">
-    </div>
-    <div class="about-img-wrap">
-      <img src="yuko-7.jpg" alt="The archive">
-    </div>
+  <div class="about-image-col">
+    <img src="yuko-6.jpg" alt="Yuko">
+    <div class="about-snake-edge"></div>
   </div>
-  <div class="about-content reveal">
-    <div class="section-label">About</div>
-    <div class="section-title">The <span>Table</span></div>
-    <div class="divider"><span class="divider-mark">◆</span></div>
-    <div class="about-text">
+  <div class="about-text-col reveal">
+    <div class="section-label">The Table</div>
+    <div class="section-title">About<br><em>Yuko</em></div>
+    <div class="about-rule"></div>
+    <div class="about-body">
       <p>Yuko cooks the way she reads — slowly, attentively, with the instinct that everything connects if you hold it long enough. Her dinners happen in a room surrounded by thirty years of books, records, and accumulated evidence of a life spent paying attention.</p>
-      <p>Guests sit close together. The food is Japanese in its bones and New York in its accidents. She does not follow a fixed menu — she follows what arrived at the market that morning, what felt right in the afternoon.</p>
-      <p>Eight seats. One table. No phones at dinner.</p>
+      <p>The food is Japanese in its bones and New York in its accidents. The menu follows what arrived at the market that morning, what felt right in the afternoon.</p>
     </div>
-    <div class="about-quote">
-      食は文化の<br>最も正直な形
-    </div>
-    <div class="about-quote-ja">Food is the most honest form of culture.</div>
+    <div class="about-rule" style="margin-top:40px;"></div>
+    <div class="about-quote">"Eight seats. One table.<br>No menus ever repeat."</div>
   </div>
+</section>
+
+<!-- FEED -->
+<section id="feed">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-label">From the Table</div>
+      <div class="section-title">The <em>Room</em></div>
+    </div>
+    <a href="#rsvp" class="section-link">Come for dinner →</a>
+  </div>
+  <div class="feed-grid reveal">
+    <div class="feed-item tall">
+      <img src="yuko-4.jpg" alt="">
+      <div class="feed-overlay"><span class="feed-label">The Apartment</span></div>
+    </div>
+    <div class="feed-item">
+      <img src="yuko-5.jpg" alt="">
+      <div class="feed-overlay"><span class="feed-label">The Archive</span></div>
+    </div>
+    <div class="feed-item">
+      <img src="yuko-8.jpg" alt="">
+      <div class="feed-overlay"><span class="feed-label">The Records</span></div>
+    </div>
+    <div class="feed-item">
+      <img src="yuko-7.jpg" alt="">
+      <div class="feed-overlay"><span class="feed-label">The Corridor</span></div>
+    </div>
+    <div class="feed-item">
+      <img src="yuko-3.jpg" alt="">
+      <div class="feed-overlay"><span class="feed-label">Yuko</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- RSVP -->
+<section id="rsvp">
+  <div class="snake-border" style="margin-bottom:80px;"></div>
+  <div class="rsvp-inner">
+    <div class="section-label">Reserve</div>
+    <div class="section-title">Join the <em>Table</em></div>
+    <div class="rsvp-body">Seats are limited to eight.<br>Yuko will confirm within 48 hours with the evening's details.</div>
+
+    <div class="rsvp-form reveal" id="rsvp-form">
+      <div class="field-wrap">
+        <label class="field-label">First Name</label>
+        <input class="field-input" type="text" placeholder="Your name" id="rf-first">
+      </div>
+      <div class="field-wrap">
+        <label class="field-label">Last Name</label>
+        <input class="field-input" type="text" placeholder="Your last name">
+      </div>
+      <div class="field-wrap full">
+        <label class="field-label">Email</label>
+        <input class="field-input" type="email" placeholder="you@example.com" id="rf-email">
+      </div>
+      <div class="field-wrap">
+        <label class="field-label">Which Dinner</label>
+        <select class="field-select" id="rf-event">
+          <option>Spring Omen Table — Apr 26</option>
+          <option>Night Kitchen — May 10</option>
+          <option>Either / Any Availability</option>
+        </select>
+      </div>
+      <div class="field-wrap">
+        <label class="field-label">Party Size</label>
+        <select class="field-select">
+          <option>1 seat</option>
+          <option>2 seats</option>
+        </select>
+      </div>
+      <div class="field-wrap full">
+        <label class="field-label">Dietary needs or notes</label>
+        <textarea class="field-textarea" placeholder="Allergies, preferences, anything Yuko should know..."></textarea>
+      </div>
+      <div class="rsvp-submit-row full">
+        <button class="btn-primary" onclick="submitForm()">Send Request ◆</button>
+      </div>
+      <div class="form-note full">Address shared only upon confirmation.</div>
+    </div>
+
+    <div class="form-success" id="form-success">
+      <span class="success-mark">✦</span>
+      <div class="success-msg">Request received.<br>Yuko will be in touch within 48 hours.</div>
+    </div>
+  </div>
+  <div class="snake-border" style="margin-top:80px;"></div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div>
-    <div class="footer-brand">由子</div>
-    <div class="footer-brand-ja">YUKO — 夕食の宴</div>
-    <div class="footer-tagline">Dinner parties in New York City.<br>Intimate. Seasonal. Unrepeated.</div>
+  <div class="footer-top">
+    <div>
+      <span class="footer-logo">Yuko</span>
+      <div class="footer-tagline">Dinner parties in New York City.<br>Intimate. Seasonal. Unrepeated.</div>
+    </div>
+    <nav class="footer-nav">
+      <a href="#events">Events</a>
+      <a href="#about">About</a>
+      <a href="#rsvp">Reserve</a>
+      <a href="mailto:yuko@example.com">Contact</a>
+    </nav>
   </div>
-  <div>
-    <div class="footer-col-title">Navigate</div>
-    <ul class="footer-links">
-      <li><a href="#events">Upcoming Events</a></li>
-      <li><a href="#about">About Yuko</a></li>
-      <li><a href="#events">Reserve a Seat</a></li>
-    </ul>
-  </div>
-  <div>
-    <div class="footer-col-title">Contact</div>
-    <div class="footer-contact-item">For private events & inquiries:</div>
-    <div class="footer-contact-item"><a href="mailto:yuko@example.com">yuko@example.com</a></div>
-    <div class="footer-contact-item" style="margin-top:16px;">New York City<br>Table location shared on booking.</div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Yuko — New York City</span>
+    <div class="footer-social">
+      <a href="#">Instagram</a>
+      <a href="#">Substack</a>
+    </div>
   </div>
 </footer>
-<div class="footer-bottom">
-  <div class="footer-copy">© 2026 Yuko — All Rights Reserved</div>
-  <div class="footer-copy">由子の食卓 — ニューヨーク</div>
-</div>
-
-<!-- RSVP MODAL -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="closeRSVP()">✕</button>
-    <div class="modal-form" id="modal-form">
-      <div class="modal-event-label" id="modal-event-label">Reserve Your Seat</div>
-      <div class="modal-title" id="modal-event-title">Spring Omen Table</div>
-      <div class="modal-subtitle" id="modal-event-subtitle">April 26, 2026 — 7:00 PM</div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>First Name</label>
-          <input type="text" placeholder="Kenji" id="f-first">
-        </div>
-        <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" placeholder="Tanaka" id="f-last">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" placeholder="you@example.com" id="f-email">
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Number of Seats</label>
-          <select id="f-seats">
-            <option>1 seat</option>
-            <option>2 seats</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>How did you hear?</label>
-          <select id="f-ref">
-            <option>Word of mouth</option>
-            <option>Instagram</option>
-            <option>Previous guest</option>
-            <option>Other</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Dietary Needs</label>
-        <div class="dietary-options">
-          <span class="dietary-pill" onclick="togglePill(this)">Vegetarian</span>
-          <span class="dietary-pill" onclick="togglePill(this)">Vegan</span>
-          <span class="dietary-pill" onclick="togglePill(this)">Gluten-free</span>
-          <span class="dietary-pill" onclick="togglePill(this)">Nut allergy</span>
-          <span class="dietary-pill" onclick="togglePill(this)">Shellfish</span>
-          <span class="dietary-pill" onclick="togglePill(this)">None</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Anything Yuko should know?</label>
-        <textarea placeholder="Optional — celebrating something, first time, old friend..."></textarea>
-      </div>
-
-      <button class="btn-submit" onclick="submitRSVP()">Submit Reservation — 予約する</button>
-    </div>
-
-    <div class="modal-success" id="modal-success">
-      <div class="success-kanji">ありがとう</div>
-      <div class="success-text">
-        Your reservation has been received.<br>
-        Yuko will be in touch with details<br>
-        within 48 hours.
-      </div>
-    </div>
-  </div>
-</div>
 
 <script>
-  // NAV scroll
-  const nav = document.getElementById('main-nav');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 60);
-  });
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+});
 
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 100);
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
-
-  // Modal
-  let currentCard = null;
-
-  function openRSVP(card) {
-    if (card.classList.contains('sold-out')) return;
-    currentCard = card;
-    const title = card.querySelector('.event-title').textContent;
-    const date = card.querySelector('.event-date').textContent;
-    const dateKanji = card.querySelector('.event-date-kanji').textContent;
-    document.getElementById('modal-event-title').textContent = title;
-    document.getElementById('modal-event-subtitle').textContent = date + ' — ' + dateKanji;
-    document.getElementById('modal-overlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    document.getElementById('modal-form').classList.remove('hidden');
-    document.getElementById('modal-success').classList.remove('visible');
-  }
-
-  function closeRSVP() {
-    document.getElementById('modal-overlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  function closeModal(e) {
-    if (e.target === document.getElementById('modal-overlay')) closeRSVP();
-  }
-
-  function togglePill(el) {
-    el.classList.toggle('active');
-  }
-
-  function submitRSVP() {
-    const first = document.getElementById('f-first').value;
-    const email = document.getElementById('f-email').value;
-    if (!first || !email) {
-      document.getElementById('f-first').style.borderBottomColor = first ? '' : '#c0392b';
-      document.getElementById('f-email').style.borderBottomColor = email ? '' : '#c0392b';
-      return;
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      io.unobserve(e.target);
     }
-    document.getElementById('modal-form').classList.add('hidden');
-    document.getElementById('modal-success').classList.add('visible');
-  }
-
-  // Keyboard close
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeRSVP();
   });
+}, { threshold: 0.08 });
+reveals.forEach(el => io.observe(el));
+
+function scrollToRSVP(eventName, date) {
+  document.getElementById('rsvp').scrollIntoView({ behavior: 'smooth' });
+  const sel = document.getElementById('rf-event');
+  for (let opt of sel.options) {
+    if (opt.text.includes(date)) { sel.value = opt.value; break; }
+  }
+}
+
+function submitForm() {
+  const first = document.getElementById('rf-first').value.trim();
+  const email = document.getElementById('rf-email').value.trim();
+  if (!first) { document.getElementById('rf-first').style.borderBottomColor = '#a0522d'; return; }
+  if (!email || !email.includes('@')) { document.getElementById('rf-email').style.borderBottomColor = '#a0522d'; return; }
+  document.getElementById('rsvp-form').classList.add('hidden');
+  document.getElementById('form-success').classList.add('visible');
+}
 </script>
 </body>
 </html>
