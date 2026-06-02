@@ -3,747 +3,688 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YUKO — Dinner</title>
+<title>yuko — dinner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Stint+Ultra+Condensed&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --sand:   #f0ebe0;
-  --linen:  #e8e1d3;
-  --dust:   #d4c9b4;
-  --ink:    #1a1714;
-  --brown:  #5c4a32;
-  --rust:   #a0522d;
-  --rust2:  #7a3d20;
-  --bone:   #f7f3ec;
-  --muted:  #8c7d6a;
-  --snake1: #c8b990;
-  --snake2: #9e8b6a;
+  --bg:        #1c1a16;
+  --bg2:       #232019;
+  --bg3:       #2a2620;
+  --paper:     #e8e0d0;
+  --paper2:    #d6ccb8;
+  --tobacco:   #8b6914;
+  --olive:     #5a5c2e;
+  --rust:      #9b3a1a;
+  --rust-dim:  #6b280f;
+  --worn:      #c4a96a;
+  --dim:       #6b6050;
+  --faint:     #3d3830;
+  --ink:       #f0ead8;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bone);
-  color: var(--ink);
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  background: var(--bg);
+  color: var(--paper);
+  font-family: 'Courier Prime', 'Courier New', monospace;
   overflow-x: hidden;
+  cursor: default;
 }
 
-/* ─── SNAKESKIN PATTERN ─── */
-.snake-border {
-  height: 18px;
-  width: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='18'%3E%3Cellipse cx='10' cy='9' rx='9' ry='7' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.7'/%3E%3Cellipse cx='30' cy='9' rx='9' ry='7' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.7'/%3E%3Cellipse cx='50' cy='9' rx='9' ry='7' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.7'/%3E%3Cellipse cx='20' cy='9' rx='9' ry='7' fill='none' stroke='%239e8b6a' stroke-width='0.5' opacity='0.4'/%3E%3Cellipse cx='40' cy='9' rx='9' ry='7' fill='none' stroke='%239e8b6a' stroke-width='0.5' opacity='0.4'/%3E%3C/svg%3E");
-  background-repeat: repeat-x;
-  background-position: center;
-  opacity: 0.8;
-  animation: snakeSlide 12s linear infinite;
+/* ── GRAIN OVERLAY ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.055'/%3E%3C/svg%3E");
+  opacity: 1;
 }
 
-.snake-border-v {
-  width: 18px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='60'%3E%3Cellipse cx='9' cy='10' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.6'/%3E%3Cellipse cx='9' cy='30' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.6'/%3E%3Cellipse cx='9' cy='50' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.6'/%3E%3C/svg%3E");
-  background-repeat: repeat-y;
-  flex-shrink: 0;
-}
-
-@keyframes snakeSlide {
-  from { background-position: 0 center; }
-  to   { background-position: 60px center; }
-}
-
-/* ─── MARQUEE ─── */
-.marquee-wrap {
-  background: var(--ink);
-  overflow: hidden;
-  padding: 11px 0;
-}
-
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee 30s linear infinite;
-}
-
-.marquee-track span {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  font-weight: 300;
-  letter-spacing: 0.25em;
-  color: var(--dust);
-  padding: 0 40px;
-  white-space: nowrap;
-  text-transform: uppercase;
-}
-
-.marquee-track span.dot {
-  color: var(--rust);
-  padding: 0 12px;
-}
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-/* ─── NAV ─── */
-nav {
+/* ── NAV ── */
+#nav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 200;
-  padding: 0 48px;
-  height: 64px;
+  z-index: 500;
+  padding: 20px 48px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  transition: background 0.4s, box-shadow 0.4s;
+  align-items: center;
+  transition: background 0.5s;
 }
 
-nav.scrolled {
-  background: rgba(247,243,236,0.95);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 1px 0 var(--dust);
+#nav.solid {
+  background: rgba(28,26,22,0.96);
+  border-bottom: 1px solid var(--faint);
 }
 
 .nav-logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 400;
-  font-style: italic;
-  color: var(--ink);
+  font-family: 'Special Elite', serif;
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  color: var(--worn);
   text-decoration: none;
 }
 
-.nav-right {
+.nav-links {
   display: flex;
+  gap: 40px;
+  list-style: none;
   align-items: center;
-  gap: 36px;
 }
 
-.nav-link {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  font-weight: 300;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--brown);
+.nav-links a {
+  font-family: 'Courier Prime', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: var(--dim);
   text-decoration: none;
   transition: color 0.2s;
 }
 
-.nav-link:hover { color: var(--rust); }
+.nav-links a:hover { color: var(--worn); }
 
-.nav-btn {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  font-weight: 400;
+.nav-reserve {
+  font-size: 11px !important;
   letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--bone);
-  background: var(--ink);
-  border: none;
-  padding: 10px 20px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background 0.3s;
+  color: var(--rust) !important;
+  border: 1px solid var(--rust-dim);
+  padding: 8px 18px;
+  transition: background 0.25s, color 0.25s !important;
 }
 
-.nav-btn:hover { background: var(--rust2); }
+.nav-reserve:hover {
+  background: var(--rust-dim) !important;
+  color: var(--paper) !important;
+}
 
-/* ─── HERO ─── */
+/* ── HERO ── */
 .hero {
   min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding-top: 64px;
-}
-
-.hero-left {
-  padding: 80px 64px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
+  padding: 0 64px 80px;
+  position: relative;
+  overflow: hidden;
 }
 
-.hero-eyebrow {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  font-weight: 300;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 28px;
-  animation: fadeUp 0.8s ease both;
+/* typewriter blink cursor */
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 1.1em;
+  background: var(--worn);
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  animation: blink 1.1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.hero-label {
+  font-family: 'Courier Prime', monospace;
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  text-transform: lowercase;
+  color: var(--dim);
+  margin-bottom: 24px;
+  animation: fadeIn 1s 0.3s ease both;
 }
 
 .hero-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(68px, 9vw, 124px);
-  font-weight: 400;
-  line-height: 0.92;
+  font-family: 'Special Elite', serif;
+  font-size: clamp(52px, 9vw, 130px);
+  line-height: 0.9;
   color: var(--ink);
-  animation: fadeUp 0.8s 0.1s ease both;
+  letter-spacing: -0.01em;
+  animation: fadeIn 0.8s 0.1s ease both;
 }
 
-.hero-title em {
-  font-style: italic;
-  color: var(--rust);
-}
+.hero-title .worn { color: var(--worn); }
+.hero-title .rust { color: var(--rust); }
 
 .hero-sub {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 20px;
-  font-weight: 300;
+  font-family: 'Courier Prime', monospace;
+  font-size: 14px;
   font-style: italic;
-  color: var(--brown);
-  margin: 20px 0 56px;
-  line-height: 1.6;
-  animation: fadeUp 0.8s 0.2s ease both;
+  color: var(--dim);
+  margin-top: 28px;
+  line-height: 1.7;
+  max-width: 440px;
+  animation: fadeIn 0.8s 0.4s ease both;
 }
 
-.hero-cta-row {
+.hero-cta {
+  margin-top: 52px;
   display: flex;
+  gap: 24px;
   align-items: center;
-  gap: 28px;
-  animation: fadeUp 0.8s 0.3s ease both;
+  animation: fadeIn 0.8s 0.6s ease both;
 }
 
-.btn-primary {
-  font-family: 'DM Mono', monospace;
+.btn {
+  font-family: 'Courier Prime', monospace;
   font-size: 11px;
   letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--bone);
-  background: var(--ink);
+  text-transform: lowercase;
+  text-decoration: none;
+  cursor: pointer;
   border: none;
-  padding: 16px 32px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background 0.3s;
   display: inline-block;
+  transition: all 0.25s;
 }
 
-.btn-primary:hover { background: var(--rust2); }
+.btn-solid {
+  background: var(--rust);
+  color: var(--paper);
+  padding: 14px 32px;
+}
 
-.btn-ghost {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--brown);
+.btn-solid:hover { background: var(--rust-dim); }
+
+.btn-line {
   background: transparent;
-  border: 1px solid var(--dust);
-  padding: 15px 28px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: border-color 0.3s, color 0.3s;
-  display: inline-block;
+  color: var(--dim);
+  padding: 13px 0;
+  border-bottom: 1px solid var(--faint);
 }
 
-.btn-ghost:hover { border-color: var(--rust); color: var(--rust); }
+.btn-line:hover { color: var(--worn); border-color: var(--worn); }
 
-.hero-img-wrap {
-  position: relative;
+/* subtle image in hero bg */
+.hero-bg-img {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 42%;
   overflow: hidden;
-  display: flex;
+  z-index: -1;
 }
 
-.hero-img-wrap img {
-  width: 100%;
-  height: 100%;
+.hero-bg-img img {
+  width: 100%; height: 100%;
   object-fit: cover;
-  object-position: center 20%;
-  display: block;
-  transition: transform 0.9s ease;
+  object-position: center 15%;
+  opacity: 0.22;
+  filter: sepia(40%) contrast(1.1);
+  mix-blend-mode: luminosity;
 }
 
-.hero-img-wrap:hover img { transform: scale(1.025); }
-
-/* ─── STATS ─── */
-.stats-bar {
-  background: var(--linen);
-  border-top: 1px solid var(--dust);
-  border-bottom: 1px solid var(--dust);
-  padding: 36px 80px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.stat-number {
-  font-family: 'Playfair Display', serif;
-  font-size: 48px;
-  font-style: italic;
-  color: var(--rust);
-  line-height: 1;
-  display: block;
-}
-
-.stat-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: var(--muted);
-  display: block;
-  margin-top: 6px;
-}
-
-.stats-divider {
-  width: 1px;
-  height: 48px;
-  background: var(--dust);
-}
-
-/* ─── EVENTS ─── */
-#events {
-  padding: 100px 80px;
-}
-
-.section-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 64px;
-}
-
-.section-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  font-weight: 300;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-
-.section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(36px, 5vw, 58px);
-  font-weight: 400;
-  color: var(--ink);
-  line-height: 1.05;
-}
-
-.section-title em { font-style: italic; color: var(--rust); }
-
-.section-link {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--brown);
-  text-decoration: none;
-  border-bottom: 1px solid var(--dust);
-  padding-bottom: 2px;
-  transition: border-color 0.2s, color 0.2s;
-  white-space: nowrap;
-  align-self: flex-end;
-  margin-bottom: 4px;
-}
-
-.section-link:hover { color: var(--rust); border-color: var(--rust); }
-
-.event-list { display: flex; flex-direction: column; }
-
-.event-row {
-  display: grid;
-  grid-template-columns: 110px 1fr auto auto;
-  align-items: center;
-  gap: 40px;
-  padding: 32px 0;
-  border-bottom: 1px solid var(--dust);
-  cursor: pointer;
-  position: relative;
-}
-
-.event-row:first-child { border-top: 1px solid var(--dust); }
-
-.event-row::before {
+.hero-bg-img::after {
   content: '';
   position: absolute;
-  left: -80px; right: -80px; top: 0; bottom: 0;
-  background: var(--linen);
+  inset: 0;
+  background: linear-gradient(to right, var(--bg) 0%, transparent 50%);
+}
+
+/* ── RULE ── */
+.hr {
+  border: none;
+  border-top: 1px solid var(--faint);
+  margin: 0;
+}
+
+/* ── SECTION WRAPPER ── */
+.section {
+  padding: 88px 64px;
+}
+
+.section-sm { padding: 64px 64px; }
+
+/* ── SECTION HEADER ── */
+.s-label {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: lowercase;
+  color: var(--dim);
+  margin-bottom: 12px;
+}
+
+.s-title {
+  font-family: 'Special Elite', serif;
+  font-size: clamp(28px, 4vw, 52px);
+  color: var(--ink);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.s-title .accent { color: var(--worn); }
+
+/* ── EVENTS ── */
+.event-list {
+  margin-top: 56px;
+}
+
+.event-item {
+  display: grid;
+  grid-template-columns: 72px 1fr 140px;
+  gap: 48px;
+  align-items: start;
+  padding: 36px 0;
+  border-top: 1px solid var(--faint);
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.event-item::before {
+  content: '';
+  position: absolute;
+  left: -64px; right: -64px; top: 0; bottom: 0;
+  background: var(--bg2);
   opacity: 0;
   transition: opacity 0.25s;
   z-index: -1;
 }
 
-.event-row:hover::before { opacity: 1; }
-.event-row.past { opacity: 0.4; cursor: default; pointer-events: none; }
+.event-item:hover::before { opacity: 1; }
+.event-item:last-child { border-bottom: 1px solid var(--faint); }
+.event-item.past { opacity: 0.3; cursor: default; pointer-events: none; }
 
-.event-date-col { line-height: 1.4; }
-
-.event-date-big {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  font-style: italic;
-  color: var(--rust);
-  line-height: 1;
-  display: block;
+.ev-date {
+  font-family: 'Special Elite', serif;
+  font-size: 13px;
+  color: var(--tobacco);
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  padding-top: 3px;
 }
 
-.event-date-small {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  font-weight: 300;
-  letter-spacing: 0.15em;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-top: 4px;
-  display: block;
-}
+.ev-body {}
 
-.event-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 26px;
+.ev-name {
+  font-family: 'Special Elite', serif;
+  font-size: 22px;
   color: var(--ink);
-  margin-bottom: 6px;
-  transition: color 0.2s;
-}
-
-.event-row:hover .event-name { color: var(--rust2); }
-
-.event-detail {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 15px;
-  font-style: italic;
-  font-weight: 300;
-  color: var(--muted);
-  line-height: 1.5;
-  margin-bottom: 10px;
-}
-
-.event-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-
-.tag {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--brown);
-  border: 1px solid var(--dust);
-  padding: 4px 10px;
-  transition: all 0.2s;
-}
-
-.event-row:hover .tag { border-color: var(--snake2); color: var(--rust2); }
-
-.event-seats-col { text-align: right; }
-
-.seats-text {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--muted);
-  display: block;
   margin-bottom: 8px;
+  transition: color 0.2s;
+  letter-spacing: 0.03em;
 }
 
-.seats-dots { display: flex; gap: 4px; justify-content: flex-end; }
+.event-item:hover .ev-name { color: var(--worn); }
 
-.seat-pip {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--dust);
+.ev-desc {
+  font-family: 'Courier Prime', monospace;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--dim);
+  line-height: 1.65;
+  margin-bottom: 14px;
+  max-width: 520px;
 }
 
-.seat-pip.taken { background: var(--rust); }
-
-.event-action { min-width: 100px; text-align: right; }
-.event-action .btn-primary { font-size: 10px; padding: 12px 20px; }
-
-.sold-out-badge {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--muted);
-  border: 1px solid var(--dust);
-  padding: 8px 12px;
-  display: inline-block;
+.ev-tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-/* ─── ABOUT ─── */
-#about {
-  background: var(--ink);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 80vh;
+.ev-tag {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: var(--dim);
+  border: 1px solid var(--faint);
+  padding: 3px 10px;
+  transition: border-color 0.2s, color 0.2s;
 }
 
-.about-image-col {
-  overflow: hidden;
-  position: relative;
-  min-height: 600px;
+.event-item:hover .ev-tag {
+  border-color: var(--tobacco);
+  color: var(--tobacco);
 }
 
-.about-image-col img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-  filter: contrast(1.05) sepia(8%);
-  transition: transform 0.8s ease;
-}
-
-.about-image-col:hover img { transform: scale(1.02); }
-
-.about-snake-edge {
-  position: absolute;
-  right: 0; top: 0; bottom: 0;
-  width: 18px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='60'%3E%3Cellipse cx='9' cy='10' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.5'/%3E%3Cellipse cx='9' cy='30' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.5'/%3E%3Cellipse cx='9' cy='50' rx='7' ry='9' fill='none' stroke='%23c8b990' stroke-width='0.8' opacity='0.5'/%3E%3C/svg%3E");
-  background-repeat: repeat-y;
-  animation: snakeSlideV 14s linear infinite;
-}
-
-@keyframes snakeSlideV {
-  from { background-position: center 0; }
-  to   { background-position: center 60px; }
-}
-
-.about-text-col {
-  padding: 100px 80px;
+.ev-right {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: flex-end;
+  gap: 16px;
+  padding-top: 4px;
 }
 
-.about-text-col .section-label { color: rgba(200,185,144,0.55); }
-.about-text-col .section-title { color: var(--bone); }
-.about-text-col .section-title em { color: var(--snake1); }
-
-.about-body {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  font-weight: 300;
-  line-height: 1.85;
-  color: rgba(240,235,224,0.65);
-  margin-top: 32px;
+.ev-seats {
+  display: flex;
+  gap: 5px;
 }
 
-.about-body p + p { margin-top: 20px; }
-
-.about-rule {
-  width: 48px; height: 1px;
-  background: var(--rust);
-  margin: 40px 0;
+.pip {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--faint);
+  transition: background 0.2s;
 }
 
-.about-quote {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-style: italic;
-  color: var(--snake1);
-  line-height: 1.6;
+.pip.on { background: var(--rust); }
+
+.ev-rsvp {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: lowercase;
+  color: var(--rust);
+  border: 1px solid var(--rust-dim);
+  padding: 8px 16px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-/* ─── FEED ─── */
-#feed {
-  padding: 100px 80px;
+.ev-rsvp:hover { background: var(--rust-dim); color: var(--paper); }
+
+.ev-past-label {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: var(--faint);
+  border: 1px solid var(--faint);
+  padding: 8px 14px;
 }
 
-.feed-grid {
-  margin-top: 56px;
+/* ── ABOUT / TWO-COL ── */
+.two-col {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
 }
 
-.feed-item {
-  aspect-ratio: 1;
-  overflow: hidden;
+.about-img-stack {
   position: relative;
-  background: var(--linen);
+  height: 560px;
 }
 
-.feed-item.tall { grid-row: span 2; aspect-ratio: unset; }
+.about-img {
+  position: absolute;
+  overflow: hidden;
+}
 
-.feed-item img {
+.about-img img {
   width: 100%; height: 100%;
   object-fit: cover;
+  filter: sepia(20%) contrast(1.05);
   display: block;
-  filter: sepia(12%);
-  transition: transform 0.5s ease, filter 0.4s;
+  transition: transform 0.7s ease;
 }
 
-.feed-item:hover img { transform: scale(1.05); filter: sepia(0%); }
+.about-img:hover img { transform: scale(1.03); }
 
-.feed-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(26,23,20,0);
+.about-img.a1 {
+  width: 68%; height: 72%;
+  top: 0; left: 0;
+}
+
+.about-img.a2 {
+  width: 52%; height: 55%;
+  bottom: 0; right: 0;
+  border: 6px solid var(--bg);
+}
+
+.about-body {
+  font-family: 'Courier Prime', monospace;
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--dim);
+  margin-top: 28px;
+}
+
+.about-body p + p { margin-top: 18px; }
+
+.about-pull {
+  font-family: 'Special Elite', serif;
+  font-size: 20px;
+  color: var(--worn);
+  line-height: 1.55;
+  margin-top: 36px;
+  padding-left: 20px;
+  border-left: 2px solid var(--rust-dim);
+  letter-spacing: 0.02em;
+}
+
+/* ── PHOTOS STRIP ── */
+.photo-strip {
   display: flex;
-  align-items: flex-end;
-  padding: 16px;
-  transition: background 0.3s;
+  height: 300px;
+  gap: 3px;
+  padding: 0 64px;
 }
 
-.feed-item:hover .feed-overlay { background: rgba(26,23,20,0.32); }
+.strip-img {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  transition: flex 0.5s ease;
+}
 
-.feed-label {
-  font-family: 'DM Mono', monospace;
+.strip-img:hover { flex: 2.4; }
+
+.strip-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: sepia(25%) contrast(1.05);
+  transition: filter 0.4s;
+  display: block;
+}
+
+.strip-img:hover img { filter: sepia(5%); }
+
+.strip-label {
+  position: absolute;
+  bottom: 12px; left: 14px;
+  font-family: 'Courier Prime', monospace;
   font-size: 9px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--bone);
+  letter-spacing: 0.3em;
+  text-transform: lowercase;
+  color: var(--paper);
   opacity: 0;
   transition: opacity 0.3s;
 }
 
-.feed-item:hover .feed-label { opacity: 1; }
+.strip-img:hover .strip-label { opacity: 0.7; }
 
-/* ─── RSVP ─── */
-#rsvp {
-  background: var(--linen);
-  padding: 80px;
-}
-
-.rsvp-inner {
-  max-width: 680px;
+/* ── RSVP ── */
+.rsvp-wrap {
+  max-width: 600px;
   margin: 0 auto;
-  text-align: center;
 }
 
-.rsvp-inner .section-label { margin-bottom: 10px; }
-
-.rsvp-body {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  font-weight: 300;
+.rsvp-intro {
+  font-family: 'Courier Prime', monospace;
+  font-size: 14px;
   font-style: italic;
-  color: var(--brown);
-  margin: 20px 0 52px;
-  line-height: 1.7;
+  color: var(--dim);
+  line-height: 1.75;
+  margin-top: 20px;
+  margin-bottom: 52px;
 }
 
-.rsvp-form {
+.form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  text-align: left;
+  gap: 32px 40px;
 }
 
-.rsvp-form .full { grid-column: 1 / -1; }
+.form-grid .full { grid-column: 1/-1; }
 
-.field-wrap { display: flex; flex-direction: column; gap: 8px; }
+.f-group { display: flex; flex-direction: column; gap: 10px; }
 
-.field-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
+.f-label {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
   letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: var(--muted);
+  text-transform: lowercase;
+  color: var(--dim);
 }
 
-.field-input, .field-select, .field-textarea {
+.f-input, .f-select, .f-textarea {
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--dust);
+  border-bottom: 1px solid var(--faint);
   padding: 10px 0;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 17px;
-  color: var(--ink);
+  font-family: 'Courier Prime', monospace;
+  font-size: 14px;
+  color: var(--paper);
   outline: none;
   width: 100%;
   transition: border-color 0.3s;
   -webkit-appearance: none;
   border-radius: 0;
+  letter-spacing: 0.05em;
 }
 
-.field-input::placeholder { color: var(--dust); }
-.field-input:focus, .field-select:focus, .field-textarea:focus { border-bottom-color: var(--rust); }
-.field-select { cursor: pointer; }
-.field-textarea { resize: none; height: 72px; }
+.f-input::placeholder { color: var(--faint); }
+.f-input:focus, .f-select:focus, .f-textarea:focus { border-bottom-color: var(--tobacco); }
+.f-select { cursor: pointer; color: var(--paper); }
+.f-select option { background: var(--bg2); color: var(--paper); }
+.f-textarea { resize: none; height: 72px; }
 
-.rsvp-submit-row { grid-column: 1/-1; margin-top: 12px; }
-.rsvp-submit-row .btn-primary { width: 100%; font-size: 12px; letter-spacing: 0.35em; padding: 18px; }
-
-.form-note {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 4px;
+.f-submit {
   grid-column: 1/-1;
-  text-align: center;
+  margin-top: 8px;
 }
 
-.form-success { display: none; padding: 60px 0; }
-.form-success.visible { display: block; }
-.rsvp-form.hidden { display: none; }
+.f-submit .btn-solid {
+  width: 100%;
+  font-size: 12px;
+  letter-spacing: 0.35em;
+  padding: 18px;
+}
 
-.success-mark {
-  font-family: 'Playfair Display', serif;
-  font-size: 72px;
-  font-style: italic;
-  color: var(--rust);
+.f-note {
+  grid-column: 1/-1;
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: var(--faint);
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* success */
+.f-success {
+  display: none;
+  text-align: center;
+  padding: 48px 0;
+}
+
+.f-success.show { display: block; }
+.form-grid.hide { display: none; }
+
+.success-char {
+  font-family: 'Special Elite', serif;
+  font-size: 56px;
+  color: var(--worn);
   display: block;
   margin-bottom: 16px;
-  animation: popIn 0.5s ease both;
+  animation: popIn 0.4s ease both;
 }
 
-.success-msg {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
+.success-text {
+  font-family: 'Courier Prime', monospace;
+  font-size: 14px;
   font-style: italic;
-  font-weight: 300;
-  color: var(--brown);
-  line-height: 1.7;
+  color: var(--dim);
+  line-height: 1.75;
 }
 
-/* ─── FOOTER ─── */
+/* ── TICKER ── */
+.ticker {
+  overflow: hidden;
+  background: var(--bg2);
+  border-top: 1px solid var(--faint);
+  border-bottom: 1px solid var(--faint);
+  padding: 10px 0;
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 35s linear infinite;
+}
+
+.ticker-track span {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: lowercase;
+  color: var(--dim);
+  padding: 0 36px;
+  white-space: nowrap;
+}
+
+.ticker-track span.sep {
+  color: var(--rust);
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── FOOTER ── */
 footer {
-  background: var(--ink);
-  padding: 64px 80px 40px;
+  background: var(--bg2);
+  border-top: 1px solid var(--faint);
+  padding: 60px 64px 40px;
 }
 
-.footer-top {
+.footer-inner {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding-bottom: 48px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  margin-bottom: 32px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--faint);
+  margin-bottom: 28px;
 }
 
-.footer-logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  font-style: italic;
-  color: var(--bone);
+.footer-brand {
+  font-family: 'Special Elite', serif;
+  font-size: 32px;
+  color: var(--worn);
   display: block;
   margin-bottom: 8px;
 }
 
 .footer-tagline {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 15px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 12px;
   font-style: italic;
-  font-weight: 300;
-  color: rgba(240,235,224,0.38);
-  line-height: 1.6;
+  color: var(--faint);
+  line-height: 1.7;
 }
 
-.footer-nav { display: flex; gap: 48px; align-items: center; }
+.footer-nav {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
 
 .footer-nav a {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(240,235,224,0.4);
+  font-family: 'Courier Prime', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: var(--dim);
   text-decoration: none;
   transition: color 0.2s;
 }
 
-.footer-nav a:hover { color: var(--snake1); }
+.footer-nav a:hover { color: var(--worn); }
 
 .footer-bottom {
   display: flex;
@@ -752,399 +693,351 @@ footer {
 }
 
 .footer-copy {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: rgba(240,235,224,0.18);
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: var(--faint);
 }
 
-.footer-social { display: flex; gap: 24px; }
-
-.footer-social a {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: rgba(240,235,224,0.28);
-  text-decoration: none;
-  transition: color 0.2s;
+/* ── REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
 }
 
-.footer-social a:hover { color: var(--rust); }
+.reveal.on { opacity: 1; transform: none; }
 
-/* ─── ANIMATIONS ─── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ── ANIMATIONS ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
 }
 
 @keyframes popIn {
-  from { opacity: 0; transform: scale(0.7); }
+  from { opacity: 0; transform: scale(0.6); }
   to   { opacity: 1; transform: scale(1); }
 }
 
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.reveal.visible { opacity: 1; transform: translateY(0); }
-
-/* ─── RESPONSIVE ─── */
-@media (max-width: 960px) {
-  .hero { grid-template-columns: 1fr; }
-  .hero-img-wrap { height: 55vw; }
-  .hero-left { padding: 60px 40px; }
-  #events, #feed, #rsvp { padding: 80px 40px; }
-  .stats-bar { padding: 32px 40px; flex-wrap: wrap; gap: 24px; justify-content: center; }
-  .stats-divider { display: none; }
-  #about { grid-template-columns: 1fr; }
-  .about-image-col { min-height: 60vw; }
-  .about-text-col { padding: 60px 40px; }
-  .event-row { grid-template-columns: 80px 1fr; gap: 16px; }
-  .event-seats-col, .event-action { display: none; }
-  .feed-grid { grid-template-columns: 1fr 1fr; }
-  .feed-item.tall { grid-row: span 1; }
-  .rsvp-form { grid-template-columns: 1fr; }
-  footer { padding: 48px 40px 32px; }
-  .footer-top { flex-direction: column; gap: 32px; }
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  #nav { padding: 18px 28px; }
+  .nav-links li:not(:last-child) { display: none; }
+  .hero { padding: 0 32px 64px; }
+  .hero-bg-img { width: 100%; opacity: 0.1; }
+  .section { padding: 64px 32px; }
+  .section-sm { padding: 48px 32px; }
+  .two-col { grid-template-columns: 1fr; gap: 48px; }
+  .about-img-stack { height: 340px; }
+  .photo-strip { padding: 0 32px; height: 220px; }
+  .event-item { grid-template-columns: 60px 1fr; gap: 20px; }
+  .ev-right { display: none; }
+  .event-item { cursor: pointer; }
+  .form-grid { grid-template-columns: 1fr; }
+  footer { padding: 48px 32px 32px; }
+  .footer-inner { flex-direction: column; gap: 28px; }
   .footer-nav { gap: 24px; flex-wrap: wrap; }
-  nav { padding: 0 28px; }
-  .nav-link { display: none; }
 }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav id="main-nav">
-  <a href="#" class="nav-logo">Yuko</a>
-  <div class="nav-right">
-    <a href="#events" class="nav-link">Events</a>
-    <a href="#about" class="nav-link">About</a>
-    <a href="#rsvp" class="nav-btn">Join the Table</a>
-  </div>
+<nav id="nav">
+  <a href="#" class="nav-logo">yuko</a>
+  <ul class="nav-links">
+    <li><a href="#events">events</a></li>
+    <li><a href="#about">about</a></li>
+    <li><a href="#rsvp" class="nav-reserve">reserve</a></li>
+  </ul>
 </nav>
-
-<!-- MARQUEE -->
-<div class="marquee-wrap" style="margin-top:64px;">
-  <div class="marquee-track">
-    <span>Dinner Series — New York City</span><span class="dot">◆</span>
-    <span>Seasonal Table</span><span class="dot">◆</span>
-    <span>Eight Seats Only</span><span class="dot">◆</span>
-    <span>Spring 2026</span><span class="dot">◆</span>
-    <span>No phones at dinner</span><span class="dot">◆</span>
-    <span>Dinner Series — New York City</span><span class="dot">◆</span>
-    <span>Seasonal Table</span><span class="dot">◆</span>
-    <span>Eight Seats Only</span><span class="dot">◆</span>
-    <span>Spring 2026</span><span class="dot">◆</span>
-    <span>No phones at dinner</span><span class="dot">◆</span>
-  </div>
-</div>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-left">
-    <div class="hero-eyebrow">Est. Lower Manhattan · Since 2024</div>
-    <div class="hero-title">Dinner<br>at <em>Yuko's</em></div>
-    <div class="hero-sub">Eight seats. One table.<br>Food that tastes like somewhere.</div>
-    <div class="hero-cta-row">
-      <a href="#events" class="btn-primary">See Events</a>
-      <a href="#about" class="btn-ghost">Our Table</a>
-    </div>
+  <div class="hero-bg-img">
+    <img src="yuko-3.jpg" alt="">
   </div>
-  <div class="hero-img-wrap">
-    <div class="hero-snake-accent snake-border-v"></div>
-    <img src="yuko-3.jpg" alt="Yuko">
+  <div class="hero-label">new york city — dinner series</div>
+  <div class="hero-title">
+    dinner<br>at <span class="worn">yuko</span><span class="rust">'s</span><span class="cursor"></span>
+  </div>
+  <div class="hero-sub">
+    eight seats. one table.<br>
+    you won't find this anywhere else.
+  </div>
+  <div class="hero-cta">
+    <a href="#events" class="btn btn-solid">see what's coming</a>
+    <a href="#about" class="btn btn-line">about the table</a>
   </div>
 </section>
 
-<!-- SNAKE BORDER -->
-<div class="snake-border"></div>
-
-<!-- STATS -->
-<div class="stats-bar reveal">
-  <div class="stat">
-    <span class="stat-number">47</span>
-    <span class="stat-label">Dinners Hosted</span>
-  </div>
-  <div class="stats-divider"></div>
-  <div class="stat">
-    <span class="stat-number">8</span>
-    <span class="stat-label">Seats Per Night</span>
-  </div>
-  <div class="stats-divider"></div>
-  <div class="stat">
-    <span class="stat-number">7</span>
-    <span class="stat-label">Courses</span>
-  </div>
-  <div class="stats-divider"></div>
-  <div class="stat">
-    <span class="stat-number">0</span>
-    <span class="stat-label">Menus Repeated</span>
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span>new york city</span><span class="sep">—</span>
+    <span>eight seats only</span><span class="sep">—</span>
+    <span>seasonal menu</span><span class="sep">—</span>
+    <span>spring 2026</span><span class="sep">—</span>
+    <span>no phones at dinner</span><span class="sep">—</span>
+    <span>no menu repeats</span><span class="sep">—</span>
+    <span>new york city</span><span class="sep">—</span>
+    <span>eight seats only</span><span class="sep">—</span>
+    <span>seasonal menu</span><span class="sep">—</span>
+    <span>spring 2026</span><span class="sep">—</span>
+    <span>no phones at dinner</span><span class="sep">—</span>
+    <span>no menu repeats</span><span class="sep">—</span>
   </div>
 </div>
 
 <!-- EVENTS -->
-<section id="events">
-  <div class="section-head reveal">
-    <div>
-      <div class="section-label">What's Coming</div>
-      <div class="section-title">Upcoming <em>Tables</em></div>
-    </div>
-    <a href="#rsvp" class="section-link">Request an invite →</a>
+<section class="section" id="events">
+  <div class="reveal">
+    <div class="s-label">what's coming</div>
+    <div class="s-title">upcoming <span class="accent">tables</span></div>
   </div>
 
   <div class="event-list reveal">
 
-    <div class="event-row" onclick="scrollToRSVP('Spring Omen Table', 'April 26')">
-      <div class="event-date-col">
-        <span class="event-date-big">26</span>
-        <span class="event-date-small">APR / 2026</span>
-      </div>
-      <div class="event-info">
-        <div class="event-name">Spring Omen Table</div>
-        <div class="event-detail">Seven courses — seasonal vegetables, dashi, fermented things. 7:00 PM, East Village.</div>
-        <div class="event-tags">
-          <span class="tag">Vegetarian-forward</span>
-          <span class="tag">Wine</span>
-          <span class="tag">4 seats left</span>
+    <div class="event-item" onclick="goRSVP('Spring Omen Table','April 26')">
+      <div class="ev-date">APR<br>26</div>
+      <div class="ev-body">
+        <div class="ev-name">Spring Omen Table</div>
+        <div class="ev-desc">Seven courses. Seasonal vegetables, dashi, fermented things. East Village, 7pm. Wine included.</div>
+        <div class="ev-tags">
+          <span class="ev-tag">vegetarian-forward</span>
+          <span class="ev-tag">wine</span>
+          <span class="ev-tag">4 seats left</span>
         </div>
       </div>
-      <div class="event-seats-col">
-        <span class="seats-text">Seats</span>
-        <div class="seats-dots">
-          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
-          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
-          <div class="seat-pip"></div><div class="seat-pip"></div>
-          <div class="seat-pip"></div><div class="seat-pip"></div>
+      <div class="ev-right">
+        <div class="ev-seats">
+          <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div>
+          <div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div>
         </div>
-      </div>
-      <div class="event-action">
-        <button class="btn-primary" onclick="scrollToRSVP('Spring Omen Table','April 26');event.stopPropagation()">RSVP</button>
+        <button class="ev-rsvp" onclick="goRSVP('Spring Omen Table','April 26');event.stopPropagation()">→ rsvp</button>
       </div>
     </div>
 
-    <div class="event-row" onclick="scrollToRSVP('Night Kitchen','May 10')">
-      <div class="event-date-col">
-        <span class="event-date-big">10</span>
-        <span class="event-date-small">MAY / 2026</span>
-      </div>
-      <div class="event-info">
-        <div class="event-name">Night Kitchen</div>
-        <div class="event-detail">Late dinner, midnight market. Izakaya spirit, improvised menu. 9:00 PM, Lower East Side.</div>
-        <div class="event-tags">
-          <span class="tag">Late Night</span>
-          <span class="tag">BYOB</span>
-          <span class="tag">7 seats left</span>
+    <div class="event-item" onclick="goRSVP('Night Kitchen','May 10')">
+      <div class="ev-date">MAY<br>10</div>
+      <div class="ev-body">
+        <div class="ev-name">Night Kitchen</div>
+        <div class="ev-desc">Late dinner. Midnight market ingredients. Improvised menu, izakaya spirit. Lower East Side, 9pm.</div>
+        <div class="ev-tags">
+          <span class="ev-tag">late night</span>
+          <span class="ev-tag">byob welcome</span>
+          <span class="ev-tag">7 seats left</span>
         </div>
       </div>
-      <div class="event-seats-col">
-        <span class="seats-text">Seats</span>
-        <div class="seats-dots">
-          <div class="seat-pip taken"></div>
-          <div class="seat-pip"></div><div class="seat-pip"></div>
-          <div class="seat-pip"></div><div class="seat-pip"></div>
-          <div class="seat-pip"></div><div class="seat-pip"></div>
-          <div class="seat-pip"></div>
+      <div class="ev-right">
+        <div class="ev-seats">
+          <div class="pip on"></div>
+          <div class="pip"></div><div class="pip"></div><div class="pip"></div>
+          <div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div>
         </div>
-      </div>
-      <div class="event-action">
-        <button class="btn-primary" onclick="scrollToRSVP('Night Kitchen','May 10');event.stopPropagation()">RSVP</button>
+        <button class="ev-rsvp" onclick="goRSVP('Night Kitchen','May 10');event.stopPropagation()">→ rsvp</button>
       </div>
     </div>
 
-    <div class="event-row past">
-      <div class="event-date-col">
-        <span class="event-date-big">15</span>
-        <span class="event-date-small">MAR / 2026</span>
+    <div class="event-item past">
+      <div class="ev-date">MAR<br>15</div>
+      <div class="ev-body">
+        <div class="ev-name">The Last Winter Table</div>
+        <div class="ev-desc">Root vegetables, bone broth, slow heat. A dinner for the last cold night.</div>
+        <div class="ev-tags"><span class="ev-tag">passed</span></div>
       </div>
-      <div class="event-info">
-        <div class="event-name">The Last Winter Table</div>
-        <div class="event-detail">Root vegetables, bone broth, slow heat. A dinner for the last cold night.</div>
-        <div class="event-tags"><span class="tag">Passed</span></div>
-      </div>
-      <div class="event-seats-col">
-        <span class="seats-text">Sold Out</span>
-        <div class="seats-dots">
-          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
-          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
-          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
-          <div class="seat-pip taken"></div><div class="seat-pip taken"></div>
+      <div class="ev-right">
+        <div class="ev-seats">
+          <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div>
+          <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div>
         </div>
+        <span class="ev-past-label">sold out</span>
       </div>
-      <div class="event-action"><span class="sold-out-badge">Past</span></div>
     </div>
 
   </div>
 </section>
 
-<!-- SNAKE BORDER -->
-<div class="snake-border"></div>
+<hr class="hr">
+
+<!-- PHOTO STRIP -->
+<div class="photo-strip" style="margin: 48px 0;">
+  <div class="strip-img">
+    <img src="yuko-4.jpg" alt="">
+    <span class="strip-label">the apartment</span>
+  </div>
+  <div class="strip-img">
+    <img src="yuko-5.jpg" alt="">
+    <span class="strip-label">the books</span>
+  </div>
+  <div class="strip-img">
+    <img src="yuko-6.jpg" alt="">
+    <span class="strip-label">yuko</span>
+  </div>
+  <div class="strip-img">
+    <img src="yuko-7.jpg" alt="">
+    <span class="strip-label">the corridor</span>
+  </div>
+  <div class="strip-img">
+    <img src="yuko-8.jpg" alt="">
+    <span class="strip-label">the records</span>
+  </div>
+</div>
+
+<hr class="hr">
 
 <!-- ABOUT -->
-<section id="about">
-  <div class="about-image-col">
-    <img src="yuko-6.jpg" alt="Yuko">
-    <div class="about-snake-edge"></div>
-  </div>
-  <div class="about-text-col reveal">
-    <div class="section-label">The Table</div>
-    <div class="section-title">About<br><em>Yuko</em></div>
-    <div class="about-rule"></div>
-    <div class="about-body">
-      <p>Yuko cooks the way she reads — slowly, attentively, with the instinct that everything connects if you hold it long enough. Her dinners happen in a room surrounded by thirty years of books, records, and accumulated evidence of a life spent paying attention.</p>
-      <p>The food is Japanese in its bones and New York in its accidents. The menu follows what arrived at the market that morning, what felt right in the afternoon.</p>
+<section class="section" id="about">
+  <div class="two-col">
+    <div class="about-img-stack reveal">
+      <div class="about-img a1">
+        <img src="yuko-3.jpg" alt="Yuko">
+      </div>
+      <div class="about-img a2">
+        <img src="yuko-6.jpg" alt="Books">
+      </div>
     </div>
-    <div class="about-rule" style="margin-top:40px;"></div>
-    <div class="about-quote">"Eight seats. One table.<br>No menus ever repeat."</div>
+    <div class="reveal">
+      <div class="s-label">the table</div>
+      <div class="s-title">about <span class="accent">yuko</span></div>
+      <div class="about-body">
+        <p>Yuko cooks the way she reads — slowly, attentively, with the instinct that everything connects if you hold it long enough.</p>
+        <p>Her dinners happen in a room surrounded by thirty years of books, records, and accumulated evidence of a life spent paying attention. The food is Japanese in its bones and New York in its accidents.</p>
+        <p>No fixed menu. No repeats. She follows what arrived at the market that morning, what felt right in the afternoon.</p>
+      </div>
+      <div class="about-pull">
+        "eight seats.<br>one table.<br>you had to know to ask."
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- FEED -->
-<section id="feed">
-  <div class="section-head reveal">
-    <div>
-      <div class="section-label">From the Table</div>
-      <div class="section-title">The <em>Room</em></div>
-    </div>
-    <a href="#rsvp" class="section-link">Come for dinner →</a>
-  </div>
-  <div class="feed-grid reveal">
-    <div class="feed-item tall">
-      <img src="yuko-4.jpg" alt="">
-      <div class="feed-overlay"><span class="feed-label">The Apartment</span></div>
-    </div>
-    <div class="feed-item">
-      <img src="yuko-5.jpg" alt="">
-      <div class="feed-overlay"><span class="feed-label">The Archive</span></div>
-    </div>
-    <div class="feed-item">
-      <img src="yuko-8.jpg" alt="">
-      <div class="feed-overlay"><span class="feed-label">The Records</span></div>
-    </div>
-    <div class="feed-item">
-      <img src="yuko-7.jpg" alt="">
-      <div class="feed-overlay"><span class="feed-label">The Corridor</span></div>
-    </div>
-    <div class="feed-item">
-      <img src="yuko-3.jpg" alt="">
-      <div class="feed-overlay"><span class="feed-label">Yuko</span></div>
-    </div>
-  </div>
-</section>
+<hr class="hr">
 
 <!-- RSVP -->
-<section id="rsvp">
-  <div class="snake-border" style="margin-bottom:80px;"></div>
-  <div class="rsvp-inner">
-    <div class="section-label">Reserve</div>
-    <div class="section-title">Join the <em>Table</em></div>
-    <div class="rsvp-body">Seats are limited to eight.<br>Yuko will confirm within 48 hours with the evening's details.</div>
+<section class="section" id="rsvp" style="background: var(--bg2);">
+  <div class="rsvp-wrap reveal">
+    <div class="s-label">reserve</div>
+    <div class="s-title">join the <span class="accent">table</span></div>
+    <div class="rsvp-intro">
+      seats are limited to eight.<br>
+      yuko will confirm within 48 hours with the address and details.
+    </div>
 
-    <div class="rsvp-form reveal" id="rsvp-form">
-      <div class="field-wrap">
-        <label class="field-label">First Name</label>
-        <input class="field-input" type="text" placeholder="Your name" id="rf-first">
+    <div class="form-grid" id="rsvp-form">
+      <div class="f-group">
+        <label class="f-label">first name</label>
+        <input class="f-input" type="text" placeholder="your name" id="f-first">
       </div>
-      <div class="field-wrap">
-        <label class="field-label">Last Name</label>
-        <input class="field-input" type="text" placeholder="Your last name">
+      <div class="f-group">
+        <label class="f-label">last name</label>
+        <input class="f-input" type="text" placeholder="your last name">
       </div>
-      <div class="field-wrap full">
-        <label class="field-label">Email</label>
-        <input class="field-input" type="email" placeholder="you@example.com" id="rf-email">
+      <div class="f-group full">
+        <label class="f-label">email</label>
+        <input class="f-input" type="email" placeholder="you@example.com" id="f-email">
       </div>
-      <div class="field-wrap">
-        <label class="field-label">Which Dinner</label>
-        <select class="field-select" id="rf-event">
-          <option>Spring Omen Table — Apr 26</option>
-          <option>Night Kitchen — May 10</option>
-          <option>Either / Any Availability</option>
+      <div class="f-group">
+        <label class="f-label">which dinner</label>
+        <select class="f-select" id="f-event">
+          <option>spring omen table — apr 26</option>
+          <option>night kitchen — may 10</option>
+          <option>either / any availability</option>
         </select>
       </div>
-      <div class="field-wrap">
-        <label class="field-label">Party Size</label>
-        <select class="field-select">
+      <div class="f-group">
+        <label class="f-label">party size</label>
+        <select class="f-select">
           <option>1 seat</option>
           <option>2 seats</option>
         </select>
       </div>
-      <div class="field-wrap full">
-        <label class="field-label">Dietary needs or notes</label>
-        <textarea class="field-textarea" placeholder="Allergies, preferences, anything Yuko should know..."></textarea>
+      <div class="f-group full">
+        <label class="f-label">dietary needs or anything we should know</label>
+        <textarea class="f-textarea" placeholder="allergies, preferences, celebrating something..."></textarea>
       </div>
-      <div class="rsvp-submit-row full">
-        <button class="btn-primary" onclick="submitForm()">Send Request ◆</button>
+      <div class="f-submit full">
+        <button class="btn btn-solid" onclick="submitForm()" style="width:100%;font-size:12px;letter-spacing:0.35em;padding:18px;">send request</button>
       </div>
-      <div class="form-note full">Address shared only upon confirmation.</div>
+      <div class="f-note full">address shared only upon confirmation</div>
     </div>
 
-    <div class="form-success" id="form-success">
-      <span class="success-mark">✦</span>
-      <div class="success-msg">Request received.<br>Yuko will be in touch within 48 hours.</div>
+    <div class="f-success" id="f-success">
+      <span class="success-char">✦</span>
+      <div class="success-text">
+        request received.<br>
+        yuko will be in touch within 48 hours.
+      </div>
     </div>
   </div>
-  <div class="snake-border" style="margin-top:80px;"></div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-top">
+  <div class="footer-inner">
     <div>
-      <span class="footer-logo">Yuko</span>
-      <div class="footer-tagline">Dinner parties in New York City.<br>Intimate. Seasonal. Unrepeated.</div>
+      <span class="footer-brand">yuko</span>
+      <div class="footer-tagline">dinner parties in new york city.<br>intimate. seasonal. unrepeated.</div>
     </div>
     <nav class="footer-nav">
-      <a href="#events">Events</a>
-      <a href="#about">About</a>
-      <a href="#rsvp">Reserve</a>
-      <a href="mailto:yuko@example.com">Contact</a>
+      <a href="#events">events</a>
+      <a href="#about">about</a>
+      <a href="#rsvp">reserve</a>
+      <a href="mailto:yuko@example.com">contact</a>
     </nav>
   </div>
   <div class="footer-bottom">
-    <span class="footer-copy">© 2026 Yuko — New York City</span>
-    <div class="footer-social">
-      <a href="#">Instagram</a>
-      <a href="#">Substack</a>
-    </div>
+    <span class="footer-copy">© 2026 yuko — new york city</span>
+    <span class="footer-copy">instagram &nbsp;/&nbsp; substack</span>
   </div>
 </footer>
 
 <script>
-const nav = document.getElementById('main-nav');
+// nav on scroll
+const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 40);
-});
+  nav.classList.toggle('solid', window.scrollY > 50);
+}, { passive: true });
 
-const reveals = document.querySelectorAll('.reveal');
-const io = new IntersectionObserver(entries => {
+// scroll reveal
+const els = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
   entries.forEach((e, i) => {
     if (e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('visible'), i * 80);
-      io.unobserve(e.target);
+      setTimeout(() => e.target.classList.add('on'), i * 90);
+      obs.unobserve(e.target);
     }
   });
-}, { threshold: 0.08 });
-reveals.forEach(el => io.observe(el));
+}, { threshold: 0.07 });
+els.forEach(el => obs.observe(el));
 
-function scrollToRSVP(eventName, date) {
+// go to rsvp + preselect
+function goRSVP(name, date) {
   document.getElementById('rsvp').scrollIntoView({ behavior: 'smooth' });
-  const sel = document.getElementById('rf-event');
-  for (let opt of sel.options) {
-    if (opt.text.includes(date)) { sel.value = opt.value; break; }
+  const sel = document.getElementById('f-event');
+  for (const opt of sel.options) {
+    if (opt.text.toLowerCase().includes(date.toLowerCase().slice(0,6))) {
+      sel.value = opt.value;
+      break;
+    }
   }
 }
 
+// submit
 function submitForm() {
-  const first = document.getElementById('rf-first').value.trim();
-  const email = document.getElementById('rf-email').value.trim();
-  if (!first) { document.getElementById('rf-first').style.borderBottomColor = '#a0522d'; return; }
-  if (!email || !email.includes('@')) { document.getElementById('rf-email').style.borderBottomColor = '#a0522d'; return; }
-  document.getElementById('rsvp-form').classList.add('hidden');
-  document.getElementById('form-success').classList.add('visible');
+  const first = document.getElementById('f-first').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  if (!first) { highlight('f-first'); return; }
+  if (!email || !email.includes('@')) { highlight('f-email'); return; }
+  document.getElementById('rsvp-form').classList.add('hide');
+  document.getElementById('f-success').classList.add('show');
+}
+
+function highlight(id) {
+  const el = document.getElementById(id);
+  el.style.borderBottomColor = '#9b3a1a';
+  el.focus();
 }
 </script>
 </body>
