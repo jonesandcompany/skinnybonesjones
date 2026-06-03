@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selects -- Results</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400&display=swap');
+
+  :root { --paper: #f2ede6; --ink: #1a1814; --muted: #8a8278; --rule: #d4cfc8; --select: #4a7c59; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--paper); }
+  body { font-family: 'EB Garamond', Georgia, serif; background: var(--paper); color: var(--ink); min-height: 100dvh; padding: 3rem 2.5rem 4rem; }
+
+  h1 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 400; letter-spacing: 0.01em; margin-bottom: 0.4rem; }
+  .subtitle { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 2.5rem; }
+
+  .summary {
+    display: flex;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--rule);
+    flex-wrap: wrap;
+  }
+
+  .summary-item { }
+  .summary-item .count { font-size: 2rem; font-weight: 400; line-height: 1; }
+  .summary-item .label { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+
+  thead tr { border-bottom: 0.5px solid var(--ink); }
+  th { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 0 1rem 0.75rem 0; text-align: left; }
+  th:first-child { padding-left: 0; min-width: 120px; }
+  th.voter-col { text-align: center; width: 80px; }
+
+  tbody tr { border-bottom: 0.5px solid var(--rule); }
+  tbody tr:hover { background: rgba(0,0,0,0.02); }
+
+  td { padding: 0.55rem 1rem 0.55rem 0; vertical-align: middle; }
+  td:first-child { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 300; letter-spacing: 0.06em; color: var(--muted); padding-left: 0; }
+  td.voter-col { text-align: center; }
+
+  .check { color: var(--select); font-size: 1rem; line-height: 1; }
+
+  .tier-header td {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding-top: 1.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--ink);
+  }
+
+  .loading { font-family: 'EB Garamond', serif; font-style: italic; color: var(--muted); padding: 2rem 0; }
+
+  @media (max-width: 600px) {
+    body { padding: 2rem 1.25rem 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Save the Date -- Results</h1>
+<p class="subtitle" id="updated">Loading...</p>
+
+<div class="summary" id="summary"></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th class="voter-col">Carly</th>
+      <th class="voter-col">James</th>
+      <th class="voter-col">BFF</th>
+      <th class="voter-col">Agreed</th>
+    </tr>
+  </thead>
+  <tbody id="tbody">
+    <tr><td colspan="5" class="loading">Loading results...</td></tr>
+  </tbody>
+</table>
+
+<script>
+const SUPABASE_URL = 'https://qkpbcxlngwnlndlwdvqc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrcGJjeGxuZ3dubG5kbHdkdnFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0Mjk2MzgsImV4cCI6MjA5NjAwNTYzOH0.6Y_mmdMrWVMpNxUTPwyoE-aBz_4aZFXEIO8qG9HITHo';
+const CLIENT = 'carly-james-std';
+
+const TIERS = [
+  { id: 'first',  label: 'I',   count: 34  },
+  { id: 'second', label: 'II',  count: 105 },
+  { id: 'third',  label: 'III', count: 72  }
+];
+
+const ALL_IMAGES = [];
+TIERS.forEach(t => {
+  for(let i = 1; i <= t.count; i++) {
+    ALL_IMAGES.push({ id: `${t.id}-${i}`, tier: t.id, tierLabel: t.label, num: i });
+  }
+});
+
+async function load() {
+  const res = await fetch(SUPABASE_URL + `/rest/v1/votes?client=eq.${CLIENT}&selected=eq.true&select=image_id,voter`, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY
+    }
+  });
+  const data = await res.json();
+
+  // Pivot: { image_id: { carly: bool, james: bool, bff: bool } }
+  const pivot = {};
+  data.forEach(r => {
+    if(!pivot[r.image_id]) pivot[r.image_id] = {};
+    pivot[r.image_id][r.voter] = true;
+  });
+
+  // Filter to only images with at least one vote
+  const voted = ALL_IMAGES.filter(img => pivot[img.id]);
+
+  // Summary counts
+  const carlyCount = data.filter(r => r.voter === 'carly').length;
+  const jamesCount = data.filter(r => r.voter === 'james').length;
+  const bffCount   = data.filter(r => r.voter === 'bff').length;
+  const agreedCount = voted.filter(img => {
+    const v = pivot[img.id];
+    return (v.carly ? 1 : 0) + (v.james ? 1 : 0) + (v.bff ? 1 : 0) >= 2;
+  }).length;
+
+  document.getElementById('updated').textContent = `Last loaded ${new Date().toLocaleTimeString()}`;
+
+  document.getElementById('summary').innerHTML = `
+    <div class="summary-item"><div class="count">${carlyCount}</div><div class="label">Carly</div></div>
+    <div class="summary-item"><div class="count">${jamesCount}</div><div class="label">James</div></div>
+    <div class="summary-item"><div class="count">${bffCount}</div><div class="label">BFF</div></div>
+    <div class="summary-item"><div class="count">${agreedCount}</div><div class="label">Agreed</div></div>
+    <div class="summary-item"><div class="count">${voted.length}</div><div class="label">Total selected</div></div>
+  `;
+
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+
+  if(voted.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="loading">No selections yet.</td></tr>';
+    return;
+  }
+
+  let currentTier = null;
+  voted.forEach(img => {
+    if(img.tier !== currentTier) {
+      currentTier = img.tier;
+      const tierRow = document.createElement('tr');
+      tierRow.className = 'tier-header';
+      tierRow.innerHTML = `<td colspan="5">${TIERS.find(t => t.id === img.tier).label}</td>`;
+      tbody.appendChild(tierRow);
+    }
+
+    const v = pivot[img.id] || {};
+    const agreedCount = (v.carly ? 1 : 0) + (v.james ? 1 : 0) + (v.bff ? 1 : 0);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${img.id}</td>
+      <td class="voter-col">${v.carly ? '<span class="check">✓</span>' : ''}</td>
+      <td class="voter-col">${v.james ? '<span class="check">✓</span>' : ''}</td>
+      <td class="voter-col">${v.bff   ? '<span class="check">✓</span>' : ''}</td>
+      <td class="voter-col">${agreedCount >= 2 ? '<span class="check">✓</span>' : ''}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+load();
+</script>
+</body>
+</html>
