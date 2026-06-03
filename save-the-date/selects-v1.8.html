@@ -153,19 +153,36 @@ async function loadVotes() {
 
 async function saveVote(imageId, selected) {
   try {
-    const res = await fetch(SUPABASE_URL + '/rest/v1/votes', {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates,return=minimal'
-      },
-      body: JSON.stringify({ client: CLIENT, image_id: imageId, voter, selected })
-    });
-    if(!res.ok) {
-      const err = await res.text();
-      console.error('save failed', res.status, err);
+    // PATCH existing row directly by unique fields
+    const patchRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/votes?client=eq.${encodeURIComponent(CLIENT)}&image_id=eq.${encodeURIComponent(imageId)}&voter=eq.${encodeURIComponent(voter)}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ selected, updated_at: new Date().toISOString() })
+      }
+    );
+    // Check if any row was updated via content-range header
+    const range = patchRes.headers.get('content-range') || '';
+    const noneUpdated = range === '*\/0' || range === '*/0';
+    if(noneUpdated || !patchRes.ok) {
+      // No existing row -- insert
+      const postRes = await fetch(`${SUPABASE_URL}/rest/v1/votes`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ client: CLIENT, image_id: imageId, voter, selected, updated_at: new Date().toISOString() })
+      });
+      if(!postRes.ok) console.error('insert failed', await postRes.text());
     }
   } catch(e) { console.error('save failed', e); }
 }
